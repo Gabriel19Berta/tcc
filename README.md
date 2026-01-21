@@ -1,3 +1,24 @@
+## 🛠️ Tecnologias Utilizadas
+
+- **Laravel** (Framework PHP)
+- **Laravel Breeze** (Autenticação)
+- **Tailwind CSS** (Estilização)
+- **Vite** (Build de assets)
+- **Mariabd** (Banco de dados)
+
+## 🌐 Localização (pt-BR)
+
+Este projeto utiliza o **Laravel Breeze** com os textos traduzidos para **Português (Brasil)**.
+
+A tradução foi aplicada com base no repositório:
+
+- https://github.com/lucascudo/laravel-pt-BR-localization
+
+Os arquivos de idioma foram adicionados à pasta `lang/pt_BR` e a configuração de idioma padrão foi ajustada no arquivo `.env`.
+
+Créditos ao autor do repositório pela disponibilização da localização em pt-BR.
+
+
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
 <p align="center">
