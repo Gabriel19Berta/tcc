@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ClientesController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -18,3 +19,7 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
+/* CLIENTES */
+Route::get('/clientes', [ClientesController::class, 'index'])->name('clientes.index');
+Route::get('/clientes/create', [ClientesController::class, 'create'])->name('clientes.create');

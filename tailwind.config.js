@@ -21,6 +21,12 @@ export default {
                     600: '#6e7d52',
                     700: '#5f6d47',
                 },
+                
+                /* Segundaria */
+                beige: {
+                    600: '#D1B89A',
+                    700: '#C7AF94',
+                },
 
                 /* Texto */
                 text: {
@@ -45,9 +51,6 @@ export default {
                 /* Estados */
                 danger: '#F05143',
                 info: '#437DF0',
-
-                /* Neutra */
-                beige: '#C7AF94',
             }
         },
     },
