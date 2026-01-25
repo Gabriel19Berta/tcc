@@ -4,7 +4,14 @@
 - **Laravel Breeze** (Autenticação)
 - **Tailwind CSS** (Estilização)
 - **Vite** (Build de assets)
-- **Mariabd** (Banco de dados)
+- **MariaDB** (Banco de dados)
+- **Inputmask.js** (Máscaras de campos no frontend)
+
+## 🎯 Máscaras de Campos
+
+O projeto utiliza a biblioteca **Inputmask.js** para aplicar máscaras de entrada nos campos do formulário, como: CPF, CNPJ, telefone, celular, etc.
+
+As máscaras são aplicadas no **frontend**, proporcionando melhor experiência ao usuário, enquanto os dados são devidamente tratados e validados no **backend (Laravel)** antes do armazenamento.
 
 ## 🌐 Localização (pt-BR)
 
@@ -17,6 +24,7 @@ A tradução foi aplicada com base no repositório:
 Os arquivos de idioma foram adicionados à pasta `lang/pt_BR` e a configuração de idioma padrão foi ajustada no arquivo `.env`.
 
 Créditos ao autor do repositório pela disponibilização da localização em pt-BR.
+
 
 
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>

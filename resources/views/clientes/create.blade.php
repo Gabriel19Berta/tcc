@@ -14,34 +14,32 @@
                     <form action="#" method="POST">
                         @csrf
 
-                        <div class="grid grid-cols-5 md:grid-cols-5 gap-4">
-                            <div class="col-span-2">
+                        <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+                            <div class="md:col-span-2">
                                 <x-input-label for="nome" :value="__('Nome')" />
                                 <x-text-input id="nome" name="nome" type="text" class="block mt-1 w-full"
                                     :value="old('nome')" required />
                             </div>
-                            <div class="col-span-1">
+                            <div class="md:col-span-1">
                                 <x-input-label for="tipo" :value="__('Tipo')" />
 
-                                <div class="border border-gray-300 rounded-md mt-1 p-[6px] flex gap-4">
-
+                                <div class="border border-gray-300 rounded-md mt-1 p-[6px] flex flex-wrap gap-4">
                                     <label for="fisico" class="flex items-center gap-2 cursor-pointer">
-                                        <x-text-input id="fisico" name="tipo" type="radio" value="F"
-                                            :checked="old('tipo') === 'F'" required />
+                                        <x-text-input id="fisico" name="tipo" type="radio" value="f"
+                                            :checked="old('tipo') === 'f'" />
                                         <span>Física</span>
                                     </label>
 
                                     <label for="juridica" class="flex items-center gap-2 cursor-pointer">
-                                        <x-text-input id="juridica" name="tipo" type="radio" value="J"
-                                            :checked="old('tipo') === 'J'" />
+                                        <x-text-input id="juridica" name="tipo" type="radio" value="j"
+                                            :checked="old('tipo') === 'j'" />
                                         <span>Jurídica</span>
                                     </label>
-
                                 </div>
                             </div>
-                            <div class="col-span-1">
+                            <div class="md:col-span-1">
                                 <x-input-label for="cpf" :value="__('CPF')" />
-                                <x-text-input id="cpf" name="cpf" type="text" class="block mt-1 w-full"
+                                <x-text-input id="cpf" name="cpf" type="text" class="block mt-1 w-full cpf"
                                     :value="old('cpf')" required />
                             </div>
                         </div>
