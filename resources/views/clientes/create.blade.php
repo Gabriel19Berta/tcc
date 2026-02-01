@@ -9,21 +9,20 @@
 
     <div class="py-8">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    <form action="#" method="POST">
-                        @csrf
-
+            <form action="{{-- {{ route('clientes.store') }} --}}" method="POST">
+                @csrf
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="p-6 text-gray-900">
                         <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
                             <div class="md:col-span-2">
                                 <x-input-label for="nome" :value="__('Nome')" class="required" />
                                 <x-text-input id="nome" name="nome" type="text" class="block mt-1 w-full"
-                                    :value="old('nome')" required />
+                                    :value="old('nome')" />
                             </div>
                             <div class="md:col-span-1">
                                 <x-input-label for="tipo" :value="__('Tipo')" />
 
-                                <div class="border border-gray-300 rounded-md mt-1 p-[6px] flex flex-wrap gap-4">
+                                <div class="border border-gray-300 rounded-md mt-1 p-2 flex flex-wrap gap-4">
                                     <label for="fisico" class="flex items-center gap-2 cursor-pointer">
                                         <x-text-input id="fisico" name="tipo" type="radio" value="f"
                                             :checked="old('tipo', 'f') === 'f'" />
@@ -54,8 +53,8 @@
                             </div>
                             <div>
                                 <x-input-label for="dt_nascimento" :value="__('Data nascimento')" />
-                                <x-text-input id="dt_nascimento" name="dt_nascimento" type="date" class="block mt-1 w-full"
-                                    :value="old('dt_nascimento')" />
+                                <x-text-input id="dt_nascimento" name="dt_nascimento" type="date"
+                                    class="block mt-1 w-full" :value="old('dt_nascimento')" />
                             </div>
 
                             <h2 class="md:col-span-5 block text-primary font-semibold text-xl leading-tight mt-8">
@@ -63,13 +62,13 @@
                             </h2>
                             <div>
                                 <x-input-label for="celular" :value="__('Celular')" />
-                                <x-text-input id="celular" name="celular" type="text" class="block mt-1 w-full mask-celular"
-                                    :value="old('celular')" />
+                                <x-text-input id="celular" name="celular" type="text"
+                                    class="block mt-1 w-full mask-celular" :value="old('celular')" />
                             </div>
                             <div>
                                 <x-input-label for="telefone" :value="__('Telefone')" />
-                                <x-text-input id="telefone" name="telefone" type="text" class="block mt-1 w-full mask-telefone"
-                                    :value="old('telefone')" />
+                                <x-text-input id="telefone" name="telefone" type="text"
+                                    class="block mt-1 w-full mask-telefone" :value="old('telefone')" />
                             </div>
 
                             <div class="md:col-span-2">
@@ -77,15 +76,15 @@
                                 <x-text-input id="email" name="email" type="email" class="block mt-1 w-full"
                                     :value="old('email')" />
                             </div>
-                            
+
                             <h2 class="md:col-span-5 block text-primary font-semibold text-xl leading-tight mt-8">
                                 {{ __('Endereço') }}
                             </h2>
-                            
+
                             <div>
                                 <x-input-label for="cep" :value="__('CEP')" />
-                                <x-text-input id="cep" name="cep" type="text" class="block mt-1 w-full mask-cep"
-                                    :value="old('cep')" />
+                                <x-text-input id="cep" name="cep" type="text"
+                                    class="block mt-1 w-full mask-cep" :value="old('cep')" />
                             </div>
                             <div class="md:col-span-2">
                                 <x-input-label for="logradouro" :value="__('Logradouro')" />
@@ -99,8 +98,8 @@
                             </div>
                             <div class="md:col-span-2">
                                 <x-input-label for="complemento" :value="__('Complemento')" />
-                                <x-text-input id="complemento" name="complemento" type="text" class="block mt-1 w-full"
-                                    :value="old('complemento')" />
+                                <x-text-input id="complemento" name="complemento" type="text"
+                                    class="block mt-1 w-full" :value="old('complemento')" />
                             </div>
                             <div class="md:col-span-2">
                                 <x-input-label for="bairro" :value="__('Bairro')" />
@@ -112,11 +111,41 @@
                                 <x-text-input id="cidade" name="cidade" type="text" class="block mt-1 w-full"
                                     :value="old('cidade')" />
                             </div>
-                            {{-- Adicionar UF --}}
+                            <div class="md:col-span-1">
+                                <x-input-label for="uf" value="UF" />
+
+                                <select name="uf" id="uf"
+                                    class="block mt-1 w-full border-gray-300 rounded-md shadow-sm focus:border-primary focus:ring-primary">
+                                    <option value="">Selecione</option>
+
+                                    @foreach (['AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO'] as $uf)
+                                        <option value="{{ $uf }}" @selected(old('uf') === $uf)>
+                                            {{ $uf }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <h2 class="md:col-span-5 block text-primary font-semibold text-xl leading-tight mt-8">
+                                {{ __('Dados adicionais') }}
+                            </h2>
+                            <div>
+                                <x-input-label for="observacao" :value="__('Observações')" />
+                            </div>
                         </div>
-                    </form>
+                    </div>
                 </div>
-            </div>
+
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mt-2">
+                    <div class="p-4 text-gray-900">
+                        <div class="flex justify-between">
+                            <x-action-link href="{{ route('clientes.index') }}" color="danger">
+                                Cancelar
+                            </x-action-link>
+                            <x-primary-button type="submit">Cadastrar</x-primary-button>
+                        </div>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
 </x-app-layout>

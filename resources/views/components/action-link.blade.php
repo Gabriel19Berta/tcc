@@ -6,7 +6,7 @@
     $colors = [
         'primary' => 'bg-primary hover:bg-primary-600 active:bg-primary-600',
         'beige' => 'bg-beige-600 hover:bg-beige-700 active:bg-beige-700',
-        'danger'  => 'bg-red-600 hover:bg-red-700 active:bg-red-700',
+        'danger'  => 'bg-danger-500 hover:bg-danger-600 active:bg-danger-600',
     ];
 
     $colorClasses = $colors[$color] ?? $colors['primary'];

@@ -49,7 +49,11 @@ export default {
                 },
 
                 /* Estados */
-                danger: '#F05143',
+                danger: {
+                    500: '#F05143',
+                    600: '#C73A2F',
+                },
+
                 info: '#437DF0',
             }
         },
