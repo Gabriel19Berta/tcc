@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ClientesController;
+use App\Http\Controllers\PessoaController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -19,6 +20,9 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
+/* Pessoas */
+Route::post('/pessoa/store', [PessoaController::class, 'store'])->name('pessoa.store');
 
 /* CLIENTES */
 Route::get('/clientes', [ClientesController::class, 'index'])->name('clientes.index');
