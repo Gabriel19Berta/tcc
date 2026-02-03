@@ -34,7 +34,7 @@ class PessoaController extends Controller
             $pessoa = Pessoa::create($request->validated());
         
             $pessoa->cliente()->create(
-                $request->only('observacao')
+                $request->only('observacoes')
             );
         });
 

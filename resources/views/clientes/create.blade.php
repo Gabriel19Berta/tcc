@@ -52,9 +52,9 @@
                                     :value="old('rg')" />
                             </div>
                             <div>
-                                <x-input-label for="dt_nascimento" :value="__('Data nascimento')" />
-                                <x-text-input id="dt_nascimento" name="dt_nascimento" type="date"
-                                    class="block mt-1 w-full" :value="old('dt_nascimento')" />
+                                <x-input-label for="data_nascimento" :value="__('Data nascimento')" />
+                                <x-text-input id="data_nascimento" name="data_nascimento" type="date"
+                                    class="block mt-1 w-full" :value="old('data_nascimento')" />
                             </div>
 
                             <h2 class="md:col-span-5 block text-primary font-semibold text-xl leading-tight mt-8">
@@ -129,8 +129,8 @@
                                 {{ __('Dados adicionais') }}
                             </h2>
                             <div class="md:col-span-5">
-                                <x-input-label for="observacao" :value="__('Observações')" />
-                                <x-textarea name="observacao" :value="old('observacao')" />
+                                <x-input-label for="observacoes" :value="__('Observações')" />
+                                <x-textarea name="observacoes" :value="old('observacoes')" />
                             </div>
                         </div>
                     </div>

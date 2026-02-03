@@ -14,6 +14,17 @@ class PessoaRequest extends FormRequest
         return true;
     }
 
+    protected function prepareForValidation()
+    {
+        $this->merge([
+            'cpf' => $this->cpf ? preg_replace('/\D/', '', $this->cpf) : null,
+            'cnpj' => $this->cnpj ? preg_replace('/\D/', '', $this->cnpj) : null,
+            'celular' => $this->celular ? preg_replace('/\D/', '', $this->celular) : null,
+            'telefone' => $this->telefone ? preg_replace('/\D/', '', $this->telefone) : null,
+            'cep' => $this->cep ? preg_replace('/\D/', '', $this->cep) : null,
+        ]);
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -22,7 +33,27 @@ class PessoaRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nome' => ['required', 'string']
+            'nome' => ['required', 'string'],
+
+            'tipo' => ['nullable', 'in:f,j'],
+            'cpf' => ['nullable', 'string'],
+            'cnpj' => ['nullable', 'string'],
+            'rg' => ['nullable', 'string'],
+            'data_nascimento' => ['nullable', 'date'],
+
+            'celular' => ['nullable', 'string'],
+            'telefone' => ['nullable', 'string'],
+            'email' => ['nullable', 'email'],
+
+            'cep' => ['nullable', 'string'],
+            'logradouro' => ['nullable', 'string'],
+            'numero' => ['nullable', 'string'],
+            'complemento' => ['nullable', 'string'],
+            'bairro' => ['nullable', 'string'],
+            'cidade' => ['nullable', 'string'],
+            'uf' => ['nullable', 'string', 'size:2'],
+
+            'observacoes' => ['nullable', 'string'],
         ];
     }
 

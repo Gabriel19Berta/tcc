@@ -19,6 +19,7 @@ class Pessoa extends Model
         'cep',
         'bairro',
         'logradouro',
+        'numero',
         'complemento',
         'cidade',
         'uf',
