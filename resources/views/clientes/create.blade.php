@@ -136,16 +136,8 @@
                     </div>
                 </div>
 
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mt-2">
-                    <div class="p-4 text-gray-900">
-                        <div class="flex justify-between">
-                            <x-action-link href="{{ route('clientes.index') }}" color="danger">
-                                Cancelar
-                            </x-action-link>
-                            <x-primary-button type="submit">Cadastrar</x-primary-button>
-                        </div>
-                    </div>
-                </div>
+                <x-form-button :cancel-route="route('clientes.index')" />
+
             </form>
         </div>
     </div>
