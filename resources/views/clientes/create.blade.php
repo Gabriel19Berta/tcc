@@ -136,7 +136,7 @@
                     </div>
                 </div>
 
-                <x-form-button :cancel-route="route('clientes.index')" />
+                <x-form-button :cancelUrl="route('clientes.index')" />
 
             </form>
         </div>
