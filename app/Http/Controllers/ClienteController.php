@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Requests\PessoaRequest;
+use Illuminate\Support\Facades\DB;
+use App\Models\Pessoa;
 
-class ClientesController extends Controller
+class ClienteController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -25,9 +28,21 @@ class ClientesController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(PessoaRequest $request)
     {
-        //
+        try {
+            DB::transaction(function () use ($request) {
+                $pessoa = Pessoa::create($request->validated());
+            
+                $pessoa->cliente()->create(
+                    $request->only('observacoes')
+                );
+            });
+
+            return redirect()->route('clientes.index')->with('success', 'Cliente cadastro com sucesso!');
+        } catch (\Exception $e) {
+            return back()->withInput()->with('error', 'Erro ao cadastrar cliente. Tente novamente'); 
+        }
     }
 
     /**

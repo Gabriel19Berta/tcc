@@ -26,22 +26,6 @@ class PessoaController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     */
-    public function store(PessoaRequest $request)
-    {
-        DB::transaction(function () use ($request) {
-            $pessoa = Pessoa::create($request->validated());
-        
-            $pessoa->cliente()->create(
-                $request->only('observacoes')
-            );
-        });
-
-        return view('clientes.index');
-    }
-
-    /**
      * Display the specified resource.
      */
     public function show(string $id)
