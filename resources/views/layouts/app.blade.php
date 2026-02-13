@@ -21,7 +21,7 @@
             <!-- Page Heading -->
             @isset($header)
                 <header class="bg-transparent">
-                    <div class="text-primary max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                    <div class="text-primary mx-auto py-6 px-4 sm:px-6 lg:px-8">
                         {{-- Titulo da página --}}
                         {{ $header }}
 
