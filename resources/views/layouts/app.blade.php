@@ -21,8 +21,24 @@
             <!-- Page Heading -->
             @isset($header)
                 <header class="bg-transparent">
-                    <div class="text-primary max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                    <div class="text-primary mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                        {{-- Titulo da página --}}
                         {{ $header }}
+
+                        {{-- Alertas --}}
+                        <div class="mt-4">
+                            @if (session('success'))
+                                <x-alert type="success">
+                                    {{ session('success') }}
+                                </x-alert>
+                            @endif
+
+                            @if (session('error'))
+                                <x-alert type="error">
+                                    {{ session('error') }}
+                                </x-alert>
+                            @endif
+                        </div>
                     </div>
                 </header>
             @endisset
