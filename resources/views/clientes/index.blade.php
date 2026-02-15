@@ -10,48 +10,57 @@
         </div>
     </x-slot>
 
-    <div class="py-8">
-        <div class="mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200">
-                            <thead class="bg-gray-50">
-                                <tr>
-                                    <th scope="col"
-                                        class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                        Código
-                                    </th>
-                                    <th scope="col"
-                                        class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                        Nome
-                                    </th>
-                                    <th scope="col"
-                                        class="px-6 py-3 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                        Ações
-                                    </th>
-                                </tr>
-                            </thead>
+    <div class="py-8 mx-auto sm:px-6 lg:px-8">
+        <table>
+            <thead class="bg-gray-50">
+                <tr>
+                    <th>Código</th>
+                    <th>Status</th>
+                    <th>Nome</th>
+                    <th>Tipo</th>
+                    <th>Documento</th>
+                    <th>Celular</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
 
-                            <tbody class="bg-white divide-y divide-gray-100">
-                                @foreach ($clientes as $cliente)
-                                    <tr class="hover:bg-gray-50 transition">
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                                            {{ $cliente->id }}
-                                        </td>
-
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                            {{ $cliente->nome }}
-                                        </td>
-
-
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
+            <tbody>
+                @foreach ($clientes as $cliente)
+                    <tr>
+                        <td>
+                            {{ $cliente->id }}
+                        </td>
+                        <td>
+                            {{ $cliente->status }}
+                        </td>
+                        <td>
+                            {{ $cliente->nome }}
+                        </td>
+                        @if ($cliente->cpf)
+                            <td>
+                                Física
+                            </td>
+                            <td class="mask-cpf">
+                                {{ $cliente->cpf }}
+                            </td>
+                        @elseif ($cliente->cnpj)
+                            <td>
+                                Jurídica
+                            </td>
+                            <td class="mask-cpf">
+                                {{ $cliente->cnpj }}
+                            </td>
+                        @else
+                            <td>-</td>
+                            <td></td>
+                        @endif
+                        <td class="mask-celular">
+                            {{ $cliente->celular }}
+                        </td>
+                        <td></td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
     </div>
 </x-app-layout>
