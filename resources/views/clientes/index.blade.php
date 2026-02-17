@@ -31,7 +31,7 @@
                             {{ $cliente->id }}
                         </td>
                         <td>
-                            {{ $cliente->status }}
+                            {{ $cliente->statusFormatado }}
                         </td>
                         <td>
                             {{ $cliente->nome }}
