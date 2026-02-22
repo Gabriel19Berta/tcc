@@ -19,6 +19,8 @@ class PessoaRequest extends FormRequest
         $this->merge([
             'cpf' => $this->cpf ? preg_replace('/\D/', '', $this->cpf) : null,
             'cnpj' => $this->cnpj ? preg_replace('/\D/', '', $this->cnpj) : null,
+            'rg'=> $this->rg ? preg_replace('/\D/', '', $this->rg) : null,
+            'ie'=> $this->ie ? preg_replace('/\D/', '', $this->ie) : null,
             'celular' => $this->celular ? preg_replace('/\D/', '', $this->celular) : null,
             'telefone' => $this->telefone ? preg_replace('/\D/', '', $this->telefone) : null,
             'cep' => $this->cep ? preg_replace('/\D/', '', $this->cep) : null,
