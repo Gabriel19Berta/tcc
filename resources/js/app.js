@@ -9,19 +9,17 @@ Alpine.start();
 document.addEventListener("DOMContentLoaded", () => {
     iniMascaras();
 
-    /* TRATAMENTO PARA TIPO PESSOA */
+    // Controla a exibição dos campos com base no tipo de pessoa (Física ou Jurídica)
     const cpfField = document.getElementById("cpf-field");
     const cnpjField = document.getElementById("cnpj-field");
     const rgField = document.getElementById("rg-field");
     const ieField = document.getElementById("ie-field");
 
     const tipoRadios = document.querySelectorAll("input[name='tipoPessoa']");
-
     const cpfInput = document.getElementById("cpf");
     const cnpjInput = document.getElementById("cnpj");
-
-    const cpfMask = new Inputmask("999.999.999-99");
-    const cnpjMask = new Inputmask("99.999.999/9999-99");
+    const rgInput = document.getElementById("rg");
+    const ieInput = document.getElementById("ie");
 
     function toggleDocumento(tipoPessoa) {
         if (tipoPessoa === "f") {
@@ -31,8 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
             ieField.classList.add("hidden");
 
             cnpjInput.value = "";
-            cnpjMask.remove(cnpjInput);
-            cpfMask.mask(cpfInput);
+            ieInput.value = "";
         } else {
             cnpjField.classList.remove("hidden");
             ieField.classList.remove("hidden");
@@ -40,8 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
             rgField.classList.add("hidden");
 
             cpfInput.value = "";
-            cpfMask.remove(cpfInput);
-            cnpjMask.mask(cnpjInput);
+            rgInput.value = "";
         }
     }
 
