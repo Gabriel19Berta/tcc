@@ -14,6 +14,7 @@ class Pessoa extends Model
         'cnpj',
         'tipo',
         'rg',
+        'ie',
         'celular',
         'telefone',
         'email',

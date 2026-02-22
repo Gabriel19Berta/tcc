@@ -47,7 +47,7 @@
                             <td>
                                 Jurídica
                             </td>
-                            <td class="mask-cpf">
+                            <td class="mask-cnpj">
                                 {{ $cliente->cnpj }}
                             </td>
                         @else

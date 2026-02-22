@@ -8,6 +8,55 @@ Alpine.start();
 
 document.addEventListener("DOMContentLoaded", () => {
     iniMascaras();
+
+    /* TRATAMENTO PARA TIPO PESSOA */
+    const cpfField = document.getElementById("cpf-field");
+    const cnpjField = document.getElementById("cnpj-field");
+    const rgField = document.getElementById("rg-field");
+    const ieField = document.getElementById("ie-field");
+
+    const tipoRadios = document.querySelectorAll("input[name='tipoPessoa']");
+
+    const cpfInput = document.getElementById("cpf");
+    const cnpjInput = document.getElementById("cnpj");
+
+    const cpfMask = new Inputmask("999.999.999-99");
+    const cnpjMask = new Inputmask("99.999.999/9999-99");
+
+    function toggleDocumento(tipoPessoa) {
+        if (tipoPessoa === "f") {
+            cpfField.classList.remove("hidden");
+            rgField.classList.remove("hidden");
+            cnpjField.classList.add("hidden");
+            ieField.classList.add("hidden");
+
+            cnpjInput.value = "";
+            cnpjMask.remove(cnpjInput);
+            cpfMask.mask(cpfInput);
+        } else {
+            cnpjField.classList.remove("hidden");
+            ieField.classList.remove("hidden");
+            cpfField.classList.add("hidden");
+            rgField.classList.add("hidden");
+
+            cpfInput.value = "";
+            cpfMask.remove(cpfInput);
+            cnpjMask.mask(cnpjInput);
+        }
+    }
+
+    // Inicial (valor padrão ou old)
+    const checked = document.querySelector("input[name='tipo']:checked");
+    if (checked) {
+        toggleDocumento(checked.value);
+    }
+
+    // Listener
+    tipoRadios.forEach(radio => {
+        radio.addEventListener("change", e => {
+            toggleDocumento(e.target.value);
+        });
+    });
 });
 
 document.addEventListener('input', function (event) {

@@ -39,6 +39,7 @@ class PessoaRequest extends FormRequest
             'cpf' => ['nullable', 'string'],
             'cnpj' => ['nullable', 'string'],
             'rg' => ['nullable', 'string'],
+            'ie' => ['nullable', 'string'],
             'data_nascimento' => ['nullable', 'date'],
 
             'celular' => ['nullable', 'string'],
