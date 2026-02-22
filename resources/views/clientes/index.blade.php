@@ -31,7 +31,7 @@
                             {{ $cliente->id }}
                         </td>
                         <td>
-                            {{ $cliente->statusFormatado }}
+                            {{ $cliente->status }}
                         </td>
                         <td>
                             {{ $cliente->nome }}
@@ -40,21 +40,21 @@
                             <td>
                                 Física
                             </td>
-                            <td class="mask-cpf">
+                            <td>
                                 {{ $cliente->cpf }}
                             </td>
                         @elseif ($cliente->cnpj)
                             <td>
                                 Jurídica
                             </td>
-                            <td class="mask-cnpj">
+                            <td>
                                 {{ $cliente->cnpj }}
                             </td>
                         @else
                             <td>-</td>
                             <td></td>
                         @endif
-                        <td class="mask-celular">
+                        <td>
                             {{ $cliente->celular }}
                         </td>
                         <td></td>

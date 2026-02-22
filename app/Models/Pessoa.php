@@ -38,10 +38,37 @@ class Pessoa extends Model
         return $this->hasOne(Cliente::class);
     }
 
-    protected function statusFormatado(): Attribute
+    protected function status(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->status ? 'Ativo' : 'Inativo',
+            get: fn ($value) => $value ? 'Ativo' : 'Inativo',
+        );
+    }
+
+    protected function cpf(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => $value
+                ? preg_replace('/(\d{3})(\d{3})(\d{3})(\d{2})/', '$1.$2.$3-$4', $value)
+                : null
+        );
+    }
+
+    protected function cnpj(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => $value
+                ? preg_replace('/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/', '$1.$2.$3/$4-$5', $value)
+                : null
+        );
+    }
+
+    protected function celular(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => $value
+                ? preg_replace('/(\d{2})(\d{5})(\d{4})/', '($1) $2-$3', $value)
+                : null
         );
     }
 }
