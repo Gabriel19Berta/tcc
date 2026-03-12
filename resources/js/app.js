@@ -1,6 +1,7 @@
 import './bootstrap';
 import Alpine from 'alpinejs';
-import { iniMascaras } from './mascaras'
+import { iniMascaras } from './mascaras';
+import { consultaCep } from './consultaCep';
 
 window.Alpine = Alpine;
 
@@ -8,6 +9,7 @@ Alpine.start();
 
 document.addEventListener("DOMContentLoaded", () => {
     iniMascaras();
+    consultaCep();
 
     // Controla a exibição dos campos com base no tipo de pessoa (Física ou Jurídica)
     const cpfField = document.getElementById("cpf-field");
