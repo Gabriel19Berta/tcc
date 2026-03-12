@@ -1,6 +1,7 @@
 import './bootstrap';
 import Alpine from 'alpinejs';
-import { iniMascaras } from './mascaras'
+import { iniMascaras } from './mascaras';
+import { consultaCep } from './consultaCep';
 
 window.Alpine = Alpine;
 
@@ -8,6 +9,56 @@ Alpine.start();
 
 document.addEventListener("DOMContentLoaded", () => {
     iniMascaras();
+    consultaCep();
+
+    // Controla a exibição dos campos com base no tipo de pessoa (Física ou Jurídica)
+    const cpfField = document.getElementById("cpf-field");
+    const cnpjField = document.getElementById("cnpj-field");
+    const rgField = document.getElementById("rg-field");
+    const ieField = document.getElementById("ie-field");
+
+    const tipoRadios = document.querySelectorAll("input[name='tipoPessoa']");
+    const cpfInput = document.getElementById("cpf");
+    const cnpjInput = document.getElementById("cnpj");
+    const rgInput = document.getElementById("rg");
+    const ieInput = document.getElementById("ie");
+    const dtNasc = document.getElementById("data-nascimento")
+
+    function toggleDocumento(tipoPessoa) {
+        if (tipoPessoa === "f") {
+            cpfField.classList.remove("hidden");
+            rgField.classList.remove("hidden");
+            dtNasc.classList.remove("hidden");
+            cnpjField.classList.add("hidden");
+            ieField.classList.add("hidden");
+
+            cnpjInput.value = "";
+            ieInput.value = "";
+        } else {
+            cnpjField.classList.remove("hidden");
+            ieField.classList.remove("hidden");
+            cpfField.classList.add("hidden");
+            rgField.classList.add("hidden");
+            dtNasc.classList.add("hidden");
+
+            dtNasc.value = "";
+            cpfInput.value = "";
+            rgInput.value = "";
+        }
+    }
+
+    // Inicial (valor padrão ou old)
+    const checked = document.querySelector("input[name='tipo']:checked");
+    if (checked) {
+        toggleDocumento(checked.value);
+    }
+
+    // Listener
+    tipoRadios.forEach(radio => {
+        radio.addEventListener("change", e => {
+            toggleDocumento(e.target.value);
+        });
+    });
 });
 
 document.addEventListener('input', function (event) {

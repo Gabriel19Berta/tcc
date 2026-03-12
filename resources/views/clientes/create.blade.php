@@ -20,18 +20,18 @@
                                     :value="old('nome')" />
                             </div>
                             <div class="md:col-span-1">
-                                <x-input-label for="tipo" :value="__('Tipo')" />
+                                <x-input-label for="tipoPessoa" :value="__('tipoPessoa')" />
 
                                 <div class="border border-gray-300 rounded-md mt-1 p-2 flex flex-wrap gap-4">
                                     <label for="fisico" class="flex items-center gap-2 cursor-pointer">
-                                        <x-text-input id="fisico" name="tipo" type="radio" value="f"
-                                            :checked="old('tipo', 'f') === 'f'" />
+                                        <x-text-input id="fisico" name="tipoPessoa" type="radio" value="f"
+                                            :checked="old('tipoPessoa', 'f') === 'f'" />
                                         <span>Física</span>
                                     </label>
 
                                     <label for="juridica" class="flex items-center gap-2 cursor-pointer">
-                                        <x-text-input id="juridica" name="tipo" type="radio" value="j"
-                                            :checked="old('tipo', 'f') === 'j'" />
+                                        <x-text-input id="juridica" name="tipoPessoa" type="radio" value="j"
+                                            :checked="old('tipoPessoa', 'f') === 'j'" />
                                         <span>Jurídica</span>
                                     </label>
                                 </div>
@@ -46,12 +46,17 @@
                                 <x-text-input id="cnpj" name="cnpj" type="text"
                                     class="block mt-1 w-full mask-cnpj" :value="old('cnpj')" />
                             </div>
-                            <div>
+                            <div id="rg-field">
                                 <x-input-label for="rg" :value="__('RG')" />
                                 <x-text-input id="rg" name="rg" type="text" class="block mt-1 w-full"
                                     :value="old('rg')" />
                             </div>
-                            <div>
+                            <div id="ie-field" class="hidden">
+                                <x-input-label for="ie" :value="__('Inscrição Estadual')" />
+                                <x-text-input id="ie" name="ie" type="text" class="block mt-1 w-full"
+                                    :value="old('ie')" />
+                            </div>
+                            <div id="data-nascimento">
                                 <x-input-label for="data_nascimento" :value="__('Data nascimento')" />
                                 <x-text-input id="data_nascimento" name="data_nascimento" type="date"
                                     class="block mt-1 w-full" :value="old('data_nascimento')" />

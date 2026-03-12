@@ -40,24 +40,32 @@
                             <td>
                                 Física
                             </td>
-                            <td class="mask-cpf">
+                            <td>
                                 {{ $cliente->cpf }}
                             </td>
                         @elseif ($cliente->cnpj)
                             <td>
                                 Jurídica
                             </td>
-                            <td class="mask-cpf">
+                            <td>
                                 {{ $cliente->cnpj }}
                             </td>
                         @else
                             <td>-</td>
                             <td></td>
                         @endif
-                        <td class="mask-celular">
+                        <td>
                             {{ $cliente->celular }}
                         </td>
-                        <td></td>
+                        <td>
+                            <form action="{{ route('clientes.destroy', $cliente->id) }}" method="POST">
+                                @csrf
+
+                                <x-primary-button type="submit">
+                                    Deletar
+                                </x-primary-button>
+                            </form>
+                        </td>
                     </tr>
                 @endforeach
             </tbody>

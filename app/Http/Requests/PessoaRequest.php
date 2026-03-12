@@ -19,6 +19,8 @@ class PessoaRequest extends FormRequest
         $this->merge([
             'cpf' => $this->cpf ? preg_replace('/\D/', '', $this->cpf) : null,
             'cnpj' => $this->cnpj ? preg_replace('/\D/', '', $this->cnpj) : null,
+            'rg'=> $this->rg ? preg_replace('/\D/', '', $this->rg) : null,
+            'ie'=> $this->ie ? preg_replace('/\D/', '', $this->ie) : null,
             'celular' => $this->celular ? preg_replace('/\D/', '', $this->celular) : null,
             'telefone' => $this->telefone ? preg_replace('/\D/', '', $this->telefone) : null,
             'cep' => $this->cep ? preg_replace('/\D/', '', $this->cep) : null,
@@ -36,16 +38,17 @@ class PessoaRequest extends FormRequest
             'nome' => ['required', 'string'],
 
             'tipo' => ['nullable', 'in:f,j'],
-            'cpf' => ['nullable', 'string'],
-            'cnpj' => ['nullable', 'string'],
+            'cpf' => ['nullable', 'string', 'size: 11'],
+            'cnpj' => ['nullable', 'string', 'size: 14'],
             'rg' => ['nullable', 'string'],
+            'ie' => ['nullable', 'string'],
             'data_nascimento' => ['nullable', 'date'],
 
-            'celular' => ['nullable', 'string'],
+            'celular' => ['nullable', 'string', 'size: 11'],
             'telefone' => ['nullable', 'string'],
             'email' => ['nullable', 'email'],
 
-            'cep' => ['nullable', 'string'],
+            'cep' => ['nullable', 'string', 'size: 8'],
             'logradouro' => ['nullable', 'string'],
             'numero' => ['nullable', 'string'],
             'complemento' => ['nullable', 'string'],
@@ -60,7 +63,11 @@ class PessoaRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'nome.required' => 'Nome é obrigatório!'
+            'nome.required' => 'Nome é obrigatório!',
+            'cpf.size' => 'CPF deve ter 11 números!',
+            'cnpj.size' => 'CNPJ deve ter 14 números!',
+            'celular.size' => 'Celular deve ter 11 números!',
+            'cep.size' => 'CEP deve ter 8 números!'
         ];
     }
 }
