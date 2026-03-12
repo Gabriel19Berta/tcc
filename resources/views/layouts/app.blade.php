@@ -27,17 +27,13 @@
 
                         {{-- Alertas --}}
                         <div class="mt-4">
-                            @if (session('success'))
-                                <x-alert type="success">
-                                    {{ session('success') }}
-                                </x-alert>
-                            @endif
-
-                            @if (session('error'))
-                                <x-alert type="error">
-                                    {{ session('error') }}
-                                </x-alert>
-                            @endif
+                            @foreach (['success', 'error', 'warning', 'info'] as $type)
+                                @if(session($type))
+                                    <x-alert :type="$type">
+                                        {{ session($type) }}
+                                    </x-alert>
+                                @endif
+                            @endforeach
                         </div>
                     </div>
                 </header>

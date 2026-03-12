@@ -1,4 +1,5 @@
 import './bootstrap';
+import 'flowbite';
 import Alpine from 'alpinejs';
 import { iniMascaras } from './mascaras';
 import { consultaCep } from './consultaCep';

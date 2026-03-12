@@ -14,11 +14,7 @@
     }
 
     input:where([type='checkbox']):checked, input[type="radio"]:checked {
-        @apply bg-primary
-    }
-
-    input[type='checkbox']:checked, input[type="radio"]:checked {
-        @apply bg-primary
+        @apply bg-primary bg-auto !important;
     }
 
     table {
