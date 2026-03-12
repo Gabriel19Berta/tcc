@@ -56,7 +56,7 @@
                                 <x-text-input id="ie" name="ie" type="text" class="block mt-1 w-full"
                                     :value="old('ie')" />
                             </div>
-                            <div>
+                            <div id="data-nascimento">
                                 <x-input-label for="data_nascimento" :value="__('Data nascimento')" />
                                 <x-text-input id="data_nascimento" name="data_nascimento" type="date"
                                     class="block mt-1 w-full" :value="old('data_nascimento')" />

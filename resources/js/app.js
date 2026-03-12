@@ -22,11 +22,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const cnpjInput = document.getElementById("cnpj");
     const rgInput = document.getElementById("rg");
     const ieInput = document.getElementById("ie");
+    const dtNasc = document.getElementById("data-nascimento")
 
     function toggleDocumento(tipoPessoa) {
         if (tipoPessoa === "f") {
             cpfField.classList.remove("hidden");
             rgField.classList.remove("hidden");
+            dtNasc.classList.remove("hidden");
             cnpjField.classList.add("hidden");
             ieField.classList.add("hidden");
 
@@ -37,7 +39,9 @@ document.addEventListener("DOMContentLoaded", () => {
             ieField.classList.remove("hidden");
             cpfField.classList.add("hidden");
             rgField.classList.add("hidden");
+            dtNasc.classList.add("hidden");
 
+            dtNasc.value = "";
             cpfInput.value = "";
             rgInput.value = "";
         }
