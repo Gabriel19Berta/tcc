@@ -19,4 +19,11 @@ class Cliente extends Model
     {
         return $this->belongsTo(Pessoa::class);
     }
+
+    protected static function booted()
+    {
+        static::deleted(function ($cliente) {
+            $cliente->pessoa()->delete();
+        });
+    }
 }

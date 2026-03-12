@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\PessoaRequest;
 use Illuminate\Support\Facades\DB;
 use App\Models\Pessoa;
+use App\Models\Cliente;
 
 class ClienteController extends Controller
 {
@@ -76,6 +77,14 @@ class ClienteController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        try {
+            $cliente = Cliente::findOrFail($id);
+            $cliente->delete();
+
+            return redirect()->route('clientes.index')
+                ->with('success', 'Cliente excluído com sucesso!');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Erro ao excluir cliente');
+        }
     }
 }

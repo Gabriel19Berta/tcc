@@ -57,7 +57,15 @@
                         <td>
                             {{ $cliente->celular }}
                         </td>
-                        <td></td>
+                        <td>
+                            <form action="{{ route('clientes.destroy', $cliente->id) }}" method="POST">
+                                @csrf
+
+                                <x-primary-button type="submit">
+                                    Deletar
+                                </x-primary-button>
+                            </form>
+                        </td>
                     </tr>
                 @endforeach
             </tbody>
