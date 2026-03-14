@@ -1,3 +1,5 @@
+@import "@fortawesome/fontawesome-free/css/all.min.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -39,5 +41,11 @@
 
     tbody tr {
         @apply hover:bg-gray-50 transition;
+    }
+}
+
+@layer components {
+    .btn-excluir {
+        @apply inline-flex items-center px-2 py-1 bg-danger-500 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-danger-600 active:bg-danger-600 transition ease-in-out duration-150
     }
 }

@@ -61,9 +61,9 @@
                             <form action="{{ route('clientes.destroy', $cliente->id) }}" method="POST">
                                 @csrf
 
-                                <x-primary-button type="submit">
-                                    Deletar
-                                </x-primary-button>
+                                <button type="submit" class='btn-excluir'>
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
                             </form>
                         </td>
                     </tr>
