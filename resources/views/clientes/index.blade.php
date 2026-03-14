@@ -10,7 +10,7 @@
         </div>
     </x-slot>
 
-    <div class="py-8 mx-auto sm:px-6 lg:px-8">
+    <div class="py-8 mx-auto sm:px-6 lg:px-8 overflow-auto">
         <table>
             <thead>
                 <tr>
@@ -70,5 +70,6 @@
                 @endforeach
             </tbody>
         </table>
+        {{ $clientes->links() }}
     </div>
 </x-app-layout>

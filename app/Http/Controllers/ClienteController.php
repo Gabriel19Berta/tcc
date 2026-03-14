@@ -15,7 +15,7 @@ class ClienteController extends Controller
      */
     public function index()
     {
-        $clientes = Pessoa::OrderByDesc('id')->get();
+        $clientes = Pessoa::OrderByDesc('id')->paginate(15);
 
         return view('clientes.index', ['clientes' => $clientes]);
     }

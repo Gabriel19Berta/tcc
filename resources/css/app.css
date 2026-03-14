@@ -6,7 +6,7 @@
 
 
 @layer base {
-    p, label, h1, h2, h3, h4, h5, h6, li {
+    p, label, h1, h2, h3, h4, h5, h6, li, span {
         @apply text-text
     }
 
@@ -46,6 +46,6 @@
 
 @layer components {
     .btn-excluir {
-        @apply inline-flex items-center px-2 py-1 bg-danger-500 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-danger-600 active:bg-danger-600 transition ease-in-out duration-150
+        @apply inline-flex items-center px-2 py-2 bg-danger-500 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-danger-600 active:bg-danger-600 transition ease-in-out duration-150
     }
 }
