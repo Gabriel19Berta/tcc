@@ -12,7 +12,7 @@
 
     <div class="py-8 mx-auto sm:px-6 lg:px-8">
         <table>
-            <thead class="bg-gray-50">
+            <thead>
                 <tr>
                     <th>Código</th>
                     <th>Status</th>
