@@ -11,7 +11,7 @@
     $alertId = 'alert-' . uniqid();
 @endphp
 
-<div id="{{ $alertId }}" class="flex items-center border-l-4 p-4 mb-4 rounded-md {{ $colors[$type] ?? $colors['info'] }}" role="alert">
+<div id="{{ $alertId }}" class="flex items-center border-l-4 p-4 rounded-md {{ $colors[$type] ?? $colors['info'] }}" role="alert">
     <div class="ms-2 text-sm font-medium">
         {{ $slot }}
     </div>

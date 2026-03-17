@@ -10,7 +10,28 @@
         </div>
     </x-slot>
 
-    <div class="py-8 mx-auto sm:px-6 lg:px-8 overflow-auto">
+    <div class="py-4 mx-auto sm:px-6 lg:px-8 overflow-auto">
+        
+        {{-- FILTROS --}}
+        <form method="GET" action="{{ route('clientes.index') }}" class="mb-4 flex justify-between items-center">
+            <div class="flex justify-between items-center gap-4">
+                <div>
+                    <x-input-label for="codigo" :value="__('Código')" />
+                    <x-text-input id="codigo" name="codigo" type="number" min="0" :value="request('codigo')" />
+                </div>
+                <div>
+                    <x-input-label for="nome" :value="__('Nome')" />
+                    <x-text-input id="nome" name="nome" type="text" :value="request('nome')" />
+                </div>
+            </div>
+            <div>
+                <x-primary-button>
+                    {{ __('Buscar') }}
+                    <i class="fa-solid fa-magnifying-glass ml-2"></i>
+                </x-primary-button>
+            </div>            
+        </form>
+
         <table>
             <thead>
                 <tr>
