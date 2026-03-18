@@ -13,7 +13,7 @@
     <div class="py-4 mx-auto sm:px-6 lg:px-8 overflow-auto">
         
         {{-- FILTROS --}}
-        <form method="GET" action="{{ route('clientes.index') }}" class="mb-4 flex justify-between items-center">
+        <form method="GET" action="{{ route('clientes.index') }}" class="mb-4 flex justify-between items-end">
             <div class="flex justify-between items-center gap-2">
                 <div>
                     <x-input-label for="codigo" :value="__('Código')" />
@@ -29,7 +29,7 @@
                 </div>
                 <div>
                     <x-input-label for="nome" :value="__('Nome')" />
-                    <x-text-input id="nome" name="nome" type="text" :value="request('nome')" class="w-96 placeholder:text-gray-400" placeholder="Digite o nome, cpf ou cnpj"/>
+                    <x-text-input id="nome" name="nome" type="text" :value="request('nome')" class="w-96 placeholder:text-gray-400 placeholder:text-sm" placeholder="Digite o nome, cpf ou cnpj"/>
                 </div>
                 <div>
                     <x-input-label for="tipo" :value="__('Tipo')" />
@@ -40,7 +40,7 @@
                     </select>
                 </div>
             </div>
-            <div>
+            <div class="ml-1">
                 <x-primary-button>
                     {{ __('Buscar') }}
                     <i class="fa-solid fa-magnifying-glass ml-2"></i>
