@@ -17,6 +17,14 @@ class ClienteController extends Controller
     {
         $query = Pessoa::with('cliente')->wherehas('cliente');
 
+        if ($request->filled('codigo')) {
+            $query->where('id', $request->codigo);
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
         if ($request->filled('nome')) {
             $busca = trim($request->nome);
             $termos = preg_split('/\s+/', $busca);
@@ -40,8 +48,8 @@ class ClienteController extends Controller
             });
         }
 
-        if ($request->filled('codigo')) {
-            $query->where('id', $request->codigo);
+        if ($request->filled('tipo')) {
+            $query->where('tipo', $request->tipo);
         }
 
         $clientes = $query->OrderByDesc('id')->paginate(15)->withQueryString();

@@ -6,7 +6,7 @@
 
 
 @layer base {
-    p, label, h1, h2, h3, h4, h5, h6, li, span {
+    p, label, h1, h2, h3, h4, h5, h6, li, span, select, option {
         @apply text-text
     }
 
@@ -41,6 +41,10 @@
 
     tbody tr {
         @apply hover:bg-gray-50 transition;
+    }
+
+    select {
+        @apply p-[6px] border rounded-md shadow-sm focus:outline-none focus:ring-1 border-gray-300 focus:border-primary focus:ring-primary
     }
 }
 

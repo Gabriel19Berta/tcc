@@ -14,14 +14,30 @@
         
         {{-- FILTROS --}}
         <form method="GET" action="{{ route('clientes.index') }}" class="mb-4 flex justify-between items-center">
-            <div class="flex justify-between items-center gap-4">
+            <div class="flex justify-between items-center gap-2">
                 <div>
                     <x-input-label for="codigo" :value="__('Código')" />
-                    <x-text-input id="codigo" name="codigo" type="number" min="0" :value="request('codigo')" />
+                    <x-text-input id="codigo" name="codigo" type="number" min="0" :value="request('codigo')" class="w-24" />
+                </div>
+                <div>
+                    <x-input-label for="status" :value="__('Status')" />
+                    <select id="status" name="status">
+                        <option value="" {{ request('status') === null ? 'selected' : '' }}>Todos</option>
+                        <option value="1" {{ request('status') === '1' ? 'selected' : '' }}>Ativo</option>
+                        <option value="0" {{ request('status') === '0' ? 'selected' : '' }}>Inativo</option>
+                    </select>
                 </div>
                 <div>
                     <x-input-label for="nome" :value="__('Nome')" />
-                    <x-text-input id="nome" name="nome" type="text" :value="request('nome')" />
+                    <x-text-input id="nome" name="nome" type="text" :value="request('nome')" class="w-96 placeholder:text-gray-400" placeholder="Digite o nome, cpf ou cnpj"/>
+                </div>
+                <div>
+                    <x-input-label for="tipo" :value="__('Tipo')" />
+                    <select id="tipo" name="tipo">
+                        <option value="" {{ request('tipo') === null ? 'selected' : '' }}>Todos</option>
+                        <option value="f" {{ request('tipo') === 'f' ? 'selected' : '' }}>Física</option>
+                        <option value="j" {{ request('tipo') === 'j' ? 'selected' : '' }}>Jurídica</option>
+                    </select>
                 </div>
             </div>
             <div>
