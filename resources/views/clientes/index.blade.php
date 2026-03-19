@@ -22,8 +22,8 @@
                 <div>
                     <x-input-label for="status" :value="__('Status')" />
                     <select id="status" name="status">
-                        <option value="" {{ request('status') === null ? 'selected' : '' }}>Todos</option>
-                        <option value="1" {{ request('status') === '1' ? 'selected' : '' }}>Ativo</option>
+                        <option value="todos" {{ request('status') === 'todos' ? 'selected' : '' }}>Todos</option>
+                        <option value="1" {{ request('status', '1') === '1' ? 'selected' : '' }}>Ativo</option>
                         <option value="0" {{ request('status') === '0' ? 'selected' : '' }}>Inativo</option>
                     </select>
                 </div>

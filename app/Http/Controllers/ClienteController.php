@@ -21,8 +21,10 @@ class ClienteController extends Controller
             $query->where('id', $request->codigo);
         }
 
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
+        $status = $request->input('status', '1');
+
+        if ($status !== 'todos') {
+            $query->where('status', $status);
         }
 
         if ($request->filled('nome')) {

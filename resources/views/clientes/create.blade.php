@@ -7,7 +7,7 @@
         </div>
     </x-slot>
 
-    <div class="py-8">
+    <div class="py-4">
         <div class="mx-auto sm:px-6 lg:px-8">
             <form action="{{ route('clientes.store') }}" method="POST">
                 @csrf
@@ -22,7 +22,7 @@
                             <div class="md:col-span-1">
                                 <x-input-label for="tipo" :value="__('tipo')" />
 
-                                <div class="border border-gray-300 rounded-md mt-1 p-2 flex flex-wrap gap-4">
+                                <div class="p-[6px] border border-gray-300 rounded-md mt-1 p-2 flex flex-wrap gap-4">
                                     <label for="fisico" class="flex items-center gap-2 cursor-pointer">
                                         <x-text-input id="fisico" name="tipo" type="radio" value="f"
                                             :checked="old('tipo', 'f') === 'f'" />
