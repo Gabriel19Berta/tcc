@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const rgField = document.getElementById("rg-field");
     const ieField = document.getElementById("ie-field");
 
-    const tipoRadios = document.querySelectorAll("input[name='tipoPessoa']");
+    const tipoRadios = document.querySelectorAll("input[name='tipo']");
     const cpfInput = document.getElementById("cpf");
     const cnpjInput = document.getElementById("cnpj");
     const rgInput = document.getElementById("rg");
