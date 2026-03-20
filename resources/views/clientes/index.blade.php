@@ -41,6 +41,7 @@
                 </div>
             </div>
             <div class="ml-1">
+                <x-limpar-filtro/>
                 <x-primary-button>
                     {{ __('Buscar') }}
                     <i class="fa-solid fa-magnifying-glass ml-2"></i>
@@ -98,7 +99,7 @@
                             <form action="{{ route('clientes.destroy', $cliente->id) }}" method="POST">
                                 @csrf
 
-                                <button type="submit" class='btn-excluir'>
+                                <button type="submit" class='btn-danger'>
                                     <i class="fa-solid fa-trash"></i>
                                 </button>
                             </form>
