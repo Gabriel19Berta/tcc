@@ -13,11 +13,50 @@ class ClienteController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $clientes = Pessoa::OrderByDesc('id')->get();
+        $query = Pessoa::with('cliente')->wherehas('cliente');
 
-        return view('clientes.index', ['clientes' => $clientes]);
+        if ($request->filled('codigo')) {
+            $query->where('id', $request->codigo);
+        }
+
+        $status = $request->input('status', '1');
+
+        if ($status !== 'todos') {
+            $query->where('status', $status);
+        }
+
+        if ($request->filled('nome')) {
+            $busca = trim($request->nome);
+            $termos = preg_split('/\s+/', $busca);
+
+            $query->where(function ($q) use ($termos) {
+                foreach ($termos as $termo) {
+                    if (empty($termo)) continue;
+
+                    $numero = preg_replace('/\D/', '', $termo);
+
+                    $q->where(function ($sub) use ($termo, $numero) {
+                        $sub->where('nome', 'like', "%{$termo}%");
+
+                        // Busca CPF/CNPJ com ou sem máscara
+                        if (!empty($numero)) {
+                            $sub->orWhere('cpf', 'like', "%{$numero}%")
+                                ->orWhere('cnpj', 'like', "%{$numero}%");
+                        }
+                    });
+                }
+            });
+        }
+
+        if ($request->filled('tipo')) {
+            $query->where('tipo', $request->tipo);
+        }
+
+        $clientes = $query->OrderByDesc('id')->paginate(15)->withQueryString();
+
+        return view('clientes.index', compact('clientes'));
     }
 
     /**

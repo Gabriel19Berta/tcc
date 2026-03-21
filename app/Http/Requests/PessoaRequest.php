@@ -25,6 +25,12 @@ class PessoaRequest extends FormRequest
             'telefone' => $this->telefone ? preg_replace('/\D/', '', $this->telefone) : null,
             'cep' => $this->cep ? preg_replace('/\D/', '', $this->cep) : null,
         ]);
+
+        if (empty($this->cpf) && empty($this->cnpj)) {
+            $this->merge([
+                'tipo' => ''
+            ]);
+        }
     }
 
     /**
@@ -70,4 +76,6 @@ class PessoaRequest extends FormRequest
             'cep.size' => 'CEP deve ter 8 números!'
         ];
     }
+
+    
 }

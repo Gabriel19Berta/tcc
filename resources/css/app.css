@@ -1,10 +1,12 @@
+@import "@fortawesome/fontawesome-free/css/all.min.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 
 @layer base {
-    p, label, h1, h2, h3, h4, h5, h6, li {
+    p, label, h1, h2, h3, h4, h5, h6, li, span, select, option {
         @apply text-text
     }
 
@@ -14,11 +16,7 @@
     }
 
     input:where([type='checkbox']):checked, input[type="radio"]:checked {
-        @apply bg-primary
-    }
-
-    input[type='checkbox']:checked, input[type="radio"]:checked {
-        @apply bg-primary
+        @apply bg-primary bg-auto !important;
     }
 
     table {
@@ -43,5 +41,16 @@
 
     tbody tr {
         @apply hover:bg-gray-50 transition;
+    }
+
+    select {
+        @apply p-[6px] border rounded-md shadow-sm focus:outline-none focus:ring-1 border-gray-300 focus:border-primary focus:ring-primary
+    }
+}
+
+@layer components {
+    .btn-danger {
+        @apply inline-flex items-center px-2 py-2 bg-danger-500 border border-transparent rounded-md font-semibold text-xs text-white uppercase 
+        tracking-widest hover:bg-danger-600 active:bg-danger-600 transition ease-in-out duration-150
     }
 }

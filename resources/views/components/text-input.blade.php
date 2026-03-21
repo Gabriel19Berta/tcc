@@ -10,7 +10,7 @@
         @disabled($disabled)
         {{ $attributes->merge([
             'class' =>
-                'input-form border rounded-md shadow-sm focus:outline-none focus:ring-1 ' .
+                'p-[6px] input-form border rounded-md shadow-sm focus:outline-none focus:ring-1 ' .
                 ($hasError
                     ? 'border-danger-500 focus:border-danger-500 focus:ring-danger-500'
                     : 'border-gray-300 focus:border-primary focus:ring-primary'

@@ -7,7 +7,7 @@
         </div>
     </x-slot>
 
-    <div class="py-8">
+    <div class="py-4">
         <div class="mx-auto sm:px-6 lg:px-8">
             <form action="{{ route('clientes.store') }}" method="POST">
                 @csrf
@@ -20,18 +20,18 @@
                                     :value="old('nome')" />
                             </div>
                             <div class="md:col-span-1">
-                                <x-input-label for="tipoPessoa" :value="__('tipoPessoa')" />
+                                <x-input-label for="tipo" :value="__('tipo')" />
 
-                                <div class="border border-gray-300 rounded-md mt-1 p-2 flex flex-wrap gap-4">
+                                <div class="p-[6px] border border-gray-300 rounded-md mt-1 p-2 flex flex-wrap gap-4">
                                     <label for="fisico" class="flex items-center gap-2 cursor-pointer">
-                                        <x-text-input id="fisico" name="tipoPessoa" type="radio" value="f"
-                                            :checked="old('tipoPessoa', 'f') === 'f'" />
+                                        <x-text-input id="fisico" name="tipo" type="radio" value="f"
+                                            :checked="old('tipo', 'f') === 'f'" />
                                         <span>Física</span>
                                     </label>
 
                                     <label for="juridica" class="flex items-center gap-2 cursor-pointer">
-                                        <x-text-input id="juridica" name="tipoPessoa" type="radio" value="j"
-                                            :checked="old('tipoPessoa', 'f') === 'j'" />
+                                        <x-text-input id="juridica" name="tipo" type="radio" value="j"
+                                            :checked="old('tipo', 'f') === 'j'" />
                                         <span>Jurídica</span>
                                     </label>
                                 </div>
