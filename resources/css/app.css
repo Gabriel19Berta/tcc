@@ -46,11 +46,23 @@
     select {
         @apply p-[6px] border rounded-md shadow-sm focus:outline-none focus:ring-1 border-gray-300 focus:border-primary focus:ring-primary
     }
+
+    textarea {
+        @apply w-full border rounded-md shadow-sm focus:outline-none focus:ring-1 border-gray-300 focus:border-primary focus:ring-primary
+    }
 }
 
 @layer components {
+    .btn {
+        @apply inline-flex items-center px-2 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase 
+        tracking-widest transition ease-in-out duration-150
+    }
+
     .btn-danger {
-        @apply inline-flex items-center px-2 py-2 bg-danger-500 border border-transparent rounded-md font-semibold text-xs text-white uppercase 
-        tracking-widest hover:bg-danger-600 active:bg-danger-600 transition ease-in-out duration-150
+        @apply bg-danger-500 hover:bg-danger-600 active:bg-danger-600
+    }
+
+    .btn-warning {
+        @apply bg-beige-600 hover:bg-beige-700 active:bg-beige-700 
     }
 }

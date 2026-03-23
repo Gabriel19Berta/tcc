@@ -27,3 +27,4 @@ Route::get('/clientes', [ClienteController::class, 'index'])->name('clientes.ind
 Route::get('/clientes/create', [ClienteController::class, 'create'])->name('clientes.create');
 Route::post('/clientes/store', [ClienteController::class, 'store'])->name('clientes.store');
 Route::post('/clientes/{id}', [ClienteController::class, 'destroy'])->name('clientes.destroy');
+Route::get('/clientes/{id}/edit', [ClienteController::class, 'edit'])->name('clientes.edit');

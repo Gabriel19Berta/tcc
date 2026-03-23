@@ -58,7 +58,7 @@
                     <th>Tipo</th>
                     <th>Documento</th>
                     <th>Celular</th>
-                    <th>Ações</th>
+                    <th class="text-center">Ações</th>
                 </tr>
             </thead>
 
@@ -95,11 +95,16 @@
                         <td>
                             {{ $cliente->celular }}
                         </td>
-                        <td>
+                        <td class="flex gap-2 justify-center">
+                            <div>
+                                <a href="{{ route('clientes.edit', $cliente->id) }}" class="btn btn-warning">
+                                    <i class="fa-solid fa-pen-to-square"></i> 
+                                </a>
+                            </div>
                             <form action="{{ route('clientes.destroy', $cliente->id) }}" method="POST">
                                 @csrf
 
-                                <button type="submit" class='btn-danger'>
+                                <button type="submit" class='btn btn-danger'>
                                     <i class="fa-solid fa-trash"></i>
                                 </button>
                             </form>

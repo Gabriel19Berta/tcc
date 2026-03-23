@@ -100,7 +100,9 @@ class ClienteController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $cliente = Pessoa::with('cliente')->findOrFail($id);
+
+        return view('clientes.edit', compact('cliente'));
     }
 
     /**
