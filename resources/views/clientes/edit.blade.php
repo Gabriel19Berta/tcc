@@ -134,7 +134,7 @@
                             </h2>
                             <div class="md:col-span-5">
                                 <x-input-label for="observacoes" :value="__('Observações')" />
-                                <textarea name="observacoes" id="observacoes" class="form-control">{{ old('observacoes', $cliente->cliente->observacoes) }}</textarea>
+                                <textarea name="observacoes" id="observacoes">{{ old('observacoes', $cliente->cliente->observacoes) }}</textarea>
                             </div>
                         </div>
                     </div>

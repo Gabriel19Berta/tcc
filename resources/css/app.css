@@ -65,4 +65,8 @@
     .btn-warning {
         @apply bg-beige-600 hover:bg-beige-700 active:bg-beige-700 
     }
+
+    .btn-info { 
+        @apply bg-info hover:bg-info-600 active:bg-info-600
+    }
 }

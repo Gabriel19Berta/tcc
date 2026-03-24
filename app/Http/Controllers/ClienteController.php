@@ -92,7 +92,9 @@ class ClienteController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $cliente = Pessoa::with('cliente')->findOrFail($id);
+
+        return view('clientes.show', compact('cliente'));
     }
 
     /**

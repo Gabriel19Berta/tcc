@@ -28,3 +28,4 @@ Route::get('/clientes/create', [ClienteController::class, 'create'])->name('clie
 Route::post('/clientes/store', [ClienteController::class, 'store'])->name('clientes.store');
 Route::post('/clientes/{id}', [ClienteController::class, 'destroy'])->name('clientes.destroy');
 Route::get('/clientes/{id}/edit', [ClienteController::class, 'edit'])->name('clientes.edit');
+Route::get('/clientes/{id}', [ClienteController::class, 'show'])->name('clientes.show');

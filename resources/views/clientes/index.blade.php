@@ -96,11 +96,12 @@
                             {{ $cliente->celular }}
                         </td>
                         <td class="flex gap-2 justify-center">
-                            <div>
-                                <a href="{{ route('clientes.edit', $cliente->id) }}" class="btn btn-warning">
-                                    <i class="fa-solid fa-pen-to-square"></i> 
-                                </a>
-                            </div>
+                            <a href="{{ route('clientes.show', $cliente->id) }}" class="btn btn-info">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                            </a>
+                            <a href="{{ route('clientes.edit', $cliente->id) }}" class="btn btn-warning">
+                                <i class="fa-solid fa-pen-to-square"></i> 
+                            </a>
                             <form action="{{ route('clientes.destroy', $cliente->id) }}" method="POST">
                                 @csrf
 
