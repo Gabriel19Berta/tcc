@@ -36,11 +36,11 @@
     }
 
     td {
-        @apply px-6 py-4 whitespace-nowrap text-sm text-gray-700;
+        @apply px-6 py-3 whitespace-nowrap text-sm text-gray-700;
     }
 
     tbody tr {
-        @apply hover:bg-gray-50 transition;
+        @apply hover:bg-gray-200 transition;
     }
 
     select {

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Carbon\Carbon;
 
 class Pessoa extends Model
 {
@@ -68,6 +69,33 @@ class Pessoa extends Model
         return Attribute::make(
             get: fn ($value) => $value
                 ? preg_replace('/(\d{2})(\d{5})(\d{4})/', '($1) $2-$3', $value)
+                : null
+        );
+    }
+
+    protected function telefone(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => $value
+                ? preg_replace('/(\d{2})(\d{4})(\d{4})/', '($1) $2-$3', $value)
+                : null
+        );
+    }
+
+    protected function cep(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => $value
+                ? preg_replace('/(\d{5})(\d{3})/', '$1-$2', $value)
+                : null
+        );
+    }
+
+    protected function dataNascimento(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => $value
+                ? Carbon::parse($value)->format('d/m/Y')
                 : null
         );
     }
