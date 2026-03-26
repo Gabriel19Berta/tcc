@@ -147,4 +147,14 @@ class ClienteController extends Controller
             return back()->with('error', 'Erro ao excluir cliente');
         }
     }
+
+    public function toggleStatus($id)
+    {
+        $pessoa = Pessoa::findOrFail($id);
+
+        $pessoa->status = !$pessoa->status;
+        $pessoa->save();
+
+        return back();
+    }
 }

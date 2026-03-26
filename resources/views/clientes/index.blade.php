@@ -69,7 +69,7 @@
                             {{ $cliente->id }}
                         </td>
                         <td>
-                            {{ $cliente->status_formatada }}
+                            <x-status :status="$cliente->status" :id="$cliente->id" />
                         </td>
                         <td>
                             {{ $cliente->nome }}
