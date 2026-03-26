@@ -110,9 +110,26 @@ class ClienteController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(PessoaRequest $request, string $id)
     {
-        //
+        try {
+            DB::transaction(function() use ($request, $id) {
+
+                $pessoa = Pessoa::findOrFail($id);
+
+                $pessoa->update($request->validated());
+
+                if ($pessoa->cliente) {
+                    $pessoa->cliente->update(
+                        $request->only('observacoes')
+                    );
+                }
+            });
+
+            return redirect()->route('clientes.index')->with('success', 'Cliente atualizado com sucesso!');
+        } catch (\Exception $th) {
+            return back()->withInput()->with('error', 'Erro ao atualizar cliente. Tente novamente'); 
+        }
     }
 
     /**

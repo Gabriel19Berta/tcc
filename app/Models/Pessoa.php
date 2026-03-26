@@ -39,10 +39,10 @@ class Pessoa extends Model
         return $this->hasOne(Cliente::class);
     }
 
-    protected function status(): Attribute
+    protected function statusFormatada(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => $value ? 'Ativo' : 'Inativo',
+            get: fn ($value, $attributes) => $attributes['status'] ? 'Ativo' : 'Inativo',
         );
     }
 
@@ -91,11 +91,11 @@ class Pessoa extends Model
         );
     }
 
-    protected function dataNascimento(): Attribute
+    protected function dataNascimentoFormatada(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => $value
-                ? Carbon::parse($value)->format('d/m/Y')
+            get: fn ($value, $attributes) => $attributes['data_nascimento']
+                ? Carbon::parse($attributes['data_nascimento'])->format('d/m/Y')
                 : null
         );
     }

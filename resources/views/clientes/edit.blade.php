@@ -8,11 +8,23 @@
     </x-slot>
     <div class="py-4">
         <div class="mx-auto sm:px-6 lg:px-8">
-            <form action="{{ route('clientes.store') }}" method="POST">
+            <form action="{{ route('clientes.update', $cliente->id) }}" method="POST">
                 @csrf
+                @method('PUT')
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 text-gray-900">
                         <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+                            <div class="md:col-span-1">
+                                <x-input-label for="status" :value="__('Status')" />
+                                <div class="mt-1 flex items-center gap-3 p-[6px] border border-gray-300 rounded-md shadow-sm">
+                                    <input type="hidden" name="status" value="0">
+                                    <x-text-input id="status" name="status" type="checkbox" value="1"
+                                        class="rounded text-primary shadow-sm focus:ring-primary"
+                                        :checked="old('status', $cliente->status) == 1" 
+                                    />
+                                    <span>Ativo</span>
+                                </div>
+                            </div>
                             <div class="md:col-span-2">
                                 <x-input-label for="nome" :value="__('Nome')" class="required" />
                                 <x-text-input id="nome" name="nome" type="text" class="block mt-1 w-full"
@@ -58,7 +70,7 @@
                             <div id="data-nascimento">
                                 <x-input-label for="data_nascimento" :value="__('Data nascimento')" />
                                 <x-text-input id="data_nascimento" name="data_nascimento" type="date"
-                                    class="block mt-1 w-full" :value="old('data_nascimento', $cliente->data_nascimento)" />
+                                    class="block mt-1 w-full" :value="old('data_nascimento', optional($cliente->data_nascimento)->format('Y-m-d'))" />
                             </div>
 
                             <h2 class="md:col-span-5 block text-primary font-semibold text-xl leading-tight mt-8">
@@ -140,7 +152,7 @@
                     </div>
                 </div>
 
-                <x-form-button :cancelUrl="route('clientes.index')" />
+                <x-form-button :cancelUrl="route('clientes.index')" submitText="Salvar"/>
 
             </form>
         </div>

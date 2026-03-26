@@ -69,7 +69,7 @@
                             {{ $cliente->id }}
                         </td>
                         <td>
-                            {{ $cliente->status }}
+                            {{ $cliente->status_formatada }}
                         </td>
                         <td>
                             {{ $cliente->nome }}

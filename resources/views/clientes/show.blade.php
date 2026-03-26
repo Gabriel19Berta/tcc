@@ -23,6 +23,10 @@
                         </tr>
                         <tr>
                             <td class="px-4 py-2 font-medium w-1/5">Nome</td>
+                            <td class="px-4 py-2">{{ $cliente->status_formatada }}</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2 font-medium w-1/5">Nome</td>
                             <td class="px-4 py-2">{{ $cliente->nome }}</td>
                         </tr>
                         <tr>
@@ -45,7 +49,7 @@
 
                             <tr>
                                 <td class="px-4 py-2 font-medium">Data Nascimento</td>
-                                <td class="px-4 py-2">{{ $cliente->data_nascimento }}</td>
+                                <td class="px-4 py-2">{{ $cliente->data_nascimento_formatada }}</td>
                             </tr>
                         @else
                             <tr>
