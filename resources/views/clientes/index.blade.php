@@ -13,8 +13,8 @@
     <div class="py-4 mx-auto sm:px-6 lg:px-8 overflow-auto">
         
         {{-- FILTROS --}}
-        <form method="GET" action="{{ route('clientes.index') }}" class="mb-4 flex justify-between items-end">
-            <div class="flex justify-between items-center gap-2">
+        <form method="GET" action="{{ route('clientes.index') }}" class="mb-4 flex flex-col lg:flex-row lg:justify-between gap-4 sm:px-0 px-4">
+            <div class="flex flex-wrap gap-2 items-end">
                 <div>
                     <x-input-label for="codigo" :value="__('Código')" />
                     <x-text-input id="codigo" name="codigo" type="number" min="0" :value="request('codigo')" class="w-24" />
@@ -40,13 +40,14 @@
                     </select>
                 </div>
             </div>
-            <div class="ml-1">
-                <x-limpar-filtro/>
-                <x-primary-button>
+            <div class="flex flex-col sm:flex-row gap-2 sm:items-end">
+                <x-limpar-filtro class="w-full sm:w-auto"/>
+
+                <x-primary-button class="w-full sm:w-auto justify-center">
                     {{ __('Buscar') }}
                     <i class="fa-solid fa-magnifying-glass ml-2"></i>
                 </x-primary-button>
-            </div>            
+            </div>
         </form>
 
         <table>
