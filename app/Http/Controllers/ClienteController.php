@@ -155,6 +155,6 @@ class ClienteController extends Controller
         $pessoa->status = !$pessoa->status;
         $pessoa->save();
 
-        return back();
+        return back()->with('success', 'Status alterado com sucesso!');
     }
 }

@@ -1,4 +1,4 @@
-<form action="{{ route('clientes.toggleStatus', $id) }}" method="POST">
+<form action="{{ route('clientes.toggleStatus', $id) }}" method="POST" class="form-toggle-status">
     @csrf
     @method('PATCH')
 
