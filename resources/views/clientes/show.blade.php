@@ -14,7 +14,7 @@
     <div class="py-4">
         <div class="mx-auto sm:px-6 lg:px-8">
             <div class="bg-white rounded-lg overflow-hidden">
-                <table>
+                <x-show-table>
                     <tbody>
                         <tr class="bg-gray-50">
                             <th colspan="2" scope="colgroup" class="text-base text-primary">
@@ -143,7 +143,7 @@
                             <td>{{ $cliente->cliente->observacoes }}</td>
                         </tr>
                     </tbody>
-                </table>
+                </x-show-table>
             </div>
         </div>
     </div>
