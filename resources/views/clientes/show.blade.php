@@ -17,111 +17,130 @@
                 <table>
                     <tbody>
                         <tr class="bg-gray-50">
-                            <td colspan="2" class="text-base px-4 py-2 font-semibold text-primary">
+                            <th colspan="2" scope="colgroup" class="text-base text-primary">
                                 Dados Básicos
-                            </td>
+                            </th>
                         </tr>
                         <tr>
-                            <td class="px-4 py-2 font-medium w-1/5">Nome</td>
-                            <td class="px-4 py-2">{{ $cliente->status_formatada }}</td>
+                            <th>Status</th>
+                            <td>{{ $cliente->status_formatada }}</td>
                         </tr>
                         <tr>
-                            <td class="px-4 py-2 font-medium w-1/5">Nome</td>
-                            <td class="px-4 py-2">{{ $cliente->nome }}</td>
-                        </tr>
-                        <tr>
-                            <td class="px-4 py-2 font-medium">Tipo</td>
-                            <td class="px-4 py-2">
-                                {{ $cliente->tipo == 'f' ? 'Física' : 'Jurídica' }}
-                            </td>
+                            <th>Nome</th>
+                            <td>{{ $cliente->nome }}</td>
                         </tr>
 
                         @if($cliente->tipo == 'f')
                             <tr>
-                                <td class="px-4 py-2 font-medium">CPF</td>
-                                <td class="px-4 py-2">{{ $cliente->cpf }}</td>
+                                <th>Tipo</th>
+                                <td>{{ __('Física') }}</td>
+                            </tr>
+                            <tr>
+                                <th>CPF</th>
+                                <td>{{ $cliente->cpf }}</td>
                             </tr>
 
                             <tr>
-                                <td class="px-4 py-2 font-medium">RG</td>
-                                <td class="px-4 py-2">{{ $cliente->rg }}</td>
+                                <th>RG</th>
+                                <td>{{ $cliente->rg }}</td>
                             </tr>
 
                             <tr>
-                                <td class="px-4 py-2 font-medium">Data Nascimento</td>
-                                <td class="px-4 py-2">{{ $cliente->data_nascimento_formatada }}</td>
+                                <th>Data Nascimento</th>
+                                <td>{{ $cliente->data_nascimento_formatada }}</td>
+                            </tr>
+                        @elseif ($cliente->tipo == 'j')
+                            <tr>
+                                <th>Tipo</th>
+                                <td>{{ __('Jurídica') }}</td>
+                            </tr>
+                            <tr>
+                                <th>CNPJ</th>
+                                <td>{{ $cliente->cnpj }}</td>
+                            </tr>
+
+                            <tr>
+                                <th>Inscrição Estadual</th>
+                                <td>{{ $cliente->ie }}</td>
                             </tr>
                         @else
                             <tr>
-                                <td class="px-4 py-2 font-medium">CNPJ</td>
-                                <td class="px-4 py-2">{{ $cliente->cnpj }}</td>
+                                <th>Tipo</th>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <th>CPF</th>
+                                <td>{{ $cliente->cpf }}</td>
                             </tr>
 
                             <tr>
-                                <td class="px-4 py-2 font-medium">Inscrição Estadual</td>
-                                <td class="px-4 py-2">{{ $cliente->ie }}</td>
+                                <th>RG</th>
+                                <td>{{ $cliente->rg }}</td>
+                            </tr>
+
+                            <tr>
+                                <th>Data Nascimento</th>
+                                <td>{{ $cliente->data_nascimento_formatada }}</td>
                             </tr>
                         @endif
-
-                        <!-- Contato -->
                         <tr class="bg-gray-50">
-                            <td colspan="2" class="text-base px-4 py-2 font-semibold text-primary">
+                            <th colspan="2" scope="colgroup" class="text-base text-primary">
                                 Contato
-                            </td>
+                            </th>
                         </tr>
                         <tr>
-                            <td class="px-4 font-medium">Celular</td>
-                            <td class="px-4 py-2">{{ $cliente->celular }}</td>
+                            <th>Celular</th>
+                            <td>{{ $cliente->celular }}</td>
                         </tr>
                         <tr>
-                            <td class="px-4 py-2 font-medium">Telefone</td>
-                            <td class="px-4 py-2">{{ $cliente->telefone }}</td>
+                            <th>Telefone</th>
+                            <td>{{ $cliente->telefone }}</td>
                         </tr>
                         <tr>
-                            <td class="px-4 py-2 font-medium">Email</td>
-                            <td class="px-4 py-2">{{ $cliente->email }}</td>
+                            <th>Email</th>
+                            <td>{{ $cliente->email }}</td>
                         </tr>
                         <tr class="bg-gray-50">
-                            <td colspan="2" class="text-base px-4 py-2 font-semibold text-primary">
+                            <th colspan="2" scope="colgroup" class="text-base text-primary">
                                 Endereço
-                            </td>
+                            </th>
                         </tr>
                         <tr>
-                            <td class="px-4 py-2 font-medium">CEP</td>
-                            <td class="px-4 py-2">{{ $cliente->cep }}</td>
+                            <th>CEP</th>
+                            <td>{{ $cliente->cep }}</td>
                         </tr>
                         <tr>
-                            <td class="px-4 py-2 font-medium">Logradouro</td>
-                            <td class="px-4 py-2">{{ $cliente->logradouro }}</td>
+                            <th>Logradouro</th>
+                            <td>{{ $cliente->logradouro }}</td>
                         </tr>
                         <tr>
-                            <td class="px-4 py-2 font-medium">Número</td>
-                            <td class="px-4 py-2">{{ $cliente->numero }}</td>
+                            <th>Número</th>
+                            <td>{{ $cliente->numero }}</td>
                         </tr>
                         <tr>
-                            <td class="px-4 py-2 font-medium">Complemento</td>
-                            <td class="px-4 py-2">{{ $cliente->complemento }}</td>
+                            <th>Complemento</th>
+                            <td>{{ $cliente->complemento }}</td>
                         </tr>
                         <tr>
-                            <td class="px-4 py-2 font-medium">Bairro</td>
-                            <td class="px-4 py-2">{{ $cliente->bairro }}</td>
+                            <th>Bairro</th>
+                            <td>{{ $cliente->bairro }}</td>
                         </tr>
                         <tr>
-                            <td class="px-4 py-2 font-medium">Cidade</td>
-                            <td class="px-4 py-2">{{ $cliente->cidade }}</td>
+                            <th>Cidade</th>
+                            <td>{{ $cliente->cidade }}</td>
                         </tr>
                         <tr>
-                            <td class="px-4 py-2 font-medium">UF</td>
-                            <td class="px-4 py-2">{{ $cliente->uf }}</td>
+                            <th>UF</th>
+                            <td>{{ $cliente->uf }}</td>
                         </tr>
                         <tr class="bg-gray-50">
-                            <td colspan="2" class="text-base px-4 py-2 font-semibold text-primary">
+                            <th colspan="2" scope="colgroup" class="text-base text-primary">
                                 Dados adicionais
-                            </td>
+                            </th>
                         </tr>
                         <tr>
-                            <td class="px-4 py-2 font-medium">Observações</td>
-                            <td class="px-4 py-2">{{ $cliente->cliente->observacoes }}</td>
+                            <th>Observações</th>
+                            <td>{{ $cliente->cliente->observacoes }}</td>
                         </tr>
                     </tbody>
                 </table>
