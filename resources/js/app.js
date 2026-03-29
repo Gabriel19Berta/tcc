@@ -60,6 +60,17 @@ document.addEventListener("DOMContentLoaded", () => {
             toggleDocumento(e.target.value);
         });
     });
+
+    // Alert ao excluir registro
+    const forms = document.querySelectorAll('.form-delete');
+
+    forms.forEach(function (form) {
+        form.addEventListener('submit', function (e) {
+            if(!confirm('Tem certeza que deseja excluir?')) {
+                e.preventDefault();
+            }
+        });
+    });
 });
 
 document.addEventListener('input', function (event) {
