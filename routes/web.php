@@ -38,4 +38,6 @@ Route::get('/funcionarios', [FuncionarioController::class, 'index'])->name('func
 Route::get('/funcionarios/create', [FuncionarioController::class, 'create'])->name('funcionarios.create');
 Route::post('/funcionarios/store', [FuncionarioController::class, 'store'])->name('funcionarios.store');
 Route::delete('/funcionarios/{id}', [FuncionarioController::class, 'destroy'])->name('funcionarios.destroy');
+Route::get('/funcionarios/{id}/edit', [FuncionarioController::class, 'edit'])->name('funcionarios.edit');
+Route::put('/funcionarios/{id}', [FuncionarioController::class, 'update'])->name('funcionarios.update');
 Route::get('/funcionarios/{id}', [FuncionarioController::class, 'show'])->name('funcionarios.show');

@@ -102,15 +102,34 @@ class FuncionarioController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $funcionario = Pessoa::with('funcionario')->findOrFail($id);
+
+        return view('funcionarios.edit', compact('funcionario'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(PessoaRequest $request, string $id)
     {
-        //
+        try {
+            DB::transaction(function() use ($request, $id) {
+
+                $pessoa = Pessoa::findOrFail($id);
+
+                $pessoa->update($request->validated());
+
+                if ($pessoa->funcionario) {
+                    $pessoa->funcionario->update(
+                        $request->only('observacoes', 'data_admissao')
+                    );
+                }
+            });
+
+            return redirect()->route('funcionarios.index')->with('success', 'Funcionário atualizado com sucesso!');
+        } catch (\Exception $th) {
+            return back()->withInput()->with('error', 'Erro ao atualizar funcionário. Tente novamente'); 
+        }
     }
 
     /**
