@@ -2,7 +2,7 @@
     <x-slot name="header">
         <div class="flex justify-between">
             <h1 class="text-primary font-semibold text-2xl">
-                {{ __('Dados do Cliente') }}
+                {{ __('Dados do Funcionário') }}
             </h1>
 
             <x-action-link href="{{ route('funcionarios.index') }}">
