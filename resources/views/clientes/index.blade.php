@@ -103,7 +103,7 @@
                             <a href="{{ route('clientes.edit', $cliente->id) }}" class="btn btn-warning">
                                 <i class="fa-solid fa-pen-to-square"></i> 
                             </a>
-                            <form action="{{ route('clientes.destroy', $cliente->id) }}" method="POST" class="form-delete">
+                            <form action="{{ route('clientes.destroy', $cliente->cliente->id) }}" method="POST" class="form-delete">
                                 @csrf
 
                                 <button type="submit" class='btn btn-danger'>

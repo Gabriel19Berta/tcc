@@ -144,6 +144,7 @@ class ClienteController extends Controller
             return redirect()->route('clientes.index')
                 ->with('success', 'Cliente excluído com sucesso!');
         } catch (\Exception $e) {
+            dd($e->getMessage());
             return back()->with('error', 'Erro ao excluir cliente');
         }
     }

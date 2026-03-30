@@ -100,7 +100,7 @@
                             {{-- <a href="{{ route('funcionarios.show', $funcionario->id) }}" class="btn btn-info">
                                 <i class="fa-solid fa-magnifying-glass"></i>
                             </a>
-                            <a href="{{ route('funcionarios.edit', $funcionario->id) }}" class="btn btn-warning">
+                            <a href="{{ route('funcionarios.edit', $funcionario->funcionario->id) }}" class="btn btn-warning">
                                 <i class="fa-solid fa-pen-to-square"></i> 
                             </a>
                             <form action="{{ route('funcionarios.destroy', $funcionario->id) }}" method="POST" class="form-delete">
