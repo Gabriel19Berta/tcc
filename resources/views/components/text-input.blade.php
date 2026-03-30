@@ -5,7 +5,7 @@
     $hasError = $name && $errors->has($name);
 @endphp
 
-<div class="w-full">
+<div>
     <input
         @disabled($disabled)
         {{ $attributes->merge([

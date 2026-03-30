@@ -60,6 +60,28 @@ document.addEventListener("DOMContentLoaded", () => {
             toggleDocumento(e.target.value);
         });
     });
+
+    // Alert ao excluir registro
+    document.querySelectorAll('.form-delete').forEach(function (form) {
+        form.addEventListener('submit', function (e) {
+            if(!confirm('Tem certeza que deseja excluir?')) {
+                e.preventDefault();
+            }
+        });
+    });
+
+    // Alert ao alterar status
+    document.querySelectorAll('.form-toggle-status').forEach(function (form) {
+        form.addEventListener('submit', function (e) {
+            const status = form.querySelector('button').textContent.trim() === 'Ativo';
+
+            const mensagem = status ? 'Tem certeza que deseja inativar?': 'Tem certeza que deseja ativar?';
+
+            if(!confirm(mensagem)) {
+                e.preventDefault();
+            }
+        })
+    })
 });
 
 document.addEventListener('input', function (event) {

@@ -27,8 +27,8 @@ export default {
                 
                 /* Segundaria */
                 beige: {
-                    600: '#D1B89A',
-                    700: '#C7AF94',
+                    600: '#c4a783',
+                    700: '#a7927b',
                 },
 
                 /* Texto */
@@ -57,7 +57,10 @@ export default {
                     600: '#C73A2F',
                 },
 
-                info: '#437DF0',
+                info: {
+                    DEFAULT: '#437DF0',
+                    600: '#3663bf'
+                } 
             }
         },
     },

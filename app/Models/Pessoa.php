@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Carbon\Carbon;
 
 class Pessoa extends Model
 {
@@ -38,10 +39,10 @@ class Pessoa extends Model
         return $this->hasOne(Cliente::class);
     }
 
-    protected function status(): Attribute
+    protected function statusFormatada(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => $value ? 'Ativo' : 'Inativo',
+            get: fn ($value, $attributes) => $attributes['status'] ? 'Ativo' : 'Inativo',
         );
     }
 
@@ -68,6 +69,33 @@ class Pessoa extends Model
         return Attribute::make(
             get: fn ($value) => $value
                 ? preg_replace('/(\d{2})(\d{5})(\d{4})/', '($1) $2-$3', $value)
+                : null
+        );
+    }
+
+    protected function telefone(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => $value
+                ? preg_replace('/(\d{2})(\d{4})(\d{4})/', '($1) $2-$3', $value)
+                : null
+        );
+    }
+
+    protected function cep(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => $value
+                ? preg_replace('/(\d{5})(\d{3})/', '$1-$2', $value)
+                : null
+        );
+    }
+
+    protected function dataNascimentoFormatada(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value, $attributes) => $attributes['data_nascimento']
+                ? Carbon::parse($attributes['data_nascimento'])->format('d/m/Y')
                 : null
         );
     }

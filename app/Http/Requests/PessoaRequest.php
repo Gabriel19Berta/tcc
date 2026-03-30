@@ -41,8 +41,8 @@ class PessoaRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'status' => ['nullable', 'boolean'],
             'nome' => ['required', 'string'],
-
             'tipo' => ['nullable', 'in:f,j'],
             'cpf' => ['nullable', 'string', 'size: 11'],
             'cnpj' => ['nullable', 'string', 'size: 14'],

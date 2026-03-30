@@ -92,7 +92,9 @@ class ClienteController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $cliente = Pessoa::with('cliente')->findOrFail($id);
+
+        return view('clientes.show', compact('cliente'));
     }
 
     /**
@@ -100,15 +102,34 @@ class ClienteController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $cliente = Pessoa::with('cliente')->findOrFail($id);
+
+        return view('clientes.edit', compact('cliente'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(PessoaRequest $request, string $id)
     {
-        //
+        try {
+            DB::transaction(function() use ($request, $id) {
+
+                $pessoa = Pessoa::findOrFail($id);
+
+                $pessoa->update($request->validated());
+
+                if ($pessoa->cliente) {
+                    $pessoa->cliente->update(
+                        $request->only('observacoes')
+                    );
+                }
+            });
+
+            return redirect()->route('clientes.index')->with('success', 'Cliente atualizado com sucesso!');
+        } catch (\Exception $th) {
+            return back()->withInput()->with('error', 'Erro ao atualizar cliente. Tente novamente'); 
+        }
     }
 
     /**
@@ -125,5 +146,15 @@ class ClienteController extends Controller
         } catch (\Exception $e) {
             return back()->with('error', 'Erro ao excluir cliente');
         }
+    }
+
+    public function toggleStatus($id)
+    {
+        $pessoa = Pessoa::findOrFail($id);
+
+        $pessoa->status = !$pessoa->status;
+        $pessoa->save();
+
+        return back()->with('success', 'Status alterado com sucesso!');
     }
 }
