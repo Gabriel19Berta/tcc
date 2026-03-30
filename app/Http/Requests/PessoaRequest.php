@@ -63,6 +63,9 @@ class PessoaRequest extends FormRequest
             'uf' => ['nullable', 'string', 'size:2'],
 
             'observacoes' => ['nullable', 'string'],
+
+            /* PARA FUNCIONÁRIO */
+            'data_admissao' => ['nullable', 'date'],
         ];
     }
 
