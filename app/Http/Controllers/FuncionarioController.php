@@ -92,7 +92,9 @@ class FuncionarioController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $funcionario = Pessoa::with('funcionario')->findOrFail($id);
+
+        return view('funcionarios.show', compact('funcionario'));
     }
 
     /**
