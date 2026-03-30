@@ -18,7 +18,7 @@ class FuncionarioController extends Controller
         $query = Pessoa::with('funcionario')->wherehas('funcionario');
 
         if ($request->filled('codigo')) {
-            $query->where('id', $request->codigo);
+            $query->whereRelation('funcionario', 'id', $request->codigo);
         }
 
         $status = $request->input('status', '1');

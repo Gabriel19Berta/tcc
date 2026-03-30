@@ -67,7 +67,7 @@
                 @foreach ($funcionarios as $funcionario)
                     <tr>
                         <td>
-                            {{ $funcionario->id }}
+                            {{ $funcionario->funcionario->id }}
                         </td>
                         <td>
                             <x-status :status="$funcionario->status" :id="$funcionario->id" />

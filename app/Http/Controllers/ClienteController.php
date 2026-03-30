@@ -18,7 +18,7 @@ class ClienteController extends Controller
         $query = Pessoa::with('cliente')->wherehas('cliente');
 
         if ($request->filled('codigo')) {
-            $query->where('id', $request->codigo);
+            $query->whereRelation('cliente', 'id', $request->codigo);
         }
 
         $status = $request->input('status', '1');
