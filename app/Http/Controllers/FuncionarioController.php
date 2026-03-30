@@ -116,6 +116,14 @@ class FuncionarioController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        try {
+            $funcionario = Funcionario::findOrFail($id);
+            $funcionario->delete();
+
+            return redirect()->route('funcionarios.index')
+                    ->with('success', 'Funcionário excluído com sucesso!');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Erro ao excluir funcionário');
+        }
     }
 }

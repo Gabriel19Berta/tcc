@@ -105,6 +105,7 @@
                             </a>
                             <form action="{{ route('clientes.destroy', $cliente->cliente->id) }}" method="POST" class="form-delete">
                                 @csrf
+                                @method('DELETE')
 
                                 <button type="submit" class='btn btn-danger'>
                                     <i class="fa-solid fa-trash"></i>
