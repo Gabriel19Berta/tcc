@@ -2,23 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Http\Requests\PessoaRequest;
-use Illuminate\Support\Facades\DB;
+use App\Models\Funcionario;
 use App\Models\Pessoa;
-use App\Models\Cliente;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
 
-class ClienteController extends Controller
+class FuncionarioController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
     {
-        $query = Pessoa::with('cliente')->wherehas('cliente');
+        $query = Pessoa::with('funcionario')->wherehas('funcionario');
 
         if ($request->filled('codigo')) {
-            $query->whereRelation('cliente', 'id', $request->codigo);
+            $query->whereRelation('funcionario', 'id', $request->codigo);
         }
 
         $status = $request->input('status', '1');
@@ -54,9 +54,9 @@ class ClienteController extends Controller
             $query->where('tipo', $request->tipo);
         }
 
-        $clientes = $query->OrderByDesc('id')->paginate(15)->withQueryString();
+        $funcionarios = $query->orderByDesc('id')->paginate(15)->withQueryString();
 
-        return view('clientes.index', compact('clientes'));
+        return view('funcionarios.index', compact('funcionarios'));
     }
 
     /**
@@ -64,7 +64,7 @@ class ClienteController extends Controller
      */
     public function create()
     {
-        return view('clientes.create');
+        return view('funcionarios.create');
     }
 
     /**
@@ -76,14 +76,14 @@ class ClienteController extends Controller
             DB::transaction(function () use ($request) {
                 $pessoa = Pessoa::create($request->validated());
             
-                $pessoa->cliente()->create(
-                    $request->only('observacoes')
+                $pessoa->funcionario()->create(
+                    $request->only('observacoes', 'data_admissao')
                 );
             });
 
-            return redirect()->route('clientes.index')->with('success', 'Cliente cadastro com sucesso!');
+            return redirect()->route('funcionarios.index')->with('success', 'Funcionário cadastro com sucesso!');
         } catch (\Exception $e) {
-            return back()->withInput()->with('error', 'Erro ao cadastrar cliente. Tente novamente'); 
+            return back()->withInput()->with('error', 'Erro ao cadastrar funcionário. Tente novamente'); 
         }
     }
 
@@ -92,9 +92,9 @@ class ClienteController extends Controller
      */
     public function show(string $id)
     {
-        $cliente = Pessoa::with('cliente')->findOrFail($id);
+        $funcionario = Pessoa::with('funcionario')->findOrFail($id);
 
-        return view('clientes.show', compact('cliente'));
+        return view('funcionarios.show', compact('funcionario'));
     }
 
     /**
@@ -102,9 +102,9 @@ class ClienteController extends Controller
      */
     public function edit(string $id)
     {
-        $cliente = Pessoa::with('cliente')->findOrFail($id);
+        $funcionario = Pessoa::with('funcionario')->findOrFail($id);
 
-        return view('clientes.edit', compact('cliente'));
+        return view('funcionarios.edit', compact('funcionario'));
     }
 
     /**
@@ -119,16 +119,16 @@ class ClienteController extends Controller
 
                 $pessoa->update($request->validated());
 
-                if ($pessoa->cliente) {
-                    $pessoa->cliente->update(
-                        $request->only('observacoes')
+                if ($pessoa->funcionario) {
+                    $pessoa->funcionario->update(
+                        $request->only('observacoes', 'data_admissao')
                     );
                 }
             });
 
-            return redirect()->route('clientes.index')->with('success', 'Cliente atualizado com sucesso!');
+            return redirect()->route('funcionarios.index')->with('success', 'Funcionário atualizado com sucesso!');
         } catch (\Exception $th) {
-            return back()->withInput()->with('error', 'Erro ao atualizar cliente. Tente novamente'); 
+            return back()->withInput()->with('error', 'Erro ao atualizar funcionário. Tente novamente'); 
         }
     }
 
@@ -138,23 +138,13 @@ class ClienteController extends Controller
     public function destroy(string $id)
     {
         try {
-            $cliente = Cliente::findOrFail($id);
-            $cliente->delete();
+            $funcionario = Funcionario::findOrFail($id);
+            $funcionario->delete();
 
-            return redirect()->route('clientes.index')
-                ->with('success', 'Cliente excluído com sucesso!');
+            return redirect()->route('funcionarios.index')
+                    ->with('success', 'Funcionário excluído com sucesso!');
         } catch (\Exception $e) {
-            return back()->with('error', 'Erro ao excluir cliente');
+            return back()->with('error', 'Erro ao excluir funcionário');
         }
-    }
-
-    public function toggleStatus($id)
-    {
-        $pessoa = Pessoa::findOrFail($id);
-
-        $pessoa->status = !$pessoa->status;
-        $pessoa->save();
-
-        return back()->with('success', 'Status alterado com sucesso!');
     }
 }

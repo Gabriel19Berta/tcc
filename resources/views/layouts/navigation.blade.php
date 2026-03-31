@@ -41,7 +41,7 @@
                                     {{ __('Clientes') }}
                                 </x-dropdown-link>
 
-                                <x-dropdown-link {{-- :href="route('funcionarios.index')" --}}>
+                                <x-dropdown-link :href="route('funcionarios.index')" >
                                     {{ __('Funcionários') }}
                                 </x-dropdown-link>
                             </x-slot>

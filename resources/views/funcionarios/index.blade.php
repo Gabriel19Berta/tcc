@@ -2,9 +2,9 @@
     <x-slot name="header">
         <div class="flex justify-between">
             <h1 class="inline text-primary font-semibold text-2xl leading-tight">
-                {{ __('Clientes') }}
+                {{ __('Funcionários') }}
             </h1>
-            <x-action-link href="{{ route('clientes.create') }}">
+            <x-action-link href="{{ route('funcionarios.create') }}">
                 Cadastrar
             </x-action-link>
         </div>
@@ -13,7 +13,7 @@
     <div class="py-4 mx-auto sm:px-6 lg:px-8 overflow-auto">
         
         {{-- FILTROS --}}
-        <form method="GET" action="{{ route('clientes.index') }}" class="mb-4 flex flex-col lg:flex-row lg:justify-between gap-4 sm:px-0 px-4">
+        <form method="GET" action="{{ route('funcionarios.index') }}" class="mb-4 flex flex-col lg:flex-row lg:justify-between gap-4 sm:px-0 px-4">
             <div class="flex flex-wrap gap-2 items-end">
                 <div>
                     <x-input-label for="codigo" :value="__('Código')" />
@@ -64,46 +64,46 @@
             </thead>
 
             <tbody>
-                @foreach ($clientes as $cliente)
+                @foreach ($funcionarios as $funcionario)
                     <tr>
                         <td>
-                            {{ $cliente->cliente->id }}
+                            {{ $funcionario->funcionario->id }}
                         </td>
                         <td>
-                            <x-status :status="$cliente->status" :id="$cliente->id" />
+                            <x-status :status="$funcionario->status" :id="$funcionario->id" />
                         </td>
                         <td>
-                            {{ $cliente->nome }}
+                            {{ $funcionario->nome }}
                         </td>
-                        @if ($cliente->cpf)
+                        @if ($funcionario->cpf)
                             <td>
                                 Física
                             </td>
                             <td>
-                                {{ $cliente->cpf }}
+                                {{ $funcionario->cpf }}
                             </td>
-                        @elseif ($cliente->cnpj)
+                        @elseif ($funcionario->cnpj)
                             <td>
                                 Jurídica
                             </td>
                             <td>
-                                {{ $cliente->cnpj }}
+                                {{ $funcionario->cnpj }}
                             </td>
                         @else
                             <td></td>
                             <td></td>
                         @endif
                         <td>
-                            {{ $cliente->celular }}
+                            {{ $funcionario->celular }}
                         </td>
                         <td class="flex gap-2 justify-center">
-                            <a href="{{ route('clientes.show', $cliente->id) }}" class="btn btn-info">
+                            <a href="{{ route('funcionarios.show', $funcionario->id) }}" class="btn btn-info">
                                 <i class="fa-solid fa-magnifying-glass"></i>
                             </a>
-                            <a href="{{ route('clientes.edit', $cliente->id) }}" class="btn btn-warning">
+                            <a href="{{ route('funcionarios.edit', $funcionario->id) }}" class="btn btn-warning">
                                 <i class="fa-solid fa-pen-to-square"></i> 
                             </a>
-                            <form action="{{ route('clientes.destroy', $cliente->cliente->id) }}" method="POST" class="form-delete">
+                            <form action="{{ route('funcionarios.destroy', $funcionario->funcionario->id) }}" method="POST" class="form-delete">
                                 @csrf
                                 @method('DELETE')
 
@@ -116,6 +116,7 @@
                 @endforeach
             </tbody>
         </table>
-        {{ $clientes->links() }}
+        {{ $funcionarios->links() }}
     </div>
+
 </x-app-layout>

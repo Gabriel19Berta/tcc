@@ -2,10 +2,10 @@
     <x-slot name="header">
         <div class="flex justify-between">
             <h1 class="text-primary font-semibold text-2xl">
-                {{ __('Dados do Cliente') }}
+                {{ __('Dados do Funcionário') }}
             </h1>
 
-            <x-action-link href="{{ route('clientes.index') }}">
+            <x-action-link href="{{ route('funcionarios.index') }}">
                 Voltar
             </x-action-link>
         </div>
@@ -23,49 +23,49 @@
                         </tr>
                         <tr>
                             <th>Código</th>
-                            <td>{{ $cliente->cliente->id }}</td>
+                            <td>{{ $funcionario->funcionario->id }}</td>
                         </tr>
                         <tr>
                             <th>Status</th>
-                            <td>{{ $cliente->status_formatada }}</td>
+                            <td>{{ $funcionario->status_formatada }}</td>
                         </tr>
                         <tr>
                             <th>Nome</th>
-                            <td>{{ $cliente->nome }}</td>
+                            <td>{{ $funcionario->nome }}</td>
                         </tr>
 
-                        @if($cliente->tipo == 'f')
+                        @if($funcionario->tipo == 'f')
                             <tr>
                                 <th>Tipo</th>
                                 <td>{{ __('Física') }}</td>
                             </tr>
                             <tr>
                                 <th>CPF</th>
-                                <td>{{ $cliente->cpf }}</td>
+                                <td>{{ $funcionario->cpf }}</td>
                             </tr>
 
                             <tr>
                                 <th>RG</th>
-                                <td>{{ $cliente->rg }}</td>
+                                <td>{{ $funcionario->rg }}</td>
                             </tr>
 
                             <tr>
                                 <th>Data Nascimento</th>
-                                <td>{{ $cliente->data_nascimento_formatada }}</td>
+                                <td>{{ $funcionario->data_nascimento_formatada }}</td>
                             </tr>
-                        @elseif ($cliente->tipo == 'j')
+                        @elseif ($funcionario->tipo == 'j')
                             <tr>
                                 <th>Tipo</th>
                                 <td>{{ __('Jurídica') }}</td>
                             </tr>
                             <tr>
                                 <th>CNPJ</th>
-                                <td>{{ $cliente->cnpj }}</td>
+                                <td>{{ $funcionario->cnpj }}</td>
                             </tr>
 
                             <tr>
                                 <th>Inscrição Estadual</th>
-                                <td>{{ $cliente->ie }}</td>
+                                <td>{{ $funcionario->ie }}</td>
                             </tr>
                         @else
                             <tr>
@@ -74,19 +74,25 @@
                             </tr>
                             <tr>
                                 <th>CPF</th>
-                                <td>{{ $cliente->cpf }}</td>
+                                <td>{{ $funcionario->cpf }}</td>
                             </tr>
 
                             <tr>
                                 <th>RG</th>
-                                <td>{{ $cliente->rg }}</td>
+                                <td>{{ $funcionario->rg }}</td>
                             </tr>
 
                             <tr>
                                 <th>Data Nascimento</th>
-                                <td>{{ $cliente->data_nascimento_formatada }}</td>
+                                <td>{{ $funcionario->data_nascimento_formatada }}</td>
                             </tr>
                         @endif
+                        <tr>
+                            <th>Data Admissão</th>
+                            @php
+                            @endphp
+                            <td>{{ $funcionario->funcionario->data_admissao_formatada }}</td>
+                        </tr>
                         <tr class="bg-gray-50">
                             <th colspan="2" scope="colgroup" class="text-base text-primary">
                                 Contato
@@ -94,15 +100,15 @@
                         </tr>
                         <tr>
                             <th>Celular</th>
-                            <td>{{ $cliente->celular }}</td>
+                            <td>{{ $funcionario->celular }}</td>
                         </tr>
                         <tr>
                             <th>Telefone</th>
-                            <td>{{ $cliente->telefone }}</td>
+                            <td>{{ $funcionario->telefone }}</td>
                         </tr>
                         <tr>
                             <th>Email</th>
-                            <td>{{ $cliente->email }}</td>
+                            <td>{{ $funcionario->email }}</td>
                         </tr>
                         <tr class="bg-gray-50">
                             <th colspan="2" scope="colgroup" class="text-base text-primary">
@@ -111,31 +117,31 @@
                         </tr>
                         <tr>
                             <th>CEP</th>
-                            <td>{{ $cliente->cep }}</td>
+                            <td>{{ $funcionario->cep }}</td>
                         </tr>
                         <tr>
                             <th>Logradouro</th>
-                            <td>{{ $cliente->logradouro }}</td>
+                            <td>{{ $funcionario->logradouro }}</td>
                         </tr>
                         <tr>
                             <th>Número</th>
-                            <td>{{ $cliente->numero }}</td>
+                            <td>{{ $funcionario->numero }}</td>
                         </tr>
                         <tr>
                             <th>Complemento</th>
-                            <td>{{ $cliente->complemento }}</td>
+                            <td>{{ $funcionario->complemento }}</td>
                         </tr>
                         <tr>
                             <th>Bairro</th>
-                            <td>{{ $cliente->bairro }}</td>
+                            <td>{{ $funcionario->bairro }}</td>
                         </tr>
                         <tr>
                             <th>Cidade</th>
-                            <td>{{ $cliente->cidade }}</td>
+                            <td>{{ $funcionario->cidade }}</td>
                         </tr>
                         <tr>
                             <th>UF</th>
-                            <td>{{ $cliente->uf }}</td>
+                            <td>{{ $funcionario->uf }}</td>
                         </tr>
                         <tr class="bg-gray-50">
                             <th colspan="2" scope="colgroup" class="text-base text-primary">
@@ -144,7 +150,7 @@
                         </tr>
                         <tr>
                             <th>Observações</th>
-                            <td>{{ $cliente->cliente->observacoes }}</td>
+                            <td>{{ $funcionario->funcionario->observacoes }}</td>
                         </tr>
                     </tbody>
                 </x-show-table>

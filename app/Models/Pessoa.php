@@ -39,6 +39,11 @@ class Pessoa extends Model
         return $this->hasOne(Cliente::class);
     }
 
+    public function funcionario()
+    {
+        return $this->hasOne(Funcionario::class);
+    }
+
     protected function statusFormatada(): Attribute
     {
         return Attribute::make(
