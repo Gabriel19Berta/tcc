@@ -27,17 +27,17 @@ require __DIR__.'/auth.php';
 Route::get('/clientes', [ClienteController::class, 'index'])->name('clientes.index');
 Route::get('/clientes/create', [ClienteController::class, 'create'])->name('clientes.create');
 Route::post('/clientes/store', [ClienteController::class, 'store'])->name('clientes.store');
-Route::delete('/clientes/{id}', [ClienteController::class, 'destroy'])->name('clientes.destroy');
+Route::get('/clientes/{id}', [ClienteController::class, 'show'])->name('clientes.show');
 Route::get('/clientes/{id}/edit', [ClienteController::class, 'edit'])->name('clientes.edit');
 Route::put('/clientes/{id}', [ClienteController::class, 'update'])->name('clientes.update');
-Route::get('/clientes/{id}', [ClienteController::class, 'show'])->name('clientes.show');
+Route::delete('/clientes/{id}', [ClienteController::class, 'destroy'])->name('clientes.destroy');
 Route::patch('/clientes/{id}/toggle-status', [ClienteController::class, 'toggleStatus'])->name('clientes.toggleStatus');
 
 /* FUNCIONÁRIOS */
 Route::get('/funcionarios', [FuncionarioController::class, 'index'])->name('funcionarios.index');
 Route::get('/funcionarios/create', [FuncionarioController::class, 'create'])->name('funcionarios.create');
 Route::post('/funcionarios/store', [FuncionarioController::class, 'store'])->name('funcionarios.store');
-Route::delete('/funcionarios/{id}', [FuncionarioController::class, 'destroy'])->name('funcionarios.destroy');
+Route::get('/funcionarios/{id}', [FuncionarioController::class, 'show'])->name('funcionarios.show');
 Route::get('/funcionarios/{id}/edit', [FuncionarioController::class, 'edit'])->name('funcionarios.edit');
 Route::put('/funcionarios/{id}', [FuncionarioController::class, 'update'])->name('funcionarios.update');
-Route::get('/funcionarios/{id}', [FuncionarioController::class, 'show'])->name('funcionarios.show');
+Route::delete('/funcionarios/{id}', [FuncionarioController::class, 'destroy'])->name('funcionarios.destroy');
