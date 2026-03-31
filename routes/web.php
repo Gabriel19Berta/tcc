@@ -23,6 +23,9 @@ Route::middleware('auth')->group(function () {
 
 require __DIR__.'/auth.php';
 
+//PESSOAS
+Route::patch('/pessoas/{id}/toggle-status', [PessoaController::class, 'toggleStatus'])->name('pessoas.toggleStatus');
+
 /* CLIENTES */
 Route::get('/clientes', [ClienteController::class, 'index'])->name('clientes.index');
 Route::get('/clientes/create', [ClienteController::class, 'create'])->name('clientes.create');
@@ -31,7 +34,6 @@ Route::get('/clientes/{id}', [ClienteController::class, 'show'])->name('clientes
 Route::get('/clientes/{id}/edit', [ClienteController::class, 'edit'])->name('clientes.edit');
 Route::put('/clientes/{id}', [ClienteController::class, 'update'])->name('clientes.update');
 Route::delete('/clientes/{id}', [ClienteController::class, 'destroy'])->name('clientes.destroy');
-Route::patch('/clientes/{id}/toggle-status', [ClienteController::class, 'toggleStatus'])->name('clientes.toggleStatus');
 
 /* FUNCIONÁRIOS */
 Route::get('/funcionarios', [FuncionarioController::class, 'index'])->name('funcionarios.index');
