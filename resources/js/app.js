@@ -12,6 +12,51 @@ document.addEventListener("DOMContentLoaded", () => {
     iniMascaras();
     consultaCep();
 
+    /* ADICIONE/REMOVE loading */
+    function showLoader() {
+        document.getElementById("loader").classList.remove("hidden");
+    }
+
+    function hideLoader() {
+        document.getElementById("loader").classList.add("hidden");
+    }
+
+    document.querySelectorAll("a").forEach(link => {
+        link.addEventListener("click", function () {
+            const href = link.getAttribute("href");
+
+            if (!href || href.startsWith("#") || link.target === "_blank") return;
+
+            showLoader();
+        });
+    });
+
+    document.querySelectorAll("form").forEach(form => {
+        form.addEventListener("submit", function (e) {
+            if (!form.checkValidity()) return;
+
+            showLoader();
+        });
+    });
+
+    const originalFetch = window.fetch;
+
+    window.fetch = async function (...args) {
+        showLoader();
+
+        try {
+            const response = await originalFetch(...args);
+            return response;
+        } finally {
+            hideLoader();
+        }
+    };
+
+    window.addEventListener("load", () => {
+        hideLoader();
+    });
+    
+
     // Controla a exibição dos campos com base no tipo de pessoa (Física ou Jurídica)
     const cpfField = document.getElementById("cpf-field");
     const cnpjField = document.getElementById("cnpj-field");

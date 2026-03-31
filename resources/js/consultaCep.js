@@ -2,6 +2,10 @@ export function consultaCep() {
 
     const cepInput = document.getElementById("cep");
 
+    function hideLoader() {
+        document.getElementById("loader").classList.add("hidden");
+    }
+
     if (cepInput) {
         cepInput.addEventListener("blur", function () {
             pesquisacep(this.value);
@@ -18,13 +22,15 @@ export function consultaCep() {
 
     window.meu_callback = function meu_callback(conteudo) {
         if (!("erro" in conteudo)) {
+            hideLoader();
+
             document.getElementById('logradouro').value = (conteudo.logradouro);
             document.getElementById('bairro').value = (conteudo.bairro);
             document.getElementById('cidade').value = (conteudo.localidade);
             document.getElementById('uf').value = (conteudo.uf);
         }
         else {
-            limpa_formulário_cep();
+            hideLoader();
             alert("CEP não encontrado.");
         }
     }
@@ -37,11 +43,8 @@ export function consultaCep() {
 
             if (validacep.test(cep)) {
 
-                //Preenche os campos com "..." enquanto consulta webservice.
-                document.getElementById('logradouro').value = "...";
-                document.getElementById('bairro').value = "...";
-                document.getElementById('cidade').value = "...";
-                document.getElementById('uf').value = "...";
+                // Adiciona loading
+                document.getElementById("loader").classList.remove("hidden");
 
                 //Cria um elemento javascript.
                 var script = document.createElement('script');
@@ -54,11 +57,12 @@ export function consultaCep() {
 
             }
             else {
-                limpa_formulário_cep();
+                hideLoader();
                 alert("Formato de CEP inválido.");
             }
         }
         else {
+            hideLoader();
             limpa_formulário_cep();
         }
     };
