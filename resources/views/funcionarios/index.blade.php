@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <div class="flex justify-between">
-            <h1 class="inline text-primary font-semibold text-2xl leading-tight">
+            <h1>
                 {{ __('Funcionários') }}
             </h1>
             <x-action-link href="{{ route('funcionarios.create') }}">
