@@ -56,4 +56,14 @@ class PessoaController extends Controller
     {
         //
     }
+
+    public function toggleStatus($id)
+    {
+        $pessoa = Pessoa::findOrFail($id);
+
+        $pessoa->status = !$pessoa->status;
+        $pessoa->save();
+
+        return back()->with('success', 'Status alterado com sucesso!');
+    }
 }

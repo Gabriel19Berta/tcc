@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <div class="flex justify-between">
-            <h1 class="text-primary font-semibold text-2xl">
+            <h1>
                 {{ __('Dados do Funcionário') }}
             </h1>
 
