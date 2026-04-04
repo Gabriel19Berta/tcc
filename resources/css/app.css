@@ -73,4 +73,16 @@
     .btn-info { 
         @apply bg-info hover:bg-info-600 active:bg-info-600
     }
+
+    .page-contain {
+        @apply py-4 mx-auto sm:px-6 lg:px-8
+    }
+
+    .form-contain {
+        @apply p-6 grid grid-cols-1 md:grid-cols-5 gap-4
+    }
+
+    .card {
+        @apply bg-white overflow-hidden shadow-sm sm:rounded-lg
+    }
 }

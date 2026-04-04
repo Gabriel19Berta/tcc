@@ -10,7 +10,7 @@
         </div>
     </x-slot>
 
-    <div class="py-4 mx-auto sm:px-6 lg:px-8 overflow-auto">
+    <div class="page-contain overflow-auto">
         
         {{-- FILTROS --}}
         <form method="GET" action="{{ route('clientes.index') }}" class="mb-4 flex flex-col lg:flex-row lg:justify-between gap-4 sm:px-0 px-4">
@@ -53,7 +53,7 @@
         <table>
             <thead>
                 <tr>
-                    <th>Código</th>
+                    <th class="text-center">Código</th>
                     <th>Status</th>
                     <th>Nome</th>
                     <th>Tipo</th>
@@ -66,7 +66,7 @@
             <tbody>
                 @foreach ($clientes as $cliente)
                     <tr>
-                        <td>
+                        <td class="text-center">
                             {{ $cliente->cliente->id }}
                         </td>
                         <td>
