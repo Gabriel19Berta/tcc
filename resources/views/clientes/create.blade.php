@@ -60,7 +60,7 @@
                             :value="old('data_nascimento')" />
                 </div>
 
-                <h2 class="md:col-span-5 block text-primary font-semibold text-xl leading-tight mt-8">
+                <h2 class="md:col-span-5 block mt-8">
                     {{ __('Contato') }}
                 </h2>
                 <div>
@@ -80,7 +80,7 @@
                         :value="old('email')" />
                 </div>
 
-                <h2 class="md:col-span-5 block text-primary font-semibold text-xl leading-tight mt-8">
+                <h2 class="md:col-span-5 block mt-8">
                     {{ __('Endereço') }}
                 </h2>
 

@@ -92,7 +92,7 @@
                         :value="old('email', $cliente->email)" />
                 </div>
 
-                <h2 class="md:col-span-5 block text-primary font-semibold text-xl leading-tight mt-8">
+                <h2 class="md:col-span-5 block mt-8">
                     {{ __('Endereço') }}
                 </h2>
 
