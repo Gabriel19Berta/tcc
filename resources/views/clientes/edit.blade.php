@@ -49,12 +49,12 @@
                 <div id="cpf-field">
                     <x-input-label for="cpf" :value="__('CPF')" />
                     <x-text-input id="cpf" name="cpf" type="text"
-                        class="w-full mask-cpf" :value="old('cpf', $cliente->cpf)" />
+                        class="w-full" :value="old('cpf', $cliente->cpf)" />
                 </div>
                 <div id="cnpj-field" class="hidden">
                     <x-input-label for="cnpj" :value="__('CNPJ')" />
                     <x-text-input id="cnpj" name="cnpj" type="text"
-                        class="w-full mask-cnpj" :value="old('cnpj', $cliente->cnpj)" />
+                        class="w-full" :value="old('cnpj', $cliente->cnpj)" />
                 </div>
                 <div id="rg-field">
                     <x-input-label for="rg" :value="__('RG')" />
@@ -78,12 +78,12 @@
                 <div>
                     <x-input-label for="celular" :value="__('Celular')" />
                     <x-text-input id="celular" name="celular" type="text"
-                        class="w-full mask-celular" :value="old('celular', $cliente->celular)" />
+                        class="w-full" :value="old('celular', $cliente->celular)" />
                 </div>
                 <div>
                     <x-input-label for="telefone" :value="__('Telefone')" />
                     <x-text-input id="telefone" name="telefone" type="text"
-                        class="w-full mask-telefone" :value="old('telefone', $cliente->telefone)" />
+                        class="w-full" :value="old('telefone', $cliente->telefone)" />
                 </div>
 
                 <div class="md:col-span-2">
@@ -99,7 +99,7 @@
                 <div>
                     <x-input-label for="cep" :value="__('CEP')" />
                     <x-text-input id="cep" name="cep" type="text"
-                        class="w-full mask-cep" :value="old('cep', $cliente->cep)" />
+                        class="w-full" :value="old('cep', $cliente->cep)" />
                 </div>
                 <div class="md:col-span-2">
                     <x-input-label for="logradouro" :value="__('Logradouro')" />
