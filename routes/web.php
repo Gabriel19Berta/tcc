@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\FuncionarioController;
+use App\Http\Controllers\MarcaController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PessoaController;
@@ -43,3 +44,12 @@ Route::get('/funcionarios/{id}', [FuncionarioController::class, 'show'])->name('
 Route::get('/funcionarios/{id}/edit', [FuncionarioController::class, 'edit'])->name('funcionarios.edit');
 Route::put('/funcionarios/{id}', [FuncionarioController::class, 'update'])->name('funcionarios.update');
 Route::delete('/funcionarios/{id}', [FuncionarioController::class, 'destroy'])->name('funcionarios.destroy');
+
+/* MARCAS */
+Route::get('/marcas', [MarcaController::class, 'index'])->name('marcas.index');
+Route::get('/marcas/create', [MarcaController::class, 'create'])->name('marcas.create');
+Route::post('/marcas/store', [MarcaController::class, 'store'])->name('marcas.store');
+Route::get('/marcas/{id}', [MarcaController::class, 'show'])->name('marcas.show');
+Route::get('/marcas/{id}/edit', [MarcaController::class, 'edit'])->name('marcas.edit');
+Route::put('/marcas/{id}', [MarcaController::class, 'update'])->name('marcas.update');
+Route::delete('/marcas/{id}', [MarcaController::class, 'destroy'])->name('marcas.destroy');
