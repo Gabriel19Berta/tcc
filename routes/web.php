@@ -6,6 +6,7 @@ use App\Http\Controllers\MarcaController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PessoaController;
+use App\Http\Controllers\TipoProdutoController;
 use GuzzleHttp\Client;
 
 Route::get('/', function () {
@@ -53,3 +54,12 @@ Route::get('/marcas/{id}', [MarcaController::class, 'show'])->name('marcas.show'
 Route::get('/marcas/{id}/edit', [MarcaController::class, 'edit'])->name('marcas.edit');
 Route::put('/marcas/{id}', [MarcaController::class, 'update'])->name('marcas.update');
 Route::delete('/marcas/{id}', [MarcaController::class, 'destroy'])->name('marcas.destroy');
+
+/* TIPO PRODUTO */
+Route::get('/tipo-produtos', [TipoProdutoController::class, 'index'])->name('tipo-produtos.index');
+Route::get('/tipo-produtos/create', [TipoProdutoController::class, 'create'])->name('tipo-produtos.create');
+Route::post('/tipo-produtos/store', [TipoProdutoController::class, 'store'])->name('tipo-produtos.store');
+Route::get('/tipo-produtos/{id}', [TipoProdutoController::class, 'show'])->name('tipo-produtos.show');
+Route::get('/tipo-produtos/{id}/edit', [TipoProdutoController::class, 'edit'])->name('tipo-produtos.edit');
+Route::put('/tipo-produtos/{id}', [TipoProdutoController::class, 'update'])->name('tipo-produtos.update');
+Route::delete('/tipo-produtos/{id}', [TipoProdutoController::class, 'destroy'])->name('tipo-produtos.destroy');
