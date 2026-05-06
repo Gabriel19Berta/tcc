@@ -16,9 +16,9 @@ class TipoProduto extends Model
      * Relacionamento
      * Um tipo de produto pertence a vários produtos
      */
-    /* public function produto() {
+    public function produto() {
         return $this->hasMany(Produto::class);
-    } */
+    }
 
     protected function statusFormatada(): Attribute
     {

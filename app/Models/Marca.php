@@ -16,9 +16,9 @@ class Marca extends Model
      * Relacionamento
      * Uma marca pertence a vários produtos
      */
-    /* public function produto() {
+    public function produto() {
         return $this->hasMany(Produto::class);
-    } */
+    }
 
     protected function statusFormatada(): Attribute
     {
