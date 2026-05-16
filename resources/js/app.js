@@ -1,5 +1,13 @@
 import './bootstrap';
 import 'flowbite';
+
+import $ from 'jquery';
+window.$ = window.jQuery = $;
+
+import select2 from 'select2';
+/* Inicializa o plugin Select2 no jQuery */
+select2();
+
 import Alpine from 'alpinejs';
 import { iniMascaras } from './mascaras';
 import { consultaCep } from './consultaCep';
@@ -11,6 +19,24 @@ Alpine.start();
 document.addEventListener("DOMContentLoaded", () => {
     iniMascaras();
     consultaCep();
+
+    $(document).ready(function () {
+        $('.select2').select2({
+            placeholder: 'Selecione uma opção',
+            allowClear: true,
+            language: {
+                noResults: function () {
+                    return "Nenhum resultado encontrado";
+                },
+                searching: function () {
+                    return "Pesquisando...";
+                },
+                inputTooShort: function (args) {
+                    return `Digite ${args.minimum - args.input.length} ou mais caracteres`;
+                }
+            },
+        });
+    });
 
     /* ADICIONE/REMOVE loading */
     function showLoader() {
