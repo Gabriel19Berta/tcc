@@ -62,7 +62,7 @@
                                      :value="old('data_nascimento')" />
                             </div>
 
-                            <h2 class="md:col-span-5 block text-primary font-semibold text-xl leading-tight mt-8">
+                            <h2 class="md:col-span-5">
                                 {{ __('Contato') }}
                             </h2>
                             <div>
@@ -82,7 +82,7 @@
                                     :value="old('email')" />
                             </div>
 
-                            <h2 class="md:col-span-5 block text-primary font-semibold text-xl leading-tight mt-8">
+                            <h2 class="md:col-span-5">
                                 {{ __('Endereço') }}
                             </h2>
 
@@ -121,7 +121,7 @@
 
                                 <x-select-uf />
                             </div>
-                            <h2 class="md:col-span-5 block text-primary font-semibold text-xl leading-tight mt-8">
+                            <h2 class="md:col-span-5">
                                 {{ __('Dados adicionais') }}
                             </h2>
                             <div class="md:col-span-5">

@@ -44,7 +44,7 @@
                                 <x-text-input id="peso" name="peso" type="number" class="w-full"
                                     min="0" :value="old('peso')" />
                             </div>
-                            <h2 class="md:col-span-5 block text-primary font-semibold text-xl leading-tight mt-8">
+                            <h2 class="md:col-span-5">
                                 {{ __('Valores') }}
                             </h2>
                             <div class="md:col-span-1">
@@ -57,7 +57,7 @@
                                 <x-text-input id="preco_venda" name="preco_venda" type="text" class="w-full mask-valor" placeholder="R$ 0,00"
                                     min="0" :value="old('preco_venda')" />
                             </div>
-                            <h2 class="md:col-span-5 block text-primary font-semibold text-xl leading-tight mt-8">
+                            <h2 class="md:col-span-5">
                                 {{ __('Estoque') }}
                             </h2>
                             <div class="md:col-span-1">
@@ -76,7 +76,7 @@
                                 <x-text-input id="quantidade" name="quantidade" type="number" class="w-full"
                                     min="0" :value="old('quantidade')" />
                             </div>
-                            <h2 class="md:col-span-5 block text-primary font-semibold text-xl leading-tight mt-8">
+                            <h2 class="md:col-span-5">
                                 {{ __('Dados adicionais') }}
                             </h2>
                             <div class="md:col-span-5">
