@@ -29,7 +29,7 @@
                 </div>
                 <div>
                     <x-input-label for="nome" :value="__('Nome')" />
-                    <x-text-input id="nome" name="nome" type="text" :value="request('nome')" class="w-96 placeholder:text-gray-400 placeholder:text-sm" placeholder="Digite o nome, cpf ou cnpj"/>
+                    <x-text-input id="nome" name="nome" type="text" :value="request('nome')" class="w-96" placeholder="Digite o nome, cpf ou cnpj"/>
                 </div>
                 <div>
                     <x-input-label for="tipo" :value="__('Tipo')" />

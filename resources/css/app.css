@@ -24,6 +24,10 @@
         @apply bg-primary bg-auto !important;
     }
 
+    input::placeholder {
+        @apply text-gray-400 text-sm
+    }
+
     table {
         @apply min-w-full table-auto divide-y divide-gray-200;
     }
