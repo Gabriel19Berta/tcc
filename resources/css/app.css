@@ -25,7 +25,7 @@
     }
 
     input::placeholder {
-        @apply text-gray-400 text-sm
+        @apply text-gray-400
     }
 
     table {
@@ -84,7 +84,7 @@
     }
 
     .select2.select2-container.select2-container--default > .selection > .select2-selection.select2-selection--single {
-        @apply !h-[38px] !p-[4px]
+        @apply !h-[38px] !p-[4px] !rounded-md
     }
 
     .select2.select2-container.select2-container--default > .selection > .select2-selection.select2-selection--single > .select2-selection__arrow {

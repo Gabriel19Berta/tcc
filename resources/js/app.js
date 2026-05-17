@@ -20,24 +20,22 @@ document.addEventListener("DOMContentLoaded", () => {
     iniMascaras();
     consultaCep();
 
-    $(document).ready(function () {
-        $('.select2').select2({
-            placeholder: 'Selecione uma opção',
-            allowClear: true,
-            language: {
-                noResults: function () {
-                    return "Nenhum resultado encontrado";
-                },
-                searching: function () {
-                    return "Pesquisando...";
-                },
-                inputTooShort: function (args) {
-                    return `Digite ${args.minimum - args.input.length} ou mais caracteres`;
-                }
+    $('.select2').select2({
+        placeholder: 'Selecione',
+        allowClear: true,
+        language: {
+            noResults: function () {
+                return "Nenhum resultado encontrado";
             },
-        });
+            searching: function () {
+                return "Pesquisando...";
+            },
+            inputTooShort: function (args) {
+                return `Digite ${args.minimum - args.input.length} ou mais caracteres`;
+            }
+        },
     });
-
+   
     /* ADICIONE/REMOVE loading */
     function showLoader() {
         document.getElementById("loader").classList.remove("hidden");
@@ -65,7 +63,11 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    const originalFetch = window.fetch;
+    /* 
+    Código comentado para fins de testes de bug ao acessar uma página
+    continuar na mesma página
+    */
+    /* const originalFetch = window.fetch;
 
     window.fetch = async function (...args) {
         showLoader();
@@ -76,7 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
         } finally {
             hideLoader();
         }
-    };
+    }; */
 
     window.addEventListener("load", () => {
         hideLoader();
