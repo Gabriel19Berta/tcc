@@ -30,7 +30,7 @@ class TipoProdutoRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'nome.required' => 'Nome é obrigátorio!'
+            'nome.required' => 'Nome é obrigatório!'
         ];
     }
 }
