@@ -110,7 +110,7 @@ class MarcaController extends Controller
             return redirect()->route('marcas.index')
                 ->with('success', 'Marca excluída com sucesso!');
         } catch (\Exception $e) {
-            return back()->with('error', 'Erro ao excluir marca!');
+            return back()->with('error', 'Erro ao excluir marca. Tente novamente!');
         }
     }
 }
