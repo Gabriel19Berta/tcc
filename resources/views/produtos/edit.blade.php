@@ -2,22 +2,34 @@
     <x-slot name="header">
         <div class="flex justify-between">
             <h1>
-                {{ __('Cadastrar Produto') }}
+                {{ __('Alterar Produto') }}
             </h1>
         </div>
     </x-slot>
 
     <div class="py-4">
         <div class="mx-auto sm:px-6 lg:px-8">
-            <form action="{{ route('produtos.store') }}" method="POST">
+            <form action="{{ route('produtos.update', $produto->id) }}" method="POST">
                 @csrf
+                @method('PUT')
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 text-gray-900">
                         <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+                            <div class="md:col-span-1">
+                                <x-input-label for="status" :value="__('Status')" />
+                                <div class="flex items-center gap-3 p-[6px] border border-gray-300 rounded-md shadow-sm">
+                                    <input type="hidden" name="status" value="0">
+                                    <x-text-input id="status" name="status" type="checkbox" value="1"
+                                        class="rounded text-primary shadow-sm focus:ring-primary"
+                                        :checked="old('status', $produto->status) == 1" 
+                                    />
+                                    <span>Ativo</span>
+                                </div>
+                            </div>
                             <div class="md:col-span-2">
                                 <x-input-label for="nome" :value="__('Nome')" class="required" />
                                 <x-text-input id="nome" name="nome" type="text" class="w-full"
-                                    :value="old('nome')" />
+                                    :value="old('nome', $produto->nome)" />
                             </div>
                             {{-- MARCA --}}
                             <div class="md:col-span-1">
@@ -42,7 +54,7 @@
                             <div class="md:col-span-1">
                                 <x-input-label for="peso" :value="__('Peso')" />
                                 <x-text-input id="peso" name="peso" type="number" class="w-full"
-                                    min="0" :value="old('peso')" />
+                                    min="0" :value="old('peso', $produto->peso)" />
                             </div>
                             <h2 class="md:col-span-5">
                                 {{ __('Valores') }}
@@ -50,12 +62,12 @@
                             <div class="md:col-span-1">
                                 <x-input-label for="preco_custo" :value="__('Preço de custo')" />
                                 <x-text-input id="preco_custo" name="preco_custo" type="text" class="w-full mask-valor" placeholder="R$ 0,00"
-                                    min="0" :value="old('preco_custo', 0.00)" />
+                                    min="0" :value="old('preco_custo')" />
                             </div>
                             <div class="md:col-span-1">
                                 <x-input-label for="preco_venda" :value="__('Preço de venda')" />
                                 <x-text-input id="preco_venda" name="preco_venda" type="text" class="w-full mask-valor" placeholder="R$ 0,00"
-                                    min="0" :value="old('preco_venda', 0.00)" />
+                                    min="0" :value="old('preco_venda')" />
                             </div>
                             <h2 class="md:col-span-5">
                                 {{ __('Estoque') }}
@@ -74,20 +86,20 @@
                             <div class="md:col-span-1" id="estoque">
                                 <x-input-label for="quantidade" :value="__('Quantidade em estoque')" class="required" />
                                 <x-text-input id="quantidade" name="quantidade" type="number" class="w-full"
-                                    min="0" :value="old('quantidade')" />
+                                    min="0" :value="old('quantidade', $produto->quantidade)" />
                             </div>
                             <h2 class="md:col-span-5">
                                 {{ __('Dados adicionais') }}
                             </h2>
                             <div class="md:col-span-5">
                                 <x-input-label for="observacoes" :value="__('Observações')" />
-                                <textarea name="observacoes" id="observacoes">{{ old('observacoes') }}</textarea>
+                                <textarea name="observacoes" id="observacoes">{{ old('observacoes', $produto->observacoes) }}</textarea>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <x-form-button :cancelUrl="route('produtos.index')" />
+                <x-form-button :cancelUrl="route('produtos.index')"  submitText="Salvar" />
 
             </form>
         </div>

@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('produtos', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('marca_id')->constrained()->nullable();
-            $table->foreignId('tipo_produto_id')->constrained()->nullable();
+            $table->foreignId('marca_id')->nullable()->constrained();
+            $table->foreignId('tipo_produto_id')->nullable()->constrained();
             $table->boolean('status')->default(true);
             $table->string('nome');
             $table->decimal('preco_venda', 10, 2)->default(0)->nullable();

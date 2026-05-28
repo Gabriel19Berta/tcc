@@ -6,29 +6,6 @@
             </h1>
 
             <div class="flex gap-2">
-                <x-dropdown>
-                    <x-slot name="trigger">
-                        <button
-                            class="btn btn-warning">
-                            <div>Opções</div>
-
-                            <div class="ms-1"> 
-                                <i class="fa-solid fa-angle-down fa-sm"></i>
-                            </div>
-                        </button>
-                    </x-slot>
-
-                    <x-slot name="content">
-                        <x-dropdown-link :href="route('marcas.index')" >
-                            {{ __('Marcas') }}
-                        </x-dropdown-link>
-
-                        <x-dropdown-link :href="route('tipo-produtos.index')" >
-                            {{ __('Tipo de Produto') }}
-                        </x-dropdown-link>
-                    </x-slot>
-                </x-dropdown>
-
                 <x-action-link href="{{ route('produtos.create') }}">
                     Cadastrar
                 </x-action-link>
@@ -55,7 +32,7 @@
                 </div>
                 <div>
                     <x-input-label for="nome" :value="__('Nome')" />
-                    <x-text-input id="nome" name="nome" type="text" :value="request('nome')" class="w-96" placeholder="Digite o nome, cpf ou cnpj"/>
+                    <x-text-input id="nome" name="nome" type="text" :value="request('nome')" class="w-96"/>
                 </div>
             </div>
             <div class="flex flex-col sm:flex-row gap-2 sm:items-end">
@@ -74,6 +51,10 @@
                     <th class="text-center">Código</th>
                     <th class="text-center">Status</th>
                     <th>Nome</th>
+                    <th>Características</th>
+                    <th>Estoque</th>
+                    <th>Preço custo</th>
+                    <th>Preço venda</th>
                     <th class="text-center">Ações</th>
                 </tr>
             </thead>
@@ -90,15 +71,28 @@
                         <td>
                             {{ $produto->nome }}
                         </td>
+                        <td class="text-xs">
+                            <p>Marca: {{ $produto['marca']->nome ?? '' }}</p>
+                            <p>Tipo: {{ $produto['tipoProduto']->nome ?? '' }}</p>
+                        </td>
+                        <td>
+                            {{ $produto->quantidade }}
+                        </td>
+                        <td>
+                            {{ $produto->preco_custo }}
+                        </td>
+                        <td>
+                            {{ $produto->preco_venda }}
+                        </td>
                         <td class="w-24">
                             <div class="flex gap-2 justify-center">
-                                <a href="{{ route('tipo-produtos.show', $produto->id) }}" class="btn btn-info">
+                                <a href="{{ route('produtos.show', $produto->id) }}" class="btn btn-info">
                                     <i class="fa-solid fa-magnifying-glass"></i>
                                 </a>
-                                <a href="{{ route('tipo-produtos.edit', $produto->id) }}" class="btn btn-warning">
+                                <a href="{{ route('produtos.edit', $produto->id) }}" class="btn btn-warning">
                                     <i class="fa-solid fa-pen-to-square"></i> 
                                 </a>
-                                <form action="{{ route('tipo-produtos.destroy', $produto->id) }}" method="POST" class="form-delete">
+                                <form action="{{ route('produtos.destroy', $produto->id) }}" method="POST" class="form-delete">
                                     @csrf
                                     @method('DELETE')
 

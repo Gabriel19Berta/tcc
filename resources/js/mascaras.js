@@ -14,8 +14,8 @@ export function iniMascaras() {
         radixPoint: ",",     // Separador decimal
         digits: 2,
         digitsOptional: false,
-        autoGroup: true,
         rightAlign: false,
-        removeMaskOnSubmit: true
+        removeMaskOnSubmit: true,
+        numericInput: true // Inicia no centavos
     }).mask(document.querySelectorAll(".mask-valor"))
 }
