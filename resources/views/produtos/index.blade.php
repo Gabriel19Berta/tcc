@@ -79,10 +79,10 @@
                             {{ $produto->quantidade }}
                         </td>
                         <td>
-                            {{ $produto->preco_custo }}
+                            {{ number_format($produto->preco_custo, 2, ',', '.') }}
                         </td>
                         <td>
-                            {{ $produto->preco_venda }}
+                            {{ number_format($produto->preco_venda, 2, ',', '.') }}
                         </td>
                         <td class="w-24">
                             <div class="flex gap-2 justify-center">
