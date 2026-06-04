@@ -24,8 +24,11 @@
                                 <x-input-label for="nome" :value="__('Marca')" />
                                 <select name="marca_id" id="marca_id" class="select2">
                                     <option value=""></option>
-                                    @foreach ( $marcas as $marca )
-                                        <option value="{{ $marca['id'] }}">{{ $marca['nome'] }}</option>
+                                    @foreach ($marcas as $marca)
+                                        <option value="{{ $marca['id'] }}"
+                                            {{ old('marca_id') == $marca['id'] ? 'selected' : '' }}>
+                                            {{ $marca['nome'] }}
+                                        </option>
                                     @endforeach
                                 </select>
                             </div>
@@ -35,14 +38,17 @@
                                 <select name="tipo_produto_id" id="tipo_produto_id" class="select2">
                                     <option value=""></option>
                                     @foreach ($tipo_produtos as $tipo_produto)
-                                        <option value="{{ $tipo_produto['id'] }}">{{ $tipo_produto['nome'] }}</option>
+                                        <option value="{{ $tipo_produto['id'] }}"
+                                        {{ old('tipo_produto_id') == $tipo_produto['id'] ? 'selected' : '' }}>
+                                        {{ $tipo_produto['nome'] }}
+                                    </option>
                                     @endforeach
                                 </select>
                             </div>
                             <div class="md:col-span-1">
                                 <x-input-label for="peso" :value="__('Peso')" />
                                 <x-text-input id="peso" name="peso" type="number" class="w-full"
-                                    min="0" :value="old('peso')" />
+                                    min="0" step="any" :value="old('peso')" />
                             </div>
                             <h2 class="md:col-span-5">
                                 {{ __('Valores') }}
@@ -74,7 +80,7 @@
                             <div class="md:col-span-1" id="estoque">
                                 <x-input-label for="quantidade" :value="__('Quantidade em estoque')" class="required" />
                                 <x-text-input id="quantidade" name="quantidade" type="number" class="w-full"
-                                    min="0" :value="old('quantidade')" />
+                                    min="0" step="any" :value="old('quantidade')" />
                             </div>
                             <h2 class="md:col-span-5">
                                 {{ __('Dados adicionais') }}

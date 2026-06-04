@@ -43,10 +43,11 @@ class ProdutoRequest extends FormRequest
             'nome' => ['required', 'string'],
             'marca_id' => ['nullable', 'integer'],
             'tipo_produto_id' => ['nullable', 'integer'],
-            'peso' => ['nullable', 'integer'],
+            'peso' => ['nullable', 'numeric'],
             'preco_custo' => ['nullable', 'numeric'],
             'preco_venda' => ['nullable', 'numeric'],
-            'quantidade' => ['required', 'integer'],
+            'controla_estoque' => ['nullable', 'boolean'],
+            'quantidade' => ['required_if:controla_estoque, 1', 'nullable', 'numeric'],
         ];
     }
 
