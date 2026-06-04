@@ -92,7 +92,7 @@ class ProdutoController extends Controller
     public function update(ProdutoRequest $request, String $id)
     {
         try {
-            DB::transaction(function() use ($request) {
+            DB::transaction(function() use ($request, $id) {
                 $produto = Produto::findOrFail($id);
 
                 $produto->update($request->validated());

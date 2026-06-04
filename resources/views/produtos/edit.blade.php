@@ -37,7 +37,10 @@
                                 <select name="marca_id" id="marca_id" class="select2">
                                     <option value=""></option>
                                     @foreach ( $marcas as $marca )
-                                        <option value="{{ $marca['id'] }}">{{ $marca['nome'] }}</option>
+                                        <option value="{{ $marca['id'] }}"
+                                            {{ old('marca_id', $produto->marca_id) == $marca['id'] ? 'selected' : '' }}>
+                                            {{ $marca['nome'] }}
+                                        </option>
                                     @endforeach
                                 </select>
                             </div>
@@ -47,14 +50,17 @@
                                 <select name="tipo_produto_id" id="tipo_produto_id" class="select2">
                                     <option value=""></option>
                                     @foreach ($tipo_produtos as $tipo_produto)
-                                        <option value="{{ $tipo_produto['id'] }}">{{ $tipo_produto['nome'] }}</option>
+                                        <option value="{{ $tipo_produto['id'] }}"
+                                            {{ old('tipo_produto_id', $produto->tipo_produto_id) == $tipo_produto['id'] ? 'selected' : '' }}>
+                                            {{ $tipo_produto['nome'] }}
+                                        </option>
                                     @endforeach
                                 </select>
                             </div>
                             <div class="md:col-span-1">
                                 <x-input-label for="peso" :value="__('Peso')" />
                                 <x-text-input id="peso" name="peso" type="number" class="w-full"
-                                    min="0" :value="old('peso', $produto->peso)" />
+                                    min="0" step="any" :value="old('peso', $produto->peso)" />
                             </div>
                             <h2 class="md:col-span-5">
                                 {{ __('Valores') }}
@@ -62,12 +68,12 @@
                             <div class="md:col-span-1">
                                 <x-input-label for="preco_custo" :value="__('Preço de custo')" />
                                 <x-text-input id="preco_custo" name="preco_custo" type="text" class="w-full mask-valor" placeholder="R$ 0,00"
-                                    min="0" :value="old('preco_custo')" />
+                                    min="0" :value="old('preco_custo', number_format($produto->preco_custo, 2, ',', '.'))" />
                             </div>
                             <div class="md:col-span-1">
                                 <x-input-label for="preco_venda" :value="__('Preço de venda')" />
                                 <x-text-input id="preco_venda" name="preco_venda" type="text" class="w-full mask-valor" placeholder="R$ 0,00"
-                                    min="0" :value="old('preco_venda')" />
+                                    min="0" :value="old('preco_venda', number_format($produto->preco_venda, 2, ',', '.'))" />
                             </div>
                             <h2 class="md:col-span-5">
                                 {{ __('Estoque') }}
@@ -78,7 +84,7 @@
                                     <input type="hidden" name="controla_estoque" value="0">
                                     <x-text-input id="controla_estoque" name="controla_estoque" type="checkbox" value="1"
                                         class="rounded text-primary shadow-sm focus:ring-primary"
-                                        :checked="old('controla_estoque', true)" 
+                                        :checked="old('controla_estoque', $produto->controla_estoque) == 1" 
                                     />
                                     <span>Ativo</span>
                                 </div>
@@ -86,7 +92,7 @@
                             <div class="md:col-span-1" id="estoque">
                                 <x-input-label for="quantidade" :value="__('Quantidade em estoque')" class="required" />
                                 <x-text-input id="quantidade" name="quantidade" type="number" class="w-full"
-                                    min="0" :value="old('quantidade', $produto->quantidade)" />
+                                    min="0" step="any" :value="old('quantidade', $produto->quantidade)" />
                             </div>
                             <h2 class="md:col-span-5">
                                 {{ __('Dados adicionais') }}
@@ -109,6 +115,14 @@
 <script>
     var check = document.getElementById('controla_estoque');
     var estoque = document.getElementById('estoque');
+
+    document.addEventListener("DOMContentLoaded", function() {
+        if(check.checked) {
+            estoque.style.display = "block";
+        } else {
+            estoque.style.display = "none";
+        }
+    });
 
     check.addEventListener('click', function () {
         if(check.checked) {
