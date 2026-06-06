@@ -17,6 +17,8 @@ class ProdutoController extends Controller
     public function index(Request $request)
     {
         $query = Produto::query()->with('marca', 'tipoProduto');
+        $marcas = Marca::all();
+        $tipo_produtos = TipoProduto::all();
 
         if ($request->filled('codigo')) {
             $query->where('id', $request->codigo);
@@ -32,9 +34,17 @@ class ProdutoController extends Controller
             $query->where('nome', 'LIKE', '%' . $request->nome . '%');
         }
 
+        if ($request->filled('marca_id')) {
+            $query->where('marca_id', $request->marca_id);
+        }
+
+        if ($request->filled('tipo_produto_id')) {
+            $query->where('tipo_produto_id', $request->tipo_produto_id);
+        }
+
         $produtos = $query->OrderByDesc('id')->paginate(15);
 
-        return view('produtos.index', compact('produtos'));
+        return view('produtos.index', compact('produtos', 'marcas', 'tipo_produtos', 'request'));
     }
 
     /**

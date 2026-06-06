@@ -34,6 +34,30 @@
                     <x-input-label for="nome" :value="__('Nome')" />
                     <x-text-input id="nome" name="nome" type="text" :value="request('nome')" class="w-96"/>
                 </div>
+                <div class="w-96">
+                    <x-input-label for="nome" :value="__('Marca')" />
+                    <select name="marca_id" id="marca_id" class="select2">
+                        <option value=""></option>
+                        @foreach ($marcas as $marca)
+                            <option value="{{ $marca['id'] }}"
+                                {{ request()->get('marca_id') == $marca['id'] ? 'selected' : '' }}>
+                                {{ $marca['nome'] }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="w-96">
+                    <x-input-label for="nome" :value="__('Tipo de produto')" />
+                    <select name="tipo_produto_id" id="tipo_produto_id" class="select2">
+                        <option value=""></option>
+                        @foreach ($tipo_produtos as $tipo_produto)
+                            <option value="{{ $tipo_produto['id'] }}"
+                            {{ request()->get('tipo_produto_id') == $tipo_produto['id'] ? 'selected' : '' }}>
+                            {{ $tipo_produto['nome'] }}
+                        </option>
+                        @endforeach
+                    </select>
+                </div>
             </div>
             <div class="flex flex-col sm:flex-row gap-2 sm:items-end">
                 <x-limpar-filtro class="w-full sm:w-auto"/>
