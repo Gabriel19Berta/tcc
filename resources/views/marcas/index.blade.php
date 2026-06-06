@@ -2,9 +2,9 @@
     <x-slot name="header">
         <div class="flex justify-between">
             <h1>
-                {{ __('Funcionários') }}
+                {{ __('Marcas') }}
             </h1>
-            <x-action-link href="{{ route('funcionarios.create') }}">
+            <x-action-link href="{{ route('marcas.create') }}">
                 Cadastrar
             </x-action-link>
         </div>
@@ -13,7 +13,7 @@
     <div class="py-4 mx-auto sm:px-6 lg:px-8 overflow-auto">
         
         {{-- FILTROS --}}
-        <form method="GET" action="{{ route('funcionarios.index') }}" class="mb-4 flex flex-col lg:flex-row lg:justify-between gap-4 sm:px-0 px-4">
+        <form method="GET" action="{{ route('marcas.index') }}" class="mb-4 flex flex-col lg:flex-row lg:justify-between gap-4 sm:px-0 px-4">
             <div class="flex flex-wrap gap-2 items-end">
                 <div>
                     <x-input-label for="codigo" :value="__('Código')" />
@@ -29,15 +29,7 @@
                 </div>
                 <div>
                     <x-input-label for="nome" :value="__('Nome')" />
-                    <x-text-input id="nome" name="nome" type="text" :value="request('nome')" class="w-96" placeholder="Digite o nome, cpf ou cnpj"/>
-                </div>
-                <div>
-                    <x-input-label for="tipo" :value="__('Tipo')" />
-                    <select id="tipo" name="tipo">
-                        <option value="" {{ request('tipo') === null ? 'selected' : '' }}>Todos</option>
-                        <option value="f" {{ request('tipo') === 'f' ? 'selected' : '' }}>Física</option>
-                        <option value="j" {{ request('tipo') === 'j' ? 'selected' : '' }}>Jurídica</option>
-                    </select>
+                    <x-text-input id="nome" name="nome" type="text" :value="request('nome')" class="w-96"/>
                 </div>
             </div>
             <div class="flex flex-col sm:flex-row gap-2 sm:items-end">
@@ -56,54 +48,30 @@
                     <th>Código</th>
                     <th>Status</th>
                     <th>Nome</th>
-                    <th>Tipo</th>
-                    <th>Documento</th>
-                    <th>Celular</th>
                     <th class="text-center">Ações</th>
                 </tr>
             </thead>
 
             <tbody>
-                @foreach ($funcionarios as $funcionario)
+                @foreach ($marcas as $marca)
                     <tr>
                         <td>
-                            {{ $funcionario->funcionario->id }}
+                            {{ $marca->id }}
                         </td>
                         <td>
-                            <x-status :status="$funcionario->status" :id="$funcionario->id" />
+                            <x-status :status="$marca->status" :id="$marca->id" />
                         </td>
                         <td>
-                            {{ $funcionario->nome }}
-                        </td>
-                        @if ($funcionario->cpf)
-                            <td>
-                                Física
-                            </td>
-                            <td>
-                                {{ $funcionario->cpf }}
-                            </td>
-                        @elseif ($funcionario->cnpj)
-                            <td>
-                                Jurídica
-                            </td>
-                            <td>
-                                {{ $funcionario->cnpj }}
-                            </td>
-                        @else
-                            <td></td>
-                            <td></td>
-                        @endif
-                        <td>
-                            {{ $funcionario->celular }}
+                            {{ $marca->nome }}
                         </td>
                         <td class="flex gap-2 justify-center">
-                            <a href="{{ route('funcionarios.show', $funcionario->id) }}" class="btn btn-info">
+                            <a href="{{ route('marcas.show', $marca->id) }}" class="btn btn-info">
                                 <i class="fa-solid fa-magnifying-glass"></i>
                             </a>
-                            <a href="{{ route('funcionarios.edit', $funcionario->id) }}" class="btn btn-warning">
+                            <a href="{{ route('marcas.edit', $marca->id) }}" class="btn btn-warning">
                                 <i class="fa-solid fa-pen-to-square"></i> 
                             </a>
-                            <form action="{{ route('funcionarios.destroy', $funcionario->funcionario->id) }}" method="POST" class="form-delete">
+                            <form action="{{ route('marcas.destroy', $marca->id) }}" method="POST" class="form-delete">
                                 @csrf
                                 @method('DELETE')
 
@@ -116,7 +84,6 @@
                 @endforeach
             </tbody>
         </table>
-        {{ $funcionarios->links() }}
+        {{ $marcas->links() }}
     </div>
-
 </x-app-layout>

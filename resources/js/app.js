@@ -1,5 +1,13 @@
 import './bootstrap';
 import 'flowbite';
+
+import $ from 'jquery';
+window.$ = window.jQuery = $;
+
+import select2 from 'select2';
+/* Inicializa o plugin Select2 no jQuery */
+select2();
+
 import Alpine from 'alpinejs';
 import { iniMascaras } from './mascaras';
 import { consultaCep } from './consultaCep';
@@ -12,6 +20,22 @@ document.addEventListener("DOMContentLoaded", () => {
     iniMascaras();
     consultaCep();
 
+    $('.select2').select2({
+        placeholder: 'Selecione',
+        allowClear: true,
+        language: {
+            noResults: function () {
+                return "Nenhum resultado encontrado";
+            },
+            searching: function () {
+                return "Pesquisando...";
+            },
+            inputTooShort: function (args) {
+                return `Digite ${args.minimum - args.input.length} ou mais caracteres`;
+            }
+        },
+    });
+   
     /* ADICIONE/REMOVE loading */
     function showLoader() {
         document.getElementById("loader").classList.remove("hidden");
@@ -39,7 +63,11 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    const originalFetch = window.fetch;
+    /* 
+    Código comentado para fins de testes de bug ao acessar uma página
+    continuar na mesma página
+    */
+    /* const originalFetch = window.fetch;
 
     window.fetch = async function (...args) {
         showLoader();
@@ -50,7 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
         } finally {
             hideLoader();
         }
-    };
+    }; */
 
     window.addEventListener("load", () => {
         hideLoader();

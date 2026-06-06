@@ -81,7 +81,7 @@ class ClienteController extends Controller
                 );
             });
 
-            return redirect()->route('clientes.index')->with('success', 'Cliente cadastro com sucesso!');
+            return redirect()->route('clientes.index')->with('success', 'Cliente cadastrado com sucesso!');
         } catch (\Exception $e) {
             return back()->withInput()->with('error', 'Erro ao cadastrar cliente. Tente novamente'); 
         }
@@ -127,8 +127,8 @@ class ClienteController extends Controller
             });
 
             return redirect()->route('clientes.index')->with('success', 'Cliente atualizado com sucesso!');
-        } catch (\Exception $th) {
-            return back()->withInput()->with('error', 'Erro ao atualizar cliente. Tente novamente'); 
+        } catch (\Exception $e) {
+            return back()->withInput()->with('error', 'Erro ao atualizar cliente. Tente novamente!'); 
         }
     }
 
@@ -144,7 +144,7 @@ class ClienteController extends Controller
             return redirect()->route('clientes.index')
                 ->with('success', 'Cliente excluído com sucesso!');
         } catch (\Exception $e) {
-            return back()->with('error', 'Erro ao excluir cliente');
+            return back()->with('error', 'Erro ao excluir cliente!');
         }
     }
 }

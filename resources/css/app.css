@@ -1,4 +1,5 @@
 @import "@fortawesome/fontawesome-free/css/all.min.css";
+@import "select2/dist/css/select2.min.css";
 
 @tailwind base;
 @tailwind components;
@@ -14,6 +15,10 @@
         @apply inline text-primary font-semibold text-2xl leading-tight
     }
 
+    h2 {
+        @apply text-primary font-semibold text-xl leading-tight mt-8
+    }
+
     input[type="checkbox"], input[type="radio"] {
         @apply cursor-pointer
         focus:focus:ring-0 focus:ring-transparent;
@@ -21,6 +26,10 @@
 
     input:where([type='checkbox']):checked, input[type="radio"]:checked {
         @apply bg-primary bg-auto !important;
+    }
+
+    input::placeholder {
+        @apply text-gray-400
     }
 
     table {
@@ -73,4 +82,16 @@
     .btn-info { 
         @apply bg-info hover:bg-info-600 active:bg-info-600
     }
+
+    .select2.select2-container.select2-container--default {
+        @apply !w-full
+    }
+
+    .select2.select2-container.select2-container--default > .selection > .select2-selection.select2-selection--single {
+        @apply !h-[38px] !p-[4px] !rounded-md
+    }
+
+    .select2.select2-container.select2-container--default > .selection > .select2-selection.select2-selection--single > .select2-selection__arrow {
+        @apply !h-[34px]
+    } 
 }
