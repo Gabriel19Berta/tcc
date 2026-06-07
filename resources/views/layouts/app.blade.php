@@ -45,7 +45,9 @@
 
             <!-- Page Content -->
             <main>
-                {{ $slot }}
+                <div class="py-4 mx-auto sm:px-6 lg:px-8 overflow-auto">
+                    {{ $slot }}
+                </div>
             </main>
         </div>
     </body>
