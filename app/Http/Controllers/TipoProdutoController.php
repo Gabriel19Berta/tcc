@@ -14,23 +14,12 @@ class TipoProdutoController extends Controller
      */
     public function index(Request $request)
     {
-        $query = TipoProduto::query();
-
-        if ($request->filled('codigo')) {
-            $query->where('id', $request->codigo);
-        }
-
-        $status = $request->input('status', '1');
-
-        if ($status !== 'todos') {
-            $query->where('status', $status);
-        }
-
-        if ($request->filled('nome')) {
-            $query->where('nome', 'LIKE', '%' . $request->nome . '%');
-        }
-
-        $tipoProdutos = $query->OrderByDesc('id')->paginate(15);
+        $tipoProdutos = TipoProduto::query()
+        ->filtroCodigo($request->codigo)
+        ->filtroStatus($request->input('status', '1'))
+        ->filtroNome($request->nome)
+        ->OrderByDesc('id')
+        ->paginate(15);
 
         return view('tipo-produtos.index', compact('tipoProdutos'));
     }

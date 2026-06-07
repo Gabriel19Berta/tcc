@@ -15,46 +15,15 @@ class FuncionarioController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Pessoa::with('funcionario')->wherehas('funcionario');
-
-        if ($request->filled('codigo')) {
-            $query->whereRelation('funcionario', 'id', $request->codigo);
-        }
-
-        $status = $request->input('status', '1');
-
-        if ($status !== 'todos') {
-            $query->where('status', $status);
-        }
-
-        if ($request->filled('nome')) {
-            $busca = trim($request->nome);
-            $termos = preg_split('/\s+/', $busca);
-
-            $query->where(function ($q) use ($termos) {
-                foreach ($termos as $termo) {
-                    if (empty($termo)) continue;
-
-                    $numero = preg_replace('/\D/', '', $termo);
-
-                    $q->where(function ($sub) use ($termo, $numero) {
-                        $sub->where('nome', 'like', "%{$termo}%");
-
-                        // Busca CPF/CNPJ com ou sem máscara
-                        if (!empty($numero)) {
-                            $sub->orWhere('cpf', 'like', "%{$numero}%")
-                                ->orWhere('cnpj', 'like', "%{$numero}%");
-                        }
-                    });
-                }
-            });
-        }
-
-        if ($request->filled('tipo')) {
-            $query->where('tipo', $request->tipo);
-        }
-
-        $funcionarios = $query->orderByDesc('id')->paginate(15)->withQueryString();
+        $funcionarios = Pessoa::query()
+        ->with('funcionario')
+        ->wherehas('funcionario')
+        ->filtroCodigo($request->codigo, 'funcionario')
+        ->filtroStatus($request->input('status', '1'))
+        ->filtroNome($request->nome)
+        ->filtroTipo($request->tipo)
+        ->OrderByDesc('id')
+        ->paginate(15);
 
         return view('funcionarios.index', compact('funcionarios'));
     }
