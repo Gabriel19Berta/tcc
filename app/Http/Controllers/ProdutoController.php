@@ -29,7 +29,7 @@ class ProdutoController extends Controller
         $marcas = Marca::all();
         $tipo_produtos = TipoProduto::all();
 
-        return view('produtos.index', compact('produtos', 'marcas', 'tipo_produtos', 'request'));
+        return view('produtos.index', compact('produtos', 'marcas', 'tipo_produtos'));
     }
 
     /**
