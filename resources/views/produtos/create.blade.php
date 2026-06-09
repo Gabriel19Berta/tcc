@@ -67,7 +67,7 @@
                         </h2>
                         <div class="md:col-span-1">
                             <x-input-label for="controla_estoque" :value="__('Controlar estoque')" />
-                            <div class="flex items-center gap-3 p-[6px] border border-gray-300 rounded-md shadow-sm">
+                            <div class="contain-check">
                                 <input type="hidden" name="controla_estoque" value="0">
                                 <x-text-input id="controla_estoque" name="controla_estoque" type="checkbox" value="1"
                                     class="rounded text-primary shadow-sm focus:ring-primary"

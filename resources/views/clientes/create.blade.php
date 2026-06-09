@@ -21,7 +21,7 @@
                         <div class="md:col-span-1">
                             <x-input-label for="tipo" :value="__('Tipo')" />
 
-                            <div class="p-[6px] border border-gray-300 rounded-md mt-1 p-2 flex flex-wrap gap-4">
+                            <div class="contain-check">
                                 <label for="fisico" class="flex items-center gap-2 cursor-pointer">
                                     <x-text-input id="fisico" name="tipo" type="radio" value="f"
                                         :checked="old('tipo', 'f') === 'f'" />

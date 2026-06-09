@@ -15,7 +15,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
                         <div class="md:col-span-1">
                             <x-input-label for="status" :value="__('Status')" />
-                            <div class="flex items-center gap-3 p-[6px] border border-gray-300 rounded-md shadow-sm">
+                            <div class="contain-check">
                                 <input type="hidden" name="status" value="0">
                                 <x-text-input id="status" name="status" type="checkbox" value="1"
                                     class="rounded text-primary shadow-sm focus:ring-primary"
@@ -32,7 +32,7 @@
                         <div class="md:col-span-1">
                             <x-input-label for="tipo" :value="__('Tipo')" />
 
-                            <div class="p-[6px] border border-gray-300 rounded-md mt-1 p-2 flex flex-wrap gap-4">
+                            <div class="contain-check">
                                 <label for="fisico" class="flex items-center gap-2 cursor-pointer">
                                     <x-text-input id="fisico" name="tipo" type="radio" value="f"
                                         :checked="old('tipo', 'f') === 'f'" />

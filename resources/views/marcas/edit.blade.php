@@ -15,7 +15,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
                         <div class="md:col-span-1">
                             <x-input-label for="status" :value="__('Status')" />
-                            <div class="flex items-center gap-3 p-[6px] border border-gray-300 rounded-md shadow-sm">
+                            <div class="contain-check">
                                 <input type="hidden" name="status" value="0">
                                 <x-text-input id="status" name="status" type="checkbox" value="1"
                                     class="rounded text-primary shadow-sm focus:ring-primary"
