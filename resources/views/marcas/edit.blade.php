@@ -17,7 +17,7 @@
                             <x-input-label for="status" :value="__('Status')" />
                             <div class="contain-check">
                                 <input type="hidden" name="status" value="0">
-                                <x-text-input id="status" name="status" type="checkbox" value="1"
+                                <x-input id="status" name="status" type="checkbox" value="1"
                                     class="rounded text-primary shadow-sm focus:ring-primary"
                                     :checked="old('status', $marca->status) == 1" 
                                 />
@@ -26,7 +26,7 @@
                         </div>
                         <div class="md:col-span-2">
                             <x-input-label for="nome" :value="__('Nome')" class="required" />
-                            <x-text-input id="nome" name="nome" type="text" class="w-full"
+                            <x-input id="nome" name="nome" type="text" class="w-full"
                                 :value="old('nome', $marca->nome)" />
                         </div>
                     </div>

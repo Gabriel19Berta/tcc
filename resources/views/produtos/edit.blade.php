@@ -18,7 +18,7 @@
                             <x-input-label for="status" :value="__('Status')" />
                             <div class="contain-check">
                                 <input type="hidden" name="status" value="0">
-                                <x-text-input id="status" name="status" type="checkbox" value="1"
+                                <x-input id="status" name="status" type="checkbox" value="1"
                                     class="rounded text-primary shadow-sm focus:ring-primary"
                                     :checked="old('status', $produto->status) == 1" 
                                 />
@@ -27,7 +27,7 @@
                         </div>
                         <div class="md:col-span-2">
                             <x-input-label for="nome" :value="__('Nome')" class="required" />
-                            <x-text-input id="nome" name="nome" type="text" class="w-full"
+                            <x-input id="nome" name="nome" type="text" class="w-full"
                                 :value="old('nome', $produto->nome)" />
                         </div>
                         {{-- MARCA --}}
@@ -58,7 +58,7 @@
                         </div>
                         <div class="md:col-span-1">
                             <x-input-label for="peso" :value="__('Peso')" />
-                            <x-text-input id="peso" name="peso" type="number" class="w-full"
+                            <x-input id="peso" name="peso" type="number" class="w-full"
                                 min="0" step="any" :value="old('peso', $produto->peso)" />
                         </div>
                         <h2 class="md:col-span-5">
@@ -66,12 +66,12 @@
                         </h2>
                         <div class="md:col-span-1">
                             <x-input-label for="preco_custo" :value="__('Preço de custo')" />
-                            <x-text-input id="preco_custo" name="preco_custo" type="text" class="w-full mask-valor" placeholder="R$ 0,00"
+                            <x-input id="preco_custo" name="preco_custo" type="text" class="w-full mask-valor" placeholder="R$ 0,00"
                                 min="0" :value="old('preco_custo', number_format($produto->preco_custo, 2, ',', '.'))" />
                         </div>
                         <div class="md:col-span-1">
                             <x-input-label for="preco_venda" :value="__('Preço de venda')" />
-                            <x-text-input id="preco_venda" name="preco_venda" type="text" class="w-full mask-valor" placeholder="R$ 0,00"
+                            <x-input id="preco_venda" name="preco_venda" type="text" class="w-full mask-valor" placeholder="R$ 0,00"
                                 min="0" :value="old('preco_venda', number_format($produto->preco_venda, 2, ',', '.'))" />
                         </div>
                         <h2 class="md:col-span-5">
@@ -81,7 +81,7 @@
                             <x-input-label for="controla_estoque" :value="__('Controlar estoque')" />
                             <div class="contain-check">
                                 <input type="hidden" name="controla_estoque" value="0">
-                                <x-text-input id="controla_estoque" name="controla_estoque" type="checkbox" value="1"
+                                <x-input id="controla_estoque" name="controla_estoque" type="checkbox" value="1"
                                     class="rounded text-primary shadow-sm focus:ring-primary"
                                     :checked="old('controla_estoque', $produto->controla_estoque) == 1" 
                                 />
@@ -90,7 +90,7 @@
                         </div>
                         <div class="md:col-span-1" id="estoque">
                             <x-input-label for="quantidade" :value="__('Quantidade em estoque')" class="required" />
-                            <x-text-input id="quantidade" name="quantidade" type="number" class="w-full"
+                            <x-input id="quantidade" name="quantidade" type="number" class="w-full"
                                 min="0" step="any" :value="old('quantidade', $produto->quantidade)" />
                         </div>
                         <h2 class="md:col-span-5">

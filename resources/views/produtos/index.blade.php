@@ -17,7 +17,7 @@
     <x-filter-form :action="route('produtos.index')">
         <div>
             <x-input-label for="codigo" :value="__('Código')" />
-            <x-text-input id="codigo" name="codigo" type="number" min="0" :value="request('codigo')" class="w-24" />
+            <x-input id="codigo" name="codigo" type="number" min="0" :value="request('codigo')" class="w-24" />
         </div>
         <div>
             <x-input-label for="status" :value="__('Status')" />
@@ -29,9 +29,9 @@
         </div>
         <div>
             <x-input-label for="nome" :value="__('Nome')" />
-            <x-text-input id="nome" name="nome" type="text" :value="request('nome')" class="w-96"/>
+            <x-input id="nome" name="nome" type="text" :value="request('nome')" class="w-96"/>
         </div>
-        <div class="w-96">
+        <div class="w-80">
             <x-input-label for="nome" :value="__('Marca')" />
             <select name="marca_id" id="marca_id" class="select2">
                 <option value=""></option>
@@ -43,7 +43,7 @@
                 @endforeach
             </select>
         </div>
-        <div class="w-96">
+        <div class="w-80">
             <x-input-label for="nome" :value="__('Tipo de produto')" />
             <select name="tipo_produto_id" id="tipo_produto_id" class="select2">
                 <option value=""></option>

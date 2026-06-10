@@ -17,7 +17,7 @@
                             <x-input-label for="status" :value="__('Status')" />
                             <div class="contain-check">
                                 <input type="hidden" name="status" value="0">
-                                <x-text-input id="status" name="status" type="checkbox" value="1"
+                                <x-input id="status" name="status" type="checkbox" value="1"
                                     class="rounded text-primary shadow-sm focus:ring-primary"
                                     :checked="old('status', $cliente->status) == 1" 
                                 />
@@ -26,7 +26,7 @@
                         </div>
                         <div class="md:col-span-2">
                             <x-input-label for="nome" :value="__('Nome')" class="required" />
-                            <x-text-input id="nome" name="nome" type="text" class="w-full"
+                            <x-input id="nome" name="nome" type="text" class="w-full"
                                 :value="old('nome', $cliente->nome)" />
                         </div>
                         <div class="md:col-span-1">
@@ -34,13 +34,13 @@
 
                             <div class="contain-check">
                                 <label for="fisico" class="flex items-center gap-2 cursor-pointer">
-                                    <x-text-input id="fisico" name="tipo" type="radio" value="f"
+                                    <x-input id="fisico" name="tipo" type="radio" value="f"
                                         :checked="old('tipo', 'f') === 'f'" />
                                     <span>Física</span>
                                 </label>
 
                                 <label for="juridica" class="flex items-center gap-2 cursor-pointer">
-                                    <x-text-input id="juridica" name="tipo" type="radio" value="j"
+                                    <x-input id="juridica" name="tipo" type="radio" value="j"
                                         :checked="old('tipo', 'f') === 'j'" />
                                     <span>Jurídica</span>
                                 </label>
@@ -48,27 +48,27 @@
                         </div>
                         <div id="cpf-field">
                             <x-input-label for="cpf" :value="__('CPF')" />
-                            <x-text-input id="cpf" name="cpf" type="text"
+                            <x-input id="cpf" name="cpf" type="text"
                                 class="w-full mask-cpf" :value="old('cpf', $cliente->cpf)" />
                         </div>
                         <div id="cnpj-field" class="hidden">
                             <x-input-label for="cnpj" :value="__('CNPJ')" />
-                            <x-text-input id="cnpj" name="cnpj" type="text"
+                            <x-input id="cnpj" name="cnpj" type="text"
                                 class="w-full mask-cnpj" :value="old('cnpj', $cliente->cnpj)" />
                         </div>
                         <div id="rg-field">
                             <x-input-label for="rg" :value="__('RG')" />
-                            <x-text-input id="rg" name="rg" type="text" class="w-full"
+                            <x-input id="rg" name="rg" type="text" class="w-full"
                                 :value="old('rg', $cliente->rg)" />
                         </div>
                         <div id="ie-field" class="hidden">
                             <x-input-label for="ie" :value="__('Inscrição Estadual')" />
-                            <x-text-input id="ie" name="ie" type="text" class="w-full"
+                            <x-input id="ie" name="ie" type="text" class="w-full"
                                 :value="old('ie', $cliente->ie)" />
                         </div>
                         <div id="data-nascimento">
                             <x-input-label for="data_nascimento" :value="__('Data nascimento')" />
-                            <x-text-input id="data_nascimento" name="data_nascimento" type="date"
+                            <x-input id="data_nascimento" name="data_nascimento" type="date"
                                 class="w-full" :value="old('data_nascimento', optional($cliente->data_nascimento)->format('Y-m-d'))" />
                         </div>
 
@@ -77,18 +77,18 @@
                         </h2>
                         <div>
                             <x-input-label for="celular" :value="__('Celular')" />
-                            <x-text-input id="celular" name="celular" type="text"
+                            <x-input id="celular" name="celular" type="text"
                                 class="w-full mask-celular" :value="old('celular', $cliente->celular)" />
                         </div>
                         <div>
                             <x-input-label for="telefone" :value="__('Telefone')" />
-                            <x-text-input id="telefone" name="telefone" type="text"
+                            <x-input id="telefone" name="telefone" type="text"
                                 class="w-full mask-telefone" :value="old('telefone', $cliente->telefone)" />
                         </div>
 
                         <div class="md:col-span-2">
                             <x-input-label for="email" :value="__('Email')" />
-                            <x-text-input id="email" name="email" type="email" class="w-full"
+                            <x-input id="email" name="email" type="email" class="w-full"
                                 :value="old('email', $cliente->email)" />
                         </div>
 
@@ -98,32 +98,32 @@
 
                         <div>
                             <x-input-label for="cep" :value="__('CEP')" />
-                            <x-text-input id="cep" name="cep" type="text"
+                            <x-input id="cep" name="cep" type="text"
                                 class="w-full mask-cep" :value="old('cep', $cliente->cep)" />
                         </div>
                         <div class="md:col-span-2">
                             <x-input-label for="logradouro" :value="__('Logradouro')" />
-                            <x-text-input id="logradouro" name="logradouro" type="text" class="w-full"
+                            <x-input id="logradouro" name="logradouro" type="text" class="w-full"
                                 :value="old('logradouro', $cliente->logradouro)" />
                         </div>
                         <div>
                             <x-input-label for="numero" :value="__('Número')" />
-                            <x-text-input id="numero" name="numero" type="text" class="w-full"
+                            <x-input id="numero" name="numero" type="text" class="w-full"
                                 :value="old('numero', $cliente->numero)" />
                         </div>
                         <div class="md:col-span-2">
                             <x-input-label for="complemento" :value="__('Complemento')" />
-                            <x-text-input id="complemento" name="complemento" type="text"
+                            <x-input id="complemento" name="complemento" type="text"
                                 class="w-full" :value="old('complemento', $cliente->complemento)" />
                         </div>
                         <div class="md:col-span-2">
                             <x-input-label for="bairro" :value="__('Bairro')" />
-                            <x-text-input id="bairro" name="bairro" type="text" class="w-full"
+                            <x-input id="bairro" name="bairro" type="text" class="w-full"
                                 :value="old('bairro', $cliente->bairro)" />
                         </div>
                         <div class="md:col-span-2">
                             <x-input-label for="cidade" :value="__('Cidade')" />
-                            <x-text-input id="cidade" name="cidade" type="text" class="w-full"
+                            <x-input id="cidade" name="cidade" type="text" class="w-full"
                                 :value="old('cidade', $cliente->cidade)" />
                         </div>
                         <div class="md:col-span-1">
