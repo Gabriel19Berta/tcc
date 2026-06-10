@@ -42,4 +42,52 @@ class Produto extends Model
             get: fn ($value, $attributes) => $attributes['status'] ? 'Ativo' : 'Inativo',
         );
     }
+
+    /**
+     * Filtro de produtos
+     */
+    public function scopeFiltroCodigo($query, $codigo)
+    {
+        if ($codigo) {
+            $query->where('id', $codigo);
+        }
+
+        return $query;
+    }
+
+    public function scopeFiltroStatus($query, $status)
+    {
+        if ($status !== 'todos') {
+            $query->where('status', $status);
+        }
+
+        return $query;
+    }
+
+    public function scopeFiltroNome($query, $nome)
+    {
+        if ($nome) {
+            $query->where('nome', 'like', "%{$nome}%");
+        }
+
+        return $query;
+    }
+
+    public function scopeFiltroMarca($query, $marcaId) 
+    {
+        if ($marcaId) {
+            $query->where('marca_id', $marcaId);
+        }
+
+        return $query;
+    }
+
+    public function scopeFiltroTipoProduto($query, $tipoProdutoId) 
+    {
+        if ($tipoProdutoId) {
+            $query->where('tipo_produto_id', $tipoProdutoId);
+        }
+
+        return $query;
+    }
 }

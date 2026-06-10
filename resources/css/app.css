@@ -93,5 +93,9 @@
 
     .select2.select2-container.select2-container--default > .selection > .select2-selection.select2-selection--single > .select2-selection__arrow {
         @apply !h-[34px]
-    } 
+    }
+
+    .contain-check {
+        @apply p-[6px] border border-gray-300 rounded-md mt-1 flex flex-wrap gap-4
+    }
 }

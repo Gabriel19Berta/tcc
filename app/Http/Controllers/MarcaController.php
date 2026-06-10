@@ -14,23 +14,12 @@ class MarcaController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Marca::query();
-
-        if ($request->filled('codigo')) {
-            $query->where('id', $request->codigo);
-        }
-
-        $status = $request->input('status', '1');
-
-        if ($status !== 'todos') {
-            $query->where('status', $status);
-        }
-
-        if ($request->filled('nome')) {
-            $query->where('nome', 'LIKE', '%' . $request->nome . '%');
-        }
-
-        $marcas = $query->OrderByDesc('id')->paginate(15);
+        $marcas = Marca::query()
+        ->filtroCodigo($request->codigo)
+        ->filtroStatus($request->input('status', '1'))
+        ->filtroNome($request->nome)
+        ->orderByDesc('id')
+        ->paginate(15);
 
         return view('marcas.index', compact('marcas'));
     }
