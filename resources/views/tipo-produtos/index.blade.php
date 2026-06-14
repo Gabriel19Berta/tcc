@@ -4,9 +4,14 @@
             <h1>
                 {{ __('Tipo Produtos') }}
             </h1>
-            <x-action-link href="{{ route('tipo-produtos.create') }}">
-                Cadastrar
-            </x-action-link>
+            <div>
+                <x-action-link href="{{ route('tipo-produtos.export') }}" color="beige">
+                    Relatório
+                </x-action-link>
+                <x-action-link href="{{ route('tipo-produtos.create') }}">
+                    Cadastrar
+                </x-action-link>
+            </div>
         </div>
     </x-slot>
 

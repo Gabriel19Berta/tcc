@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\TipoProdutoExport;
+use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Requests\TipoProdutoRequest;
 use App\Models\TipoProduto;
 use Illuminate\Http\Request;
@@ -101,5 +103,10 @@ class TipoProdutoController extends Controller
         } catch (\Exception $e) {
             return back()->with('error', 'Erro ao excluir tipo produto!');
         }
+    }
+
+    public function export()
+    {
+        return Excel::download(new TipoProdutoExport, 'tipo-produtos.xlsx');
     }
 }
