@@ -4,7 +4,10 @@
     </div>
 
     <div class="flex flex-col sm:flex-row gap-2 sm:items-end">
-        <x-limpar-filtro class="w-full sm:w-auto"/>
+        <a href="{{ url()->current() }}" class="flex btn btn-danger px-4 block text-center">
+            Limpar
+            <i class="fa-solid fa-eraser ml-2"></i>
+        </a>
 
         <x-primary-button class="w-full sm:w-auto justify-center">
             {{ __('Buscar') }}
