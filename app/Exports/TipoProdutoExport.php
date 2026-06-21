@@ -30,8 +30,8 @@ class TipoProdutoExport implements FromCollection, WithStyles, WithHeadings, Wit
     public function headings(): array
     {
         return [
-            'Cód',
-            'Situação',
+            'Código',
+            'Status',
             'Nome',
             'Criado em',
             'Modificado em'
