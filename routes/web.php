@@ -57,6 +57,7 @@ Route::put('/marcas/{id}', [MarcaController::class, 'update'])->name('marcas.upd
 Route::delete('/marcas/{id}', [MarcaController::class, 'destroy'])->name('marcas.destroy');
 
 /* TIPO PRODUTO */
+Route::get('/tipo-produtos/export', [TipoProdutoController::class, 'export'])->name('tipo-produtos.export');
 Route::get('/tipo-produtos', [TipoProdutoController::class, 'index'])->name('tipo-produtos.index');
 Route::get('/tipo-produtos/create', [TipoProdutoController::class, 'create'])->name('tipo-produtos.create');
 Route::post('/tipo-produtos/store', [TipoProdutoController::class, 'store'])->name('tipo-produtos.store');
