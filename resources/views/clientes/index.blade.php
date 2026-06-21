@@ -58,7 +58,7 @@
                         {{ $cliente->cliente->id }}
                     </td>
                     <td>
-                        <x-status :status="$cliente->status" :id="$cliente->id" />
+                        <x-status :status="$cliente->status" :id="$cliente->id" model="pessoas"/>
                     </td>
                     <td>
                         {{ $cliente->nome }}

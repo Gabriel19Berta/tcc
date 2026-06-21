@@ -5,10 +5,9 @@ use App\Http\Controllers\FuncionarioController;
 use App\Http\Controllers\MarcaController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\PessoaController;
 use App\Http\Controllers\ProdutoController;
 use App\Http\Controllers\TipoProdutoController;
-use GuzzleHttp\Client;
+use App\Http\Controllers\StatusController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -26,8 +25,8 @@ Route::middleware('auth')->group(function () {
 
 require __DIR__.'/auth.php';
 
-//PESSOAS
-Route::patch('/pessoas/{id}/toggle-status', [PessoaController::class, 'toggleStatus'])->name('pessoas.toggleStatus');
+/* ALTERAR STATUS */
+Route::patch('/status/{model}/{id}', [StatusController::class, 'toggle'])->name('status.toggle');
 
 /* CLIENTES */
 Route::get('/clientes', [ClienteController::class, 'index'])->name('clientes.index');

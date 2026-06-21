@@ -52,7 +52,7 @@
                         {{ $tipoProduto->id }}
                     </td>
                     <td class="w-24 text-center">
-                        <x-status :status="$tipoProduto->status" :id="$tipoProduto->id" />
+                        <x-status :status="$tipoProduto->status" :id="$tipoProduto->id" model="tipoProdutos" />
                     </td>
                     <td>
                         {{ $tipoProduto->nome }}
