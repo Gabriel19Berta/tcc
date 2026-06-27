@@ -63,23 +63,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    /* 
-    Código comentado para fins de testes de bug ao acessar uma página
-    continuar na mesma página
-    */
-    /* const originalFetch = window.fetch;
-
-    window.fetch = async function (...args) {
-        showLoader();
-
-        try {
-            const response = await originalFetch(...args);
-            return response;
-        } finally {
-            hideLoader();
-        }
-    }; */
-
     window.addEventListener("load", () => {
         hideLoader();
     });
