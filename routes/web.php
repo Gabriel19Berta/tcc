@@ -75,9 +75,5 @@ Route::get('/produtos/{id}/edit', [ProdutoController::class, 'edit'])->name('pro
 Route::put('/produtos/{id}', [ProdutoController::class, 'update'])->name('produtos.update');
 Route::delete('/produtos/{id}', [ProdutoController::class, 'destroy'])->name('produtos.destroy');
 
-/* RELATÓRIO */
-Route::prefix('relatorios')->name('relatorios.')->group(function () {
-    Route::get('/', [RelatorioController::class, 'modulos'])->name('modulos');
-    Route::get('/{modulo}', [RelatorioController::class, 'index'])->name('index');
-    Route::post('/gerar', [RelatorioController::class, 'gerar'])->name('gerar');
-});
+Route::get('/relatorios', [RelatorioController::class, 'index'])->name('relatorios.index');
+Route::get('relatorios/gerar', [RelatorioController::class, 'gerar'])->name('relatorios.gerar');

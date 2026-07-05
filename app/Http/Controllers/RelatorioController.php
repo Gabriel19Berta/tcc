@@ -2,21 +2,50 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\MarcasExport;
+use App\Relatorios\ExportadorManager;
+use App\Relatorios\RelatorioManager;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Excel;
 
 class RelatorioController extends Controller
 {
-    public function index(string $modulo)
+    public function index(Request $request, RelatorioManager $manager)
     {
-        $config = config("relatorios.$modulo");
+        $relatorio = null;
+        $dados = collect();
 
-        return view('relatorios.index', compact('modulo', 'config'));
+        if ($request->filled('relatorio')) {
+
+            $relatorio = $manager->buscar($request->relatorio);
+
+            // Se houver filtros enviados, gera o relatório
+            if ($request->hasAny(['nome'])) {
+                $dados = $relatorio->gerar($request->all());
+            }
+        }
+
+        return view('relatorios.index', [
+            'modulos' => $manager->modulos(),
+            'relatorio' => $relatorio,
+            'dados' => $dados,
+        ]);
     }
 
-    public function modulos()
+    public function gerar(Request $request, RelatorioManager $relatorios, ExportadorManager $exportadores) 
     {
-        $modulos = config('relatorios');
+        $relatorio = $relatorios->buscar($request->relatorio);
 
-        return view('relatorios.modulos', compact('modulos'));
+        $exportador = $exportadores->obter($request->formato);
+
+        return $exportador->exportar($relatorio, $request->all());
+    }
+
+    public function excel(Request $request, RelatorioManager $manager)
+    {
+        $relatorio = $manager->buscar($request->slug);
+        $dados = $relatorio->gerar($request->all());
+
+        return Excel::download(new MarcasExport($dados), 'marcas.xlsx');
     }
 }
