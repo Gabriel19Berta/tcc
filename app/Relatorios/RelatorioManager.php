@@ -4,12 +4,14 @@ namespace App\Relatorios;
 
 use App\Relatorios\Marcas\MarcasRelatorio;
 use App\Relatorios\TipoProdutos\TipoProdutosRelatorio;
+use App\Relatorios\Produtos\ProdutosRelatorio;
 
 class RelatorioManager
 {
     protected array $relatorios = [
         MarcasRelatorio::class,
         TipoProdutosRelatorio::class,
+        ProdutosRelatorio::class,
     ];
 
     public function todos()
