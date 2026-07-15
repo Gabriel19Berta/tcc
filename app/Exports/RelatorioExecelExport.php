@@ -35,7 +35,7 @@ class RelatorioExecelExport implements
 
     public function map($row): array
     {
-        return $this->relatorio->mapear($row);
+        return $this->relatorio->linha($row);
     }
 
     public function styles(Worksheet $sheet)

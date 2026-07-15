@@ -21,7 +21,7 @@ class MarcasRelatorio implements RelatorioInterface
     }
 
     #[Override]
-    public function mapear($marca): array
+    public function linha($marca): array
     {
         return [
             $marca->id,

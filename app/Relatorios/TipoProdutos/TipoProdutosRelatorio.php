@@ -21,7 +21,7 @@ class TipoProdutosRelatorio implements RelatorioInterface
     }
 
     #[Override]
-    public function mapear($tipoProduto): array
+    public function linha($tipoProduto): array
     {
         return [
             $tipoProduto->id,
