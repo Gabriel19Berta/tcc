@@ -4,6 +4,7 @@ namespace App\Relatorios\Produtos;
 
 use App\Models\Produto;
 use App\Relatorios\Contratos\RelatorioInterface;
+use App\Support\Formatador;
 use Override;
 
 class ProdutosRelatorio implements RelatorioInterface
@@ -32,17 +33,17 @@ class ProdutosRelatorio implements RelatorioInterface
     {
         return [
             $produto->id,
-            $produto->status ? 'Ativo' : 'Inativo',
+            Formatador::status($produto->status),
             $produto->nome,
-            $produto->marca_id,
-            $produto->tipo_produto_id,
+            $produto->marca?->nome,
+            $produto->tipoProduto?->nome,
             $produto->peso,
-            $produto->preco_custo,
-            $produto->preco_venda,
-            $produto->contra_estoque ? 'Inativo' : 'Ativo',
+            Formatador::moeda($produto->preco_custo),
+            Formatador::moeda($produto->preco_venda),
+            $produto->controla_estoque ? 'Sim' : 'Não',
             $produto->quantidade,
-            $produto->created_at->format('d/m/Y H:i:s'),
-            $produto->update_at ? $produto->update_at->format('d/m/Y H:i:s') : ''
+            Formatador::data($produto->created_at),
+            Formatador::data($produto->update_at)
         ];
     }
 
@@ -73,7 +74,7 @@ class ProdutosRelatorio implements RelatorioInterface
     #[Override]
     public function gerar(array $filtros)
     {
-        return Produto::query()
+        return Produto::with(['marca', 'tipoProduto'])
             ->when(filled($filtros['status']),
                 fn($query) => $query->where(
                     'status',
