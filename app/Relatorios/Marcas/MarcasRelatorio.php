@@ -4,6 +4,7 @@ namespace App\Relatorios\Marcas;
 
 use App\Models\Marca;
 use App\Relatorios\Contratos\RelatorioInterface;
+use App\Support\Formatador;
 use Override;
 
 class MarcasRelatorio implements RelatorioInterface
@@ -25,10 +26,10 @@ class MarcasRelatorio implements RelatorioInterface
     {
         return [
             $marca->id,
-            $marca->status ? 'Ativo' : 'Inativo',
+            Formatador::status($marca->status),
             $marca->nome,
-            $marca->created_at->format('d/m/Y H:i:s'),
-            $marca->update_at ? $marca->update_at->format('d/m/Y H:i:s') : ''
+            Formatador::data($marca->created_at),
+            Formatador::data($marca->update_at)
         ];
     }
 

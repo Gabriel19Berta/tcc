@@ -4,6 +4,7 @@ namespace App\Relatorios\TipoProdutos;
 
 use App\Models\TipoProduto;
 use App\Relatorios\Contratos\RelatorioInterface;
+use App\Support\Formatador;
 use Override;
 
 class TipoProdutosRelatorio implements RelatorioInterface
@@ -25,10 +26,10 @@ class TipoProdutosRelatorio implements RelatorioInterface
     {
         return [
             $tipoProduto->id,
-            $tipoProduto->status ? 'Ativo' : 'Inativo',
+            Formatador::status($tipoProduto->status),
             $tipoProduto->nome,
-            $tipoProduto->created_at->format('d/m/Y H:i:s'),
-            $tipoProduto->update_at ? $tipoProduto->update_at->format('d/m/Y H:i:s') : ''
+            Formatador::data($tipoProduto->created_at),
+            Formatador::data($tipoProduto->update_at)
         ];
     }
 

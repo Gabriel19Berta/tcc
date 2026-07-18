@@ -9,9 +9,9 @@ use App\Relatorios\Produtos\ProdutosRelatorio;
 class RelatorioManager
 {
     protected array $relatorios = [
+        ProdutosRelatorio::class,
         MarcasRelatorio::class,
         TipoProdutosRelatorio::class,
-        ProdutosRelatorio::class,
     ];
 
     public function todos()
