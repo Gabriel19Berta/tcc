@@ -3,6 +3,7 @@
 namespace App\Relatorios;
 
 use App\Relatorios\Clientes\ClientesRelatorio;
+use App\Relatorios\Funcionarios\FuncionariosRelatorio;
 use App\Relatorios\Marcas\MarcasRelatorio;
 use App\Relatorios\TipoProdutos\TipoProdutosRelatorio;
 use App\Relatorios\Produtos\ProdutosRelatorio;
@@ -11,6 +12,7 @@ class RelatorioManager
 {
     protected array $relatorios = [
         ClientesRelatorio::class,
+        FuncionariosRelatorio::class,
         ProdutosRelatorio::class,
         MarcasRelatorio::class,
         TipoProdutosRelatorio::class,
