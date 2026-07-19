@@ -80,7 +80,8 @@ class ClientesRelatorio implements RelatorioInterface
 
     public function gerar(array $filtros)
     {
-        return Pessoa::query()
+        return Pessoa::with(['cliente'])
+            ->whereHas('cliente')
             ->when(filled($filtros['status']),
                 fn($query) => $query->where(
                     'status',
