@@ -45,7 +45,7 @@ class ProdutoRequest extends FormRequest
             'tipo_produto_id' => ['nullable', 'integer'],
             'peso' => ['nullable', 'numeric'],
             'preco_custo' => ['nullable', 'numeric'],
-            'preco_venda' => ['nullable', 'numeric'],
+            'preco_venda' => ['nullable ', 'numeric', 'gte:preco_custo'],
             'controla_estoque' => ['nullable', 'boolean'],
             'quantidade' => ['required_if:controla_estoque, 1', 'nullable', 'numeric'],
         ];
@@ -55,7 +55,8 @@ class ProdutoRequest extends FormRequest
     {
         return [
             'nome.required' => 'Nome é obrigatório!',
-            'quantidade.required' => 'Quantidade é obrigatório!'
+            'quantidade.required' => 'Quantidade é obrigatório!',
+            'preco_venda.gte' => 'Preço de venda deve ser maior ou igual ao preço de custo!'
         ];
     }
 }
