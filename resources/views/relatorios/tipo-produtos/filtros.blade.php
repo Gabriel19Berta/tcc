@@ -32,7 +32,7 @@
             </div>
 
             <div class="float-right py-2">
-                <x-primary-button>
+                <x-primary-button  data-download>
                     {{ __('Gerar')}}
                 </x-primary-button>
             </div>

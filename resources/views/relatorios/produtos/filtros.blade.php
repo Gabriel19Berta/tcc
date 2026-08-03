@@ -34,7 +34,7 @@
 
             <div class="float-right py-2">
                 <x-primary-button>
-                    {{ __('Gerar')}}
+                    {{ __('Gerar') }}
                 </x-primary-button>
             </div>
         </form>
