@@ -132,19 +132,34 @@
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('clientes.index')">
+                    {{ __('Clientes') }}
+                </x-responsive-nav-link>
+
+                <x-responsive-nav-link :href="route('funcionarios.index')">
+                    {{ __('Funcionários') }}
+                </x-responsive-nav-link>
+
+                <x-responsive-nav-link :href="route('produtos.index')">
+                    {{ __('Produtos') }}
+                </x-responsive-nav-link>
+
+                <x-responsive-nav-link :href="route('marcas.index')">
+                    {{ __('Marcas') }}
+                </x-responsive-nav-link>
+
+                <x-responsive-nav-link :href="route('tipo-produtos.index')">
+                    {{ __('Tipo de produtos') }}
+                </x-responsive-nav-link>
+                
+                <x-responsive-nav-link :href="route('profile.edit')">
+                    {{ __('Perfil') }}
+                </x-responsive-nav-link>
         </div>
 
         <!-- Responsive Settings Options -->
         <div class="pt-4 pb-1 border-t border-gray-200">
-            <div class="px-4">
-                <div class="font-medium text-base text-gray-800">{{ Auth::user()->name }}</div>
-                <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
-            </div>
-
             <div class="mt-3 space-y-1">
-                <x-responsive-nav-link :href="route('profile.edit')">
-                    {{ __('Perfil') }}
-                </x-responsive-nav-link>
 
                 <!-- Authentication -->
                 <form method="POST" action="{{ route('logout') }}">
