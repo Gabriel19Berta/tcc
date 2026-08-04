@@ -31,6 +31,13 @@
                     <th>Nome</th>
                     <td>{{ $tipoProduto->nome }}</td>
                 </tr>
+                <tr>
+                    <th>Criado em</th>
+                    <td>{{ $tipoProduto->created_at->format('d/m/Y H:i:s') }}</td>
+                </tr>
+                <tr>
+                    <th>Modificado em</th>
+                    <td>{{ $tipoProduto->updated_at->format('d/m/Y H:i:s') }}</td>
             </x-show-table>
         </div>
     </div>

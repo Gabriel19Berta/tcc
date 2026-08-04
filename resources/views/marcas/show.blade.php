@@ -31,6 +31,14 @@
                     <th>Nome</th>
                     <td>{{ $marca->nome }}</td>
                 </tr>
+                <tr></tr>
+                    <th>Criado em</th>
+                    <td>{{ $marca->created_at->format('d/m/Y H:i:s') }}</td>
+                </tr>
+                <tr>
+                    <th>Modificado em</th>
+                    <td>{{ $marca->updated_at->format('d/m/Y H:i:s') }}</td>
+                </tr>
             </x-show-table>
         </div>
     </div>

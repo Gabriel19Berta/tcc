@@ -51,6 +51,14 @@
                     <th>Preço de venda</th>
                     <td>{{ $produto->preco_venda }}</td>
                 </tr>
+                <tr>
+                    <th>Criado em</th>
+                    <td>{{ $produto->created_at->format('d/m/Y H:i:s') }}</td>
+                </tr>
+                <tr>
+                    <th>Modificado em</th>
+                    <td>{{ $produto->updated_at->format('d/m/Y H:i:s') }}</td>
+                </tr>
                 <tr class="bg-gray-50">
                     <th colspan="2" scope="colgroup" class="text-base text-primary">
                         Estoque

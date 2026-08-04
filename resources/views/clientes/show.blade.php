@@ -85,6 +85,14 @@
                         <td>{{ $cliente->data_nascimento_formatada }}</td>
                     </tr>
                 @endif
+                <tr>
+                    <th>Criado em</th>
+                    <td>{{ $cliente->created_at->format('d/m/Y H:i:s') }}</td>
+                </tr>
+                <tr>
+                    <th>Modificado em</th>
+                    <td>{{ $cliente->updated_at->format('d/m/Y H:i:s') }}</td>
+                </tr>
                 <tr class="bg-gray-50">
                     <th colspan="2" scope="colgroup" class="text-base text-primary">
                         Contato

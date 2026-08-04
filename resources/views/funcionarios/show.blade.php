@@ -87,9 +87,15 @@
                 @endif
                 <tr>
                     <th>Data Admissão</th>
-                    @php
-                    @endphp
                     <td>{{ $funcionario->funcionario->data_admissao_formatada }}</td>
+                </tr>
+                <tr>
+                    <th>Criado em</th>
+                    <td>{{ $funcionario->created_at->format('d/m/Y H:i:s') }}</td>
+                </tr>
+                <tr>
+                    <th>Modificado em</th>
+                    <td>{{ $funcionario->updated_at->format('d/m/Y H:i:s') }}</td>
                 </tr>
                 <tr class="bg-gray-50">
                     <th colspan="2" scope="colgroup" class="text-base text-primary">
