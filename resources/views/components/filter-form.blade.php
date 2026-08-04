@@ -4,7 +4,7 @@
     </div>
 
     <div class="flex flex-col sm:flex-row gap-2 sm:items-end">
-        <a href="{{ url()->current() }}" class="flex btn btn-danger px-4 block text-center">
+        <a href="{{ url()->current() }}" class="flex btn btn-danger px-4 block text-center sm:w-auto justify-center">
             Limpar
             <i class="fa-solid fa-eraser ml-2"></i>
         </a>
