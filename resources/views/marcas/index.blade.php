@@ -33,8 +33,8 @@
     <table>
         <thead>
             <tr>
-                <th>Código</th>
-                <th>Status</th>
+                <th class="text-center">Código</th>
+                <th class="text-center">Status</th>
                 <th>Nome</th>
                 <th class="text-center">Ações</th>
             </tr>
@@ -43,30 +43,33 @@
         <tbody>
             @foreach ($marcas as $marca)
                 <tr>
-                    <td>
+                    <td class="w-24 text-center">
                         {{ $marca->id }}
                     </td>
-                    <td>
+                    <td class="w-24 text-center">
                         <x-status :status="$marca->status" :id="$marca->id" model="marcas" />
                     </td>
                     <td>
                         {{ $marca->nome }}
                     </td>
-                    <td class="flex gap-2 justify-center">
-                        <a href="{{ route('marcas.show', $marca->id) }}" class="btn btn-info">
-                            <i class="fa-solid fa-magnifying-glass"></i>
-                        </a>
-                        <a href="{{ route('marcas.edit', $marca->id) }}" class="btn btn-warning">
-                            <i class="fa-solid fa-pen-to-square"></i> 
-                        </a>
-                        <form action="{{ route('marcas.destroy', $marca->id) }}" method="POST" class="form-delete">
-                            @csrf
-                            @method('DELETE')
+                    <td class="w-2">
+                        <div class="flex gap-2 justify-center">
+                            <a href="{{ route('marcas.show', $marca->id) }}" class="btn btn-info">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                            </a>
+                            <a href="{{ route('marcas.edit', $marca->id) }}" class="btn btn-warning">
+                                <i class="fa-solid fa-pen-to-square"></i> 
+                            </a>
+                            <form action="{{ route('marcas.destroy', $marca->id) }}" method="POST" class="form-delete">
+                                @csrf
+                                @method('DELETE')
 
-                            <button type="submit" class='btn btn-danger'>
-                                <i class="fa-solid fa-trash"></i>
-                            </button>
-                        </form>
+                                <button type="submit" class='btn btn-danger'>
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </form>
+                        </div>
+                        
                     </td>
                 </tr>
             @endforeach

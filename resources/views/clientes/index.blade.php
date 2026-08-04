@@ -41,8 +41,8 @@
     <table>
         <thead>
             <tr>
-                <th>Código</th>
-                <th>Status</th>
+                <th class="text-center">Código</th>
+                <th class="text-center">Status</th>
                 <th>Nome</th>
                 <th>Tipo</th>
                 <th>Documento</th>
@@ -54,10 +54,10 @@
         <tbody>
             @foreach ($clientes as $cliente)
                 <tr>
-                    <td>
+                    <td class="w-24 text-center">
                         {{ $cliente->cliente->id }}
                     </td>
-                    <td>
+                    <td class="w-24 text-center">
                         <x-status :status="$cliente->status" :id="$cliente->id" model="pessoas"/>
                     </td>
                     <td>
@@ -84,21 +84,23 @@
                     <td>
                         {{ $cliente->celular }}
                     </td>
-                    <td class="flex gap-2 justify-center">
-                        <a href="{{ route('clientes.show', $cliente->id) }}" class="btn btn-info">
-                            <i class="fa-solid fa-magnifying-glass"></i>
-                        </a>
-                        <a href="{{ route('clientes.edit', $cliente->id) }}" class="btn btn-warning">
-                            <i class="fa-solid fa-pen-to-square"></i> 
-                        </a>
-                        <form action="{{ route('clientes.destroy', $cliente->cliente->id) }}" method="POST" class="form-delete">
-                            @csrf
-                            @method('DELETE')
+                    <td class="w-24">
+                        <div class="flex gap-2 justify-center">
+                            <a href="{{ route('clientes.show', $cliente->id) }}" class="btn btn-info">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                            </a>
+                            <a href="{{ route('clientes.edit', $cliente->id) }}" class="btn btn-warning">
+                                <i class="fa-solid fa-pen-to-square"></i> 
+                            </a>
+                            <form action="{{ route('clientes.destroy', $cliente->cliente->id) }}" method="POST" class="form-delete">
+                                @csrf
+                                @method('DELETE')
 
-                            <button type="submit" class='btn btn-danger'>
-                                <i class="fa-solid fa-trash"></i>
-                            </button>
-                        </form>
+                                <button type="submit" class='btn btn-danger'>
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </form>
+                        </div>
                     </td>
                 </tr>
             @endforeach

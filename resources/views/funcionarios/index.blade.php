@@ -41,8 +41,8 @@
     <table>
         <thead>
             <tr>
-                <th>Código</th>
-                <th>Status</th>
+                <th class="text-center">Código</th>
+                <th class="text-center">Status</th>
                 <th>Nome</th>
                 <th>Tipo</th>
                 <th>Documento</th>
@@ -54,10 +54,10 @@
         <tbody>
             @foreach ($funcionarios as $funcionario)
                 <tr>
-                    <td>
+                    <td class="w-24 text-center">
                         {{ $funcionario->funcionario->id }}
                     </td>
-                    <td>
+                    <td class="w-24 text-center">
                         <x-status :status="$funcionario->status" :id="$funcionario->id" model="pessoas" />
                     </td>
                     <td>
@@ -84,21 +84,23 @@
                     <td>
                         {{ $funcionario->celular }}
                     </td>
-                    <td class="flex gap-2 justify-center">
-                        <a href="{{ route('funcionarios.show', $funcionario->id) }}" class="btn btn-info">
-                            <i class="fa-solid fa-magnifying-glass"></i>
-                        </a>
-                        <a href="{{ route('funcionarios.edit', $funcionario->id) }}" class="btn btn-warning">
-                            <i class="fa-solid fa-pen-to-square"></i> 
-                        </a>
-                        <form action="{{ route('funcionarios.destroy', $funcionario->funcionario->id) }}" method="POST" class="form-delete">
-                            @csrf
-                            @method('DELETE')
+                    <td class="w-24">
+                        <div class="flex gap-2 justify-center">
+                            <a href="{{ route('funcionarios.show', $funcionario->id) }}" class="btn btn-info">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                            </a>
+                            <a href="{{ route('funcionarios.edit', $funcionario->id) }}" class="btn btn-warning">
+                                <i class="fa-solid fa-pen-to-square"></i> 
+                            </a>
+                            <form action="{{ route('funcionarios.destroy', $funcionario->funcionario->id) }}" method="POST" class="form-delete">
+                                @csrf
+                                @method('DELETE')
 
-                            <button type="submit" class='btn btn-danger'>
-                                <i class="fa-solid fa-trash"></i>
-                            </button>
-                        </form>
+                                <button type="submit" class='btn btn-danger'>
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </form>
+                        </div>
                     </td>
                 </tr>
             @endforeach
