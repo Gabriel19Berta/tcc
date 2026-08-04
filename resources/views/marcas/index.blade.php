@@ -47,7 +47,7 @@
                         {{ $marca->id }}
                     </td>
                     <td>
-                        <x-status :status="$marca->status" :id="$marca->id" />
+                        <x-status :status="$marca->status" :id="$marca->id" model="marcas" />
                     </td>
                     <td>
                         {{ $marca->nome }}

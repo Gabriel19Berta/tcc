@@ -74,6 +74,9 @@
                             </x-slot>
                         </x-dropdown>
                     </div>
+                    <x-nav-link :href="route('relatorios.index')" :active="request()->routeIs('relatorios.*')">
+                        {{ __('Relatórios') }}
+                    </x-nav-link>
                 </div>
             </div>
 

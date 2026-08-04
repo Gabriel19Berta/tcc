@@ -35,13 +35,13 @@
                             <div class="contain-check">
                                 <label for="fisico" class="flex items-center gap-2 cursor-pointer">
                                     <x-input id="fisico" name="tipo" type="radio" value="f"
-                                        :checked="old('tipo', 'f') === 'f'" />
+                                        :checked="old('tipo', $funcionario->tipo) === 'f'" />
                                     <span>Física</span>
                                 </label>
 
                                 <label for="juridica" class="flex items-center gap-2 cursor-pointer">
                                     <x-input id="juridica" name="tipo" type="radio" value="j"
-                                        :checked="old('tipo', 'f') === 'j'" />
+                                        :checked="old('tipo', $funcionario->tipo) === 'j'" />
                                     <span>Jurídica</span>
                                 </label>
                             </div>

@@ -37,52 +37,72 @@ document.addEventListener("DOMContentLoaded", () => {
     });
    
     /* ADICIONE/REMOVE loading */
+    const loader = document.getElementById("loader");
+
     function showLoader() {
-        document.getElementById("loader").classList.remove("hidden");
+        loader?.classList.remove("hidden");
     }
 
     function hideLoader() {
-        document.getElementById("loader").classList.add("hidden");
+        loader?.classList.add("hidden");
     }
 
     document.querySelectorAll("a").forEach(link => {
-        link.addEventListener("click", function () {
+        link.addEventListener("click", function (e) {
+            if (
+                e.defaultPrevented ||
+                e.ctrlKey ||
+                e.metaKey ||
+                e.shiftKey ||
+                e.altKey ||
+                e.button === 1
+            ) {
+                return;
+            }
+
             const href = link.getAttribute("href");
 
-            if (!href || href.startsWith("#") || link.target === "_blank") return;
+            if (
+                !href ||
+                href.startsWith("#") ||
+                href.startsWith("javascript:") ||
+                href.startsWith("mailto:") ||
+                href.startsWith("tel:")
+            ) {
+                return;
+            }
+
+            if (
+                link.target === "_blank" ||
+                link.dataset.download !== undefined
+            ) {
+                return;
+            }
 
             showLoader();
         });
     });
 
     document.querySelectorAll("form").forEach(form => {
-        form.addEventListener("submit", function (e) {
-            if (!form.checkValidity()) return;
+        form.addEventListener("submit", (e) => {
+            if (!form.checkValidity()) {
+                return;
+            }
+
+            const button = e.submitter;
+
+            if (button?.dataset.download !== undefined) {
+                return;
+            }
 
             showLoader();
         });
     });
+    
 
-    /* 
-    Código comentado para fins de testes de bug ao acessar uma página
-    continuar na mesma página
-    */
-    /* const originalFetch = window.fetch;
+    window.addEventListener("load", hideLoader);
 
-    window.fetch = async function (...args) {
-        showLoader();
-
-        try {
-            const response = await originalFetch(...args);
-            return response;
-        } finally {
-            hideLoader();
-        }
-    }; */
-
-    window.addEventListener("load", () => {
-        hideLoader();
-    });
+    window.addEventListener("pageshow", hideLoader);
     
 
     // Controla a exibição dos campos com base no tipo de pessoa (Física ou Jurídica)

@@ -4,9 +4,11 @@
             <h1>
                 {{ __('Tipo Produtos') }}
             </h1>
-            <x-action-link href="{{ route('tipo-produtos.create') }}">
-                Cadastrar
-            </x-action-link>
+            <div>
+                <x-action-link href="{{ route('tipo-produtos.create') }}">
+                    Cadastrar
+                </x-action-link>
+            </div>
         </div>
     </x-slot>
 
@@ -47,7 +49,7 @@
                         {{ $tipoProduto->id }}
                     </td>
                     <td class="w-24 text-center">
-                        <x-status :status="$tipoProduto->status" :id="$tipoProduto->id" />
+                        <x-status :status="$tipoProduto->status" :id="$tipoProduto->id" model="tipoProdutos" />
                     </td>
                     <td>
                         {{ $tipoProduto->nome }}

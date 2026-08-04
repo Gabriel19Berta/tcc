@@ -5,10 +5,10 @@ use App\Http\Controllers\FuncionarioController;
 use App\Http\Controllers\MarcaController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\PessoaController;
 use App\Http\Controllers\ProdutoController;
+use App\Http\Controllers\RelatorioController;
 use App\Http\Controllers\TipoProdutoController;
-use GuzzleHttp\Client;
+use App\Http\Controllers\StatusController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -26,8 +26,8 @@ Route::middleware('auth')->group(function () {
 
 require __DIR__.'/auth.php';
 
-//PESSOAS
-Route::patch('/pessoas/{id}/toggle-status', [PessoaController::class, 'toggleStatus'])->name('pessoas.toggleStatus');
+/* ALTERAR STATUS */
+Route::patch('/status/{model}/{id}', [StatusController::class, 'toggle'])->name('status.toggle');
 
 /* CLIENTES */
 Route::get('/clientes', [ClienteController::class, 'index'])->name('clientes.index');
@@ -57,6 +57,7 @@ Route::put('/marcas/{id}', [MarcaController::class, 'update'])->name('marcas.upd
 Route::delete('/marcas/{id}', [MarcaController::class, 'destroy'])->name('marcas.destroy');
 
 /* TIPO PRODUTO */
+Route::get('/tipo-produtos/export', [TipoProdutoController::class, 'export'])->name('tipo-produtos.export');
 Route::get('/tipo-produtos', [TipoProdutoController::class, 'index'])->name('tipo-produtos.index');
 Route::get('/tipo-produtos/create', [TipoProdutoController::class, 'create'])->name('tipo-produtos.create');
 Route::post('/tipo-produtos/store', [TipoProdutoController::class, 'store'])->name('tipo-produtos.store');
@@ -73,3 +74,6 @@ Route::get('/produtos/{id}', [ProdutoController::class, 'show'])->name('produtos
 Route::get('/produtos/{id}/edit', [ProdutoController::class, 'edit'])->name('produtos.edit');
 Route::put('/produtos/{id}', [ProdutoController::class, 'update'])->name('produtos.update');
 Route::delete('/produtos/{id}', [ProdutoController::class, 'destroy'])->name('produtos.destroy');
+
+Route::get('/relatorios', [RelatorioController::class, 'index'])->name('relatorios.index');
+Route::get('relatorios/gerar', [RelatorioController::class, 'gerar'])->name('relatorios.gerar');
