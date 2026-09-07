@@ -1,5 +1,13 @@
 import './bootstrap';
 import 'flowbite';
+
+import $ from 'jquery';
+window.$ = window.jQuery = $;
+
+import select2 from 'select2';
+/* Inicializa o plugin Select2 no jQuery */
+select2();
+
 import Alpine from 'alpinejs';
 import { iniMascaras } from './mascaras';
 import { consultaCep } from './consultaCep';
@@ -12,49 +20,89 @@ document.addEventListener("DOMContentLoaded", () => {
     iniMascaras();
     consultaCep();
 
+    $('.select2').select2({
+        placeholder: 'Selecione',
+        allowClear: true,
+        language: {
+            noResults: function () {
+                return "Nenhum resultado encontrado";
+            },
+            searching: function () {
+                return "Pesquisando...";
+            },
+            inputTooShort: function (args) {
+                return `Digite ${args.minimum - args.input.length} ou mais caracteres`;
+            }
+        },
+    });
+   
     /* ADICIONE/REMOVE loading */
+    const loader = document.getElementById("loader");
+
     function showLoader() {
-        document.getElementById("loader").classList.remove("hidden");
+        loader?.classList.remove("hidden");
     }
 
     function hideLoader() {
-        document.getElementById("loader").classList.add("hidden");
+        loader?.classList.add("hidden");
     }
 
     document.querySelectorAll("a").forEach(link => {
-        link.addEventListener("click", function () {
+        link.addEventListener("click", function (e) {
+            if (
+                e.defaultPrevented ||
+                e.ctrlKey ||
+                e.metaKey ||
+                e.shiftKey ||
+                e.altKey ||
+                e.button === 1
+            ) {
+                return;
+            }
+
             const href = link.getAttribute("href");
 
-            if (!href || href.startsWith("#") || link.target === "_blank") return;
+            if (
+                !href ||
+                href.startsWith("#") ||
+                href.startsWith("javascript:") ||
+                href.startsWith("mailto:") ||
+                href.startsWith("tel:")
+            ) {
+                return;
+            }
+
+            if (
+                link.target === "_blank" ||
+                link.dataset.download !== undefined
+            ) {
+                return;
+            }
 
             showLoader();
         });
     });
 
     document.querySelectorAll("form").forEach(form => {
-        form.addEventListener("submit", function (e) {
-            if (!form.checkValidity()) return;
+        form.addEventListener("submit", (e) => {
+            if (!form.checkValidity()) {
+                return;
+            }
+
+            const button = e.submitter;
+
+            if (button?.dataset.download !== undefined) {
+                return;
+            }
 
             showLoader();
         });
     });
+    
 
-    const originalFetch = window.fetch;
+    window.addEventListener("load", hideLoader);
 
-    window.fetch = async function (...args) {
-        showLoader();
-
-        try {
-            const response = await originalFetch(...args);
-            return response;
-        } finally {
-            hideLoader();
-        }
-    };
-
-    window.addEventListener("load", () => {
-        hideLoader();
-    });
+    window.addEventListener("pageshow", hideLoader);
     
 
     // Controla a exibição dos campos com base no tipo de pessoa (Física ou Jurídica)
@@ -111,6 +159,7 @@ document.addEventListener("DOMContentLoaded", () => {
         form.addEventListener('submit', function (e) {
             if(!confirm('Tem certeza que deseja excluir?')) {
                 e.preventDefault();
+                hideLoader();
             }
         });
     });
@@ -127,6 +176,42 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         })
     })
+
+    function ajustarBotoesFormulario() {
+    const buttons = document.getElementById("form-buttons");
+
+    if (!buttons) return;
+
+        // Remove classes anteriores
+        buttons.classList.remove("fixed", "inset-x-0", "bottom-0", "z-50", "pb-2");
+
+        // Remove espaçador antigo
+        document.getElementById("form-buttons-spacer")?.remove();
+
+        const alturaDocumento = document.documentElement.scrollHeight;
+        const alturaJanela = window.innerHeight;
+
+        // Se o conteúdo é menor que a tela
+        if (alturaDocumento <= alturaJanela) {
+
+            const spacer = document.createElement("div");
+            spacer.id = "form-buttons-spacer";
+            spacer.style.height = buttons.offsetHeight + "px";
+
+            buttons.before(spacer);
+
+            buttons.classList.add(
+                "fixed",
+                "inset-x-0",
+                "bottom-0",
+                "z-50",
+                "pb-2"
+            );
+        }
+    }
+
+    window.addEventListener("load", ajustarBotoesFormulario);
+    window.addEventListener("resize", ajustarBotoesFormulario);
 });
 
 document.addEventListener('input', function (event) {

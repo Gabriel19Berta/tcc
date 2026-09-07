@@ -1,4 +1,5 @@
 @import "@fortawesome/fontawesome-free/css/all.min.css";
+@import "select2/dist/css/select2.min.css";
 
 @tailwind base;
 @tailwind components;
@@ -15,7 +16,7 @@
     }
 
     h2 {
-        @apply text-primary font-semibold text-xl leading-tight
+        @apply text-primary font-semibold text-xl leading-tight mt-8
     }
 
     input[type="checkbox"], input[type="radio"] {
@@ -25,6 +26,10 @@
 
     input:where([type='checkbox']):checked, input[type="radio"]:checked {
         @apply bg-primary bg-auto !important;
+    }
+
+    input::placeholder {
+        @apply text-gray-400
     }
 
     table {
@@ -62,7 +67,7 @@
 
 @layer components {
     .btn {
-        @apply inline-flex items-center px-2 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase 
+        @apply inline-flex items-center px-2 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase
         tracking-widest transition ease-in-out duration-150
     }
 
@@ -71,22 +76,26 @@
     }
 
     .btn-warning {
-        @apply bg-beige-600 hover:bg-beige-700 active:bg-beige-700 
+        @apply bg-beige-600 hover:bg-beige-700 active:bg-beige-700
     }
 
-    .btn-info { 
+    .btn-info {
         @apply bg-info hover:bg-info-600 active:bg-info-600
     }
 
-    .page-contain {
-        @apply py-4 mx-auto sm:px-6 lg:px-8
+    .select2.select2-container.select2-container--default {
+        @apply !w-full
     }
 
-    .form-contain {
-        @apply p-6 grid grid-cols-1 md:grid-cols-5 gap-4
+    .select2.select2-container.select2-container--default > .selection > .select2-selection.select2-selection--single {
+        @apply !h-[38px] !p-[4px] !rounded-md
     }
 
-    .card {
-        @apply bg-white overflow-hidden shadow-sm sm:rounded-lg
+    .select2.select2-container.select2-container--default > .selection > .select2-selection.select2-selection--single > .select2-selection__arrow {
+        @apply !h-[34px]
+    }
+
+    .contain-check {
+        @apply p-[6px] border border-gray-300 rounded-md mt-1 flex flex-wrap gap-4
     }
 }

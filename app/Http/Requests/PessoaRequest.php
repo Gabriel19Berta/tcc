@@ -18,7 +18,7 @@ class PessoaRequest extends FormRequest
     {
         $this->merge([
             'cpf' => $this->cpf ? preg_replace('/\D/', '', $this->cpf) : null,
-            'cnpj' => $this->cnpj ? preg_replace('/\D/', '', $this->cnpj) : null,
+            'cnpj' => $this->cnpj ? preg_replace('/[^A-Za-z0-9]/', '', $this->cnpj) : null,
             'rg'=> $this->rg ? preg_replace('/\D/', '', $this->rg) : null,
             'ie'=> $this->ie ? preg_replace('/\D/', '', $this->ie) : null,
             'celular' => $this->celular ? preg_replace('/\D/', '', $this->celular) : null,
@@ -44,8 +44,8 @@ class PessoaRequest extends FormRequest
             'status' => ['nullable', 'boolean'],
             'nome' => ['required', 'string'],
             'tipo' => ['nullable', 'in:f,j'],
-            'cpf' => ['nullable', 'string', 'size: 11'],
-            'cnpj' => ['nullable', 'string', 'size: 14'],
+            'cpf' => ['nullable', 'string', 'size: 11', 'cpf'],
+            'cnpj' => ['nullable', 'string', 'cnpj'],
             'rg' => ['nullable', 'string'],
             'ie' => ['nullable', 'string'],
             'data_nascimento' => ['nullable', 'date'],
@@ -74,7 +74,6 @@ class PessoaRequest extends FormRequest
         return [
             'nome.required' => 'Nome é obrigatório!',
             'cpf.size' => 'CPF deve ter 11 números!',
-            'cnpj.size' => 'CNPJ deve ter 14 números!',
             'celular.size' => 'Celular deve ter 11 números!',
             'cep.size' => 'CEP deve ter 8 números!'
         ];
