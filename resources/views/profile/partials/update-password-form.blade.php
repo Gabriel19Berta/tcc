@@ -1,38 +1,87 @@
 <section>
     <header>
         <h2>
-            {{ __('Update Password') }}
+            {{ __('Alterar Senha') }}
         </h2>
 
-        <p class="mt-1 text-sm text-gray-600">
-            {{ __('Ensure your account is using a long, random password to stay secure.') }}
+        <p class="mt-1 text-sm">
+            {{ __('Certifique-se de que sua conta esteja usando uma senha longa e aleatória para permanecer segura.') }}
         </p>
     </header>
 
-    <form method="post" action="{{ route('password.update') }}" class="mt-6 space-y-6">
+    <form method="post" action="{{ route('password.update') }}" class="mt-6 w-full">
         @csrf
         @method('put')
 
-        <div>
-            <x-input-label for="update_password_current_password" :value="__('Current Password')" />
-            <x-input id="update_password_current_password" name="current_password" type="password" class="mt-1 block w-full" autocomplete="current-password" />
-            <x-input-error :messages="$errors->updatePassword->get('current_password')" class="mt-2" />
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+            {{-- Senha atual --}}
+            <div>
+                <x-input-label
+                    for="update_password_current_password"
+                    :value="__('Senha atual')"
+                />
+
+                <x-input
+                    id="update_password_current_password"
+                    name="current_password"
+                    type="password"
+                    class="mt-1 block w-full"
+                    autocomplete="current-password"
+                />
+
+                <x-input-error
+                    class="mt-2"
+                    :messages="$errors->updatePassword->get('current_password')"
+                />
+            </div>
+
+            {{-- Nova senha --}}
+            <div>
+                <x-input-label
+                    for="update_password_password"
+                    :value="__('Nova Senha')"
+                />
+
+                <x-input
+                    id="update_password_password"
+                    name="password"
+                    type="password"
+                    class="mt-1 block w-full"
+                    autocomplete="new-password"
+                />
+
+                <x-input-error
+                    class="mt-2"
+                    :messages="$errors->updatePassword->get('password')"
+                />
+            </div>
+
+            {{-- Confirmação da senha --}}
+            <div>
+                <x-input-label
+                    for="update_password_password_confirmation"
+                    :value="__('Confirmação Senha')"
+                />
+
+                <x-input
+                    id="update_password_password_confirmation"
+                    name="password_confirmation"
+                    type="password"
+                    class="mt-1 block w-full"
+                    autocomplete="new-password"
+                />
+
+                <x-input-error
+                    class="mt-2"
+                    :messages="$errors->updatePassword->get('password_confirmation')"
+                />
+            </div>
+
         </div>
 
-        <div>
-            <x-input-label for="update_password_password" :value="__('New Password')" />
-            <x-input id="update_password_password" name="password" type="password" class="mt-1 block w-full" autocomplete="new-password" />
-            <x-input-error :messages="$errors->updatePassword->get('password')" class="mt-2" />
-        </div>
-
-        <div>
-            <x-input-label for="update_password_password_confirmation" :value="__('Confirm Password')" />
-            <x-input id="update_password_password_confirmation" name="password_confirmation" type="password" class="mt-1 block w-full" autocomplete="new-password" />
-            <x-input-error :messages="$errors->updatePassword->get('password_confirmation')" class="mt-2" />
-        </div>
-
-        <div class="flex items-center gap-4">
-            <x-primary-button>{{ __('Save') }}</x-primary-button>
+        {{-- Ações --}}
+        <div class="flex items-center justify-end gap-4 mt-6">
 
             @if (session('status') === 'password-updated')
                 <p
@@ -40,9 +89,16 @@
                     x-show="show"
                     x-transition
                     x-init="setTimeout(() => show = false, 2000)"
-                    class="text-sm text-gray-600"
-                >{{ __('Saved.') }}</p>
+                    class="text-sm text-primary"
+                >
+                    {{ __('Salvo.') }}
+                </p>
             @endif
+
+            <x-primary-button>
+                {{ __('Salvar') }}
+            </x-primary-button>
+
         </div>
     </form>
 </section>

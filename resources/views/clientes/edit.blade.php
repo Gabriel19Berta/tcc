@@ -19,7 +19,7 @@
                                 <input type="hidden" name="status" value="0">
                                 <x-input id="status" name="status" type="checkbox" value="1"
                                     class="rounded text-primary shadow-sm focus:ring-primary"
-                                    :checked="old('status', $cliente->status) == 1" 
+                                    :checked="old('status', $cliente->status) == 1"
                                 />
                                 <span>Ativo</span>
                             </div>

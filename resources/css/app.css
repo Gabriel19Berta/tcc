@@ -67,7 +67,7 @@
 
 @layer components {
     .btn {
-        @apply inline-flex items-center px-2 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase 
+        @apply inline-flex items-center px-2 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase
         tracking-widest transition ease-in-out duration-150
     }
 
@@ -76,10 +76,10 @@
     }
 
     .btn-warning {
-        @apply bg-beige-600 hover:bg-beige-700 active:bg-beige-700 
+        @apply bg-beige-600 hover:bg-beige-700 active:bg-beige-700
     }
 
-    .btn-info { 
+    .btn-info {
         @apply bg-info hover:bg-info-600 active:bg-info-600
     }
 

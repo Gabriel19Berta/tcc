@@ -9,8 +9,8 @@ export function iniMascaras() {
 
     // Máscara para valor (R$)
     Inputmask("currency", {
-        prefix: "R$ ",         
-        groupSeparator: ".", // Separador de milhar 
+        prefix: "R$ ",
+        groupSeparator: ".", // Separador de milhar
         radixPoint: ",",     // Separador decimal
         digits: 2,
         digitsOptional: false,

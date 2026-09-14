@@ -52,7 +52,7 @@
                         </div>
                         <div id="ie-field" class="hidden">
                             <x-input-label for="ie" :value="__('Inscrição Estadual')" />
-                            <x-input id="ie" name="ie" type="text" 
+                            <x-input id="ie" name="ie" type="text"
                                 :value="old('ie')" />
                         </div>
                         <div id="data-nascimento">

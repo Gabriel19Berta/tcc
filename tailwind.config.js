@@ -27,6 +27,7 @@ export default {
                 
                 /* Segundaria */
                 beige: {
+                    500: '#e4c6a8',
                     600: '#c4a783',
                     700: '#a7927b',
                 },

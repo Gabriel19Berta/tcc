@@ -9,7 +9,7 @@
 
     <div class="flex gap-6">
         <div class="w-80 shrink-0">
-            <x-relatorios.sidebar :modulos="$modulos"/>
+            <x-relatorios.sidebar :modulos="$modulos" :moduloSelecionado="$moduloSelecionado" :relatorio="$relatorio"/>
         </div>
 
         <div class="flex-1">

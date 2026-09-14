@@ -29,6 +29,7 @@ class RelatorioController extends Controller
             'modulos' => $manager->modulos(),
             'relatorio' => $relatorio,
             'dados' => $dados,
+            'moduloSelecionado' => $relatorio?->modulo(),
         ]);
     }
 

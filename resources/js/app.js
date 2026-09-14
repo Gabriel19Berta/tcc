@@ -159,6 +159,7 @@ document.addEventListener("DOMContentLoaded", () => {
         form.addEventListener('submit', function (e) {
             if(!confirm('Tem certeza que deseja excluir?')) {
                 e.preventDefault();
+                hideLoader();
             }
         });
     });
@@ -175,6 +176,42 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         })
     })
+
+    function ajustarBotoesFormulario() {
+    const buttons = document.getElementById("form-buttons");
+
+    if (!buttons) return;
+
+        // Remove classes anteriores
+        buttons.classList.remove("fixed", "inset-x-0", "bottom-0", "z-50", "pb-2");
+
+        // Remove espaçador antigo
+        document.getElementById("form-buttons-spacer")?.remove();
+
+        const alturaDocumento = document.documentElement.scrollHeight;
+        const alturaJanela = window.innerHeight;
+
+        // Se o conteúdo é menor que a tela
+        if (alturaDocumento <= alturaJanela) {
+
+            const spacer = document.createElement("div");
+            spacer.id = "form-buttons-spacer";
+            spacer.style.height = buttons.offsetHeight + "px";
+
+            buttons.before(spacer);
+
+            buttons.classList.add(
+                "fixed",
+                "inset-x-0",
+                "bottom-0",
+                "z-50",
+                "pb-2"
+            );
+        }
+    }
+
+    window.addEventListener("load", ajustarBotoesFormulario);
+    window.addEventListener("resize", ajustarBotoesFormulario);
 });
 
 document.addEventListener('input', function (event) {
