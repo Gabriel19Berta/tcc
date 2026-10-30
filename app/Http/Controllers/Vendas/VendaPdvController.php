@@ -35,7 +35,12 @@ class VendaPdvController extends Controller
     {
         $venda = Venda::with(['itens.produto', 'cliente.pessoa'])->findOrFail($id);
 
-        return view('vendas.pdv', compact('venda'));
+        $vendasAbertas = Venda::query()
+            ->where('status', Venda::STATUS_ABERTA)
+            ->orderByDesc('id')
+            ->get();
+
+        return view('vendas.pdv', compact('venda',  'vendasAbertas'));
     }
 
 
