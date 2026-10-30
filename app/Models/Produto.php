@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Produto extends Model
 {
@@ -24,7 +26,7 @@ class Produto extends Model
      *  Relacionamento
      *  Um produto pode ter uma marca
      */
-    public function marca() {
+    public function marca() :BelongsTo {
         return $this->belongsTo(Marca::class);
     }
 
@@ -32,8 +34,17 @@ class Produto extends Model
      *  Relacionamento
      *  Um produto pode ter um tipo produto
      */
-    public function tipoProduto() {
+    public function tipoProduto():BelongsTo {
         return $this->belongsTo(TipoProduto::class);
+    }
+
+    /**
+     *  Relacionamento
+     *  Um produto pode estar em vários itens de venda
+     */
+    public function itensVenda(): HasMany
+    {
+        return $this->hasMany(ItemVenda::class);
     }
 
     protected function statusFormatada(): Attribute
@@ -73,7 +84,7 @@ class Produto extends Model
         return $query;
     }
 
-    public function scopeFiltroMarca($query, $marcaId) 
+    public function scopeFiltroMarca($query, $marcaId)
     {
         if ($marcaId) {
             $query->where('marca_id', $marcaId);
@@ -82,7 +93,7 @@ class Produto extends Model
         return $query;
     }
 
-    public function scopeFiltroTipoProduto($query, $tipoProdutoId) 
+    public function scopeFiltroTipoProduto($query, $tipoProdutoId)
     {
         if ($tipoProdutoId) {
             $query->where('tipo_produto_id', $tipoProdutoId);

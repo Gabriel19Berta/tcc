@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('descricao');
             $table->dateTime('data_vencimento');
             $table->dateTime('data_pagamento')->nullable();
-            $table->boolean('status');
+            $table->string('status')->default('pendente');
             $table->timestamps();
         });
     }

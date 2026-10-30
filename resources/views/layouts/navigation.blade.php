@@ -26,7 +26,7 @@
                                 >
                                     Pessoas
 
-                                    <div class="ms-1 mt-1"> 
+                                    <div class="ms-1 mt-1">
                                         <i class="fa-solid fa-angle-down fa-sm"></i>
                                     </div>
                                 </button>
@@ -53,7 +53,7 @@
                                 >
                                     Produtos
 
-                                    <div class="ms-1 mt-1"> 
+                                    <div class="ms-1 mt-1">
                                         <i class="fa-solid fa-angle-down fa-sm"></i>
                                     </div>
                                 </button>
@@ -74,6 +74,35 @@
                             </x-slot>
                         </x-dropdown>
                     </div>
+
+                    <!-- Dropdown Vendas -->
+                    <div class="inline-flex items-center">
+                        <x-dropdown align="left" width="48">
+                            <x-slot name="trigger">
+                                <button
+                                    class="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md
+                                        text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition"
+                                >
+                                    Vendas
+
+                                    <div class="ms-1 mt-1">
+                                        <i class="fa-solid fa-angle-down fa-sm"></i>
+                                    </div>
+                                </button>
+                            </x-slot>
+
+                            <x-slot name="content">
+                                <x-dropdown-link :href="route('vendas.index')" >
+                                    {{ __('Vendas') }}
+                                </x-dropdown-link>
+
+                                <x-dropdown-link :href="route('vendas.create')" >
+                                    {{ __('PDV') }}
+                                </x-dropdown-link>
+                            </x-slot>
+                        </x-dropdown>
+                    </div>
+
                     <x-nav-link :href="route('relatorios.index')" :active="request()->routeIs('relatorios.*')">
                         {{ __('Relatórios') }}
                     </x-nav-link>
@@ -151,7 +180,7 @@
                 <x-responsive-nav-link :href="route('tipo-produtos.index')">
                     {{ __('Tipo de produtos') }}
                 </x-responsive-nav-link>
-                
+
                 <x-responsive-nav-link :href="route('profile.edit')">
                     {{ __('Perfil') }}
                 </x-responsive-nav-link>

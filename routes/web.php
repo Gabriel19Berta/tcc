@@ -9,10 +9,9 @@ use App\Http\Controllers\ProdutoController;
 use App\Http\Controllers\RelatorioController;
 use App\Http\Controllers\TipoProdutoController;
 use App\Http\Controllers\StatusController;
+use App\Http\Controllers\Vendas\VendaController;
+use App\Http\Controllers\Vendas\VendaPdvController;
 
-Route::get('/', function () {
-    return view('welcome');
-});
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -74,6 +73,21 @@ Route::get('/produtos/{id}', [ProdutoController::class, 'show'])->name('produtos
 Route::get('/produtos/{id}/edit', [ProdutoController::class, 'edit'])->name('produtos.edit');
 Route::put('/produtos/{id}', [ProdutoController::class, 'update'])->name('produtos.update');
 Route::delete('/produtos/{id}', [ProdutoController::class, 'destroy'])->name('produtos.destroy');
+
+/* VENDAS */
+Route::get('/vendas', [VendaController::class, 'index'])->name('vendas.index');
+
+/* PDV */
+Route::get('/vendas/create', [VendaPdvController::class, 'create'])->name('vendas.create');
+Route::post('/vendas/store', [VendaPdvController::class, 'store'])->name('vendas.store');
+
+/* ADICIONAR PRODUTO À VENDA */
+Route::post('/vendas/itens', [VendaPdvController::class, 'adicionarProduto'])->name('vendas.itens.store');
+
+/* ABRIR VENDA EXISTENTE NO PDV */
+Route::get('/vendas/{id}/edit', [VendaPdvController::class, 'edit'])->name('vendas.edit');
+
+Route::post('/vendas/itens', [VendaPdvController::class, 'adicionarProduto'])->name('vendas.itens.store');
 
 Route::get('/relatorios', [RelatorioController::class, 'index'])->name('relatorios.index');
 Route::get('relatorios/gerar', [RelatorioController::class, 'gerar'])->name('relatorios.gerar');

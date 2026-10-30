@@ -13,13 +13,14 @@ return new class extends Migration
     {
         Schema::create('vendas', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('cliente_id')->constrained();
+            $table->foreignId('cliente_id')->nullable()->constrained();
             $table->foreignId('funcionario_id')->nullable()->constrained();
-            $table->boolean('status');
+            $table->string('status')->default('aberta');
             $table->decimal('valor_produtos', 10, 2);
             $table->decimal('descontos', 10, 2)->default(0);
             $table->decimal('outros_custos', 10, 2)->default(0);
             $table->decimal('valor_total', 10, 2);
+            $table->text('justificativa_cancelamento')->nullable();
             $table->dateTime('data');
             $table->timestamps();
         });
