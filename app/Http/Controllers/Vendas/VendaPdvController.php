@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Vendas;
 use App\Http\Controllers\Controller;
 use App\Models\Produto;
 use App\Models\Venda;
+use App\Http\Controllers\Vendas\View;
 use App\Http\Requests\Vendas\AdicionarProdutoRequest;
 use Illuminate\Support\Facades\DB;
 
@@ -17,30 +18,38 @@ class VendaPdvController extends Controller
             ->orderByDesc('id')
             ->get();
 
-        return view('vendas.pdv', compact('vendasAbertas'));
-    }
-
-    public function store()
-    {
-        $vendasAbertas = Venda::query()
-            ->where('status', Venda::STATUS_ABERTA)
-            ->with('itens')
-            ->orderByDesc('id')
+        $produtos = Produto::query()
+            ->where('status', true)
+            ->orderBy('nome')
             ->get();
 
-        return view('vendas.pdv', compact('vendasAbertas'));
+        return view('vendas.pdv', compact('vendasAbertas', 'produtos'));
     }
 
     public function edit(string $id)
     {
-        $venda = Venda::with(['itens.produto', 'cliente.pessoa'])->findOrFail($id);
+        $venda = Venda::with(['itens.produto', 'cliente.pessoa'])
+            ->findOrFail($id);
+
+        if ($venda->status !== Venda::STATUS_ABERTA) {
+            abort(404);
+        }
 
         $vendasAbertas = Venda::query()
             ->where('status', Venda::STATUS_ABERTA)
             ->orderByDesc('id')
             ->get();
 
-        return view('vendas.pdv', compact('venda',  'vendasAbertas'));
+        $produtos = Produto::query()
+            ->where('status', true)
+            ->orderBy('nome')
+            ->get();
+
+        return view('vendas.pdv', compact(
+            'venda',
+            'vendasAbertas',
+            'produtos'
+        ));
     }
 
 
@@ -80,6 +89,7 @@ class VendaPdvController extends Controller
 
             $item = $venda->itens()
                 ->where('produto_id', $produto->id)
+                ->where('preco_unitario', $dados['preco_produto'])
                 ->first();
 
             if ($item) {

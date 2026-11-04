@@ -79,7 +79,6 @@ Route::get('/vendas', [VendaController::class, 'index'])->name('vendas.index');
 
 /* PDV */
 Route::get('/vendas/create', [VendaPdvController::class, 'create'])->name('vendas.create');
-Route::post('/vendas/store', [VendaPdvController::class, 'store'])->name('vendas.store');
 
 /* ADICIONAR PRODUTO À VENDA */
 Route::post('/vendas/itens', [VendaPdvController::class, 'adicionarProduto'])->name('vendas.itens.store');
