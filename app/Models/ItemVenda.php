@@ -18,7 +18,7 @@ class ItemVenda extends Model
     protected function casts(): array
     {
         return [
-            'quantidade' => 'integer',
+            'quantidade' => 'decimal:2',
             'preco_unitario' => 'decimal:2',
             'preco_custo' => 'decimal:2',
         ];

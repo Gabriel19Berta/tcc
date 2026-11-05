@@ -10,6 +10,7 @@ use Illuminate\View\View;
 use App\Http\Requests\Vendas\AdicionarProdutoRequest;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\RedirectResponse;
+use App\Http\Requests\Vendas\AtualizarItemVendaRequest;
 
 class VendaPdvController extends Controller
 {
@@ -52,6 +53,47 @@ class VendaPdvController extends Controller
             'vendasAbertas',
             'produtos'
         ));
+    }
+
+    public function update(AtualizarItemVendaRequest $request, Venda $venda, ItemVenda $item)
+    {
+        $dados = $request->validated();
+
+        DB::transaction(function () use ($venda, $item, $dados) {
+            $venda = Venda::query()
+                ->whereKey($venda->id)
+                ->lockForUpdate()
+                ->firstOrFail();
+
+            if ($venda->status !== Venda::STATUS_ABERTA) {
+                abort(422, 'Somente vendas abertas podem ser alteradas.');
+            }
+
+            $item = ItemVenda::query()
+                ->whereKey($item->id)
+                ->where('venda_id', $venda->id)
+                ->lockForUpdate()
+                ->firstOrFail();
+
+            $item->update([
+                'quantidade' => $dados['quantidade'],
+            ]);
+
+            $valorProdutos = $venda->itens()
+                ->get()
+                ->sum(fn ($item) => $item->quantidade * $item->preco_unitario);
+
+            $venda->update([
+                'valor_produtos' => $valorProdutos,
+                'valor_total' => $valorProdutos
+                    - $venda->descontos
+                    + $venda->outros_custos,
+            ]);
+        });
+
+        return redirect()
+            ->route('vendas.edit', $venda->id)
+            ->with('success', 'Quantidade atualizada com sucesso.');
     }
 
 

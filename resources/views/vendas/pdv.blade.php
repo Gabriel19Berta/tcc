@@ -170,11 +170,27 @@
                                                     {{ $item->produto->nome }}
                                                 </h3>
 
-                                                <p class="text-sm text-text-light mt-1">
-                                                    {{ number_format($item->quantidade, 2, ',', '.') }}
-                                                    x
-                                                    R$ {{ number_format($item->preco_unitario, 2, ',', '.') }}
-                                                </p>
+                                                <form
+                                                    action="{{ route('vendas.itens.update', [
+                                                        'venda' => $venda->id,
+                                                        'item' => $item->id
+                                                    ]) }}"
+                                                    method="POST"
+                                                    class="flex items-center gap-2 mt-2"
+                                                >
+                                                    @csrf
+                                                    @method('PATCH')
+
+                                                    <x-input type="number" name="quantidade" min="0.01" step="0.01" value="{{ $item->quantidade }}" class="w-20 text-sm" />
+
+                                                    <span class="text-sm text-text-light">
+                                                        x R$ {{ number_format($item->preco_unitario, 2, ',', '.') }}
+                                                    </span>
+
+                                                    <button type="submit" class="text-sm text-primary hover:text-primary-700">
+                                                        Atualizar
+                                                    </button>
+                                                </form>
                                             </div>
 
                                             <div class="text-right shrink-0">
@@ -194,10 +210,7 @@
                                                     @csrf
                                                     @method('DELETE')
 
-                                                    <button
-                                                        type="submit"
-                                                        class="text-sm text-danger-500 hover:text-danger-600"
-                                                    >
+                                                    <button type="submit" class="text-sm text-danger-500 hover:text-danger-600">
                                                         Remover
                                                     </button>
                                                 </form>
