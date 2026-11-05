@@ -100,13 +100,13 @@
                                     name="produto_id"
                                     id="produto_id"
                                     class="select2"
-                                    required
                                 >
                                     <option value="">Selecione um produto</option>
 
                                     @foreach ($produtos as $produto)
                                         <option
                                             value="{{ $produto->id }}"
+                                            data-preco="{{ $produto->preco_venda }}"
                                             {{ old('produto_id') == $produto->id ? 'selected' : '' }}
                                         >
                                             {{ $produto->nome }}
@@ -124,17 +124,13 @@
                             <div class="mb-6">
                                 <x-input-label for="quantidade" :value="__('Quantidade')" />
                                 <x-input id="quantidade" name="quantidade" type="number" min="0.01" step="0.01" class="w-full"
-                                         required :value="old('quantidade', '1')" />
-
-                                @error('quantidade')
-                                    <p class="mt-1 text-sm text-danger-500">{{ $message }}</p>
-                                @enderror
+                                         :value="old('quantidade', '1')" />
                             </div>
 
                             <div class="mb-6">
                                 <x-input-label for="preco_produto" :value="__('Preço')" />
                                 <x-input id="preco_produto" name="preco_produto" type="text" class="w-full mask-valor" placeholder="R$ 0,00"
-                                         min="0" :value="old('preco_produto', 0.00)" />
+                                         min="0" :value="old('preco_produto')" />
                             </div>
 
                             {{-- BOTÃO --}}
@@ -152,16 +148,70 @@
 
                 {{-- PAINEL DIREITO: ITENS DA VENDA --}}
                 <section class="w-1/2 overflow-auto p-6">
-                    <div class="flex h-full flex-col items-center justify-center text-center text-gray-400">
-                        <i class="fa-solid fa-seedling mb-4 text-7xl text-beige-600"></i>
+                    <div class="flex flex-col h-full">
+                        <div class="flex items-center justify-between mb-4">
+                            <h2 class="text-lg font-semibold text-text">
+                                Produtos da venda
+                            </h2>
 
-                        <p class="text-lg font-medium">
-                            Nenhum produto adicionado
-                        </p>
+                            <span class="text-sm text-text-light">
+                                {{ isset($venda) ? $venda->itens->count() : 0 }}
+                                                    {{ isset($venda) && $venda->itens->count() === 1 ? 'item' : 'itens' }}
+                            </span>
+                        </div>
 
-                        <p class="mt-2 text-sm">
-                            Os produtos da venda aparecerão aqui.
-                        </p>
+                        @if(isset($venda) && $venda->itens->isNotEmpty())
+                            <div class="flex-1 overflow-y-auto space-y-3">
+                                @foreach($venda->itens as $item)
+                                    <div class="border border-gray-300 rounded-lg p-3">
+                                        <div class="flex justify-between gap-3">
+                                            <div class="min-w-0">
+                                                <h3 class="font-medium text-text">
+                                                    {{ $item->produto->nome }}
+                                                </h3>
+
+                                                <p class="text-sm text-text-light mt-1">
+                                                    {{ number_format($item->quantidade, 2, ',', '.') }}
+                                                    x
+                                                    R$ {{ number_format($item->preco_unitario, 2, ',', '.') }}
+                                                </p>
+                                            </div>
+
+                                            <div class="text-right shrink-0">
+                                                <p class="font-semibold text-text">
+                                                    R$
+                                                    {{ number_format(
+                                                        $item->quantidade * $item->preco_unitario,
+                                                        2,
+                                                        ',',
+                                                        '.'
+                                                    ) }}
+                                                </p>
+                                                <form action="{{ route('vendas.itens.destroy', ['venda' => $venda->id, 'item' => $item->id]) }}"
+                                                    method="POST"
+                                                    class="mt-2"
+                                                >
+                                                    @csrf
+                                                    @method('DELETE')
+
+                                                    <button
+                                                        type="submit"
+                                                        class="text-sm text-danger-500 hover:text-danger-600"
+                                                    >
+                                                        Remover
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @else
+                            <div class="flex-1 flex flex-col items-center justify-center text-center text-text-light">
+                                <p class="text-sm">Nenhum produto adicionado</p>
+                                <p class="text-xs mt-1">Os produtos adicionados aparecerão aqui.</p>
+                            </div>
+                        @endif
                     </div>
                 </section>
 
@@ -178,10 +228,45 @@
 
                 <div class="text-right">
                     <span class="mr-3 font-semibold">Total</span>
-                    <span class="text-2xl font-bold">R$ 0,00</span>
+                    <span class="text-2xl font-bold">R$ {{ number_format($venda->valor_total ?? 0, 2, ',', '.') }}</span>
                 </div>
             </footer>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const produtoSelect = $('#produto_id');
+            const precoInput = document.getElementById('preco_produto');
+
+            console.log('Select de produto:', produtoSelect);
+
+            produtoSelect.on('change', function () {
+                console.log('Evento change acionado');
+
+                const opcaoSelecionada = this.options[this.selectedIndex];
+
+                console.log('Opção selecionada:', opcaoSelecionada);
+
+                if (!opcaoSelecionada.value) {
+                    precoInput.value = '';
+                    return;
+                }
+
+                const preco = Number(opcaoSelecionada.dataset.preco);
+
+                console.log('Preço encontrado:', preco);
+
+                precoInput.value = preco.toLocaleString('pt-BR', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
+
+                precoInput.dispatchEvent(new Event('input', {
+                    bubbles: true
+                }));
+            });
+        });
+    </script>
 </body>
 </html>

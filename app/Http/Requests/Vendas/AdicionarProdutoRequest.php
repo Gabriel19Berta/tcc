@@ -15,6 +15,24 @@ class AdicionarProdutoRequest extends FormRequest
         return true;
     }
 
+    protected  function prepareForValidation(): void
+    {
+        $preco = $this->input('preco_produto');
+
+        if ($preco !== null) {
+            $preco = trim(str_replace(['R$', ' '], '', $preco));
+
+            // Quando houver vírgula, considera o formato brasileiro.
+            if (str_contains($preco, ',')) {
+                $preco = str_replace('.', '', $preco);
+                $preco = str_replace(',', '.', $preco);
+            }
+            $this->merge([
+                'preco_produto' => $preco,
+            ]);
+        }
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -29,6 +47,12 @@ class AdicionarProdutoRequest extends FormRequest
                 'exists:produtos,id',
             ],
             'quantidade' => [
+                'required',
+                'numeric',
+                'gt:0',
+                'decimal:0,2',
+            ],
+            'preco_produto' => [
                 'required',
                 'numeric',
                 'gt:0',
@@ -51,6 +75,10 @@ class AdicionarProdutoRequest extends FormRequest
             'quantidade.numeric' => 'A quantidade deve ser numérica.',
             'quantidade.gt' => 'A quantidade deve ser maior que zero.',
             'quantidade.decimal' => 'A quantidade pode ter no máximo duas casas decimais.',
+            'preco_produto.required' => 'Informe o preço do produto.',
+            'preco_produto.numeric' => 'O preço deve ser numérico.',
+            'preco_produto.gt' => 'O preço deve ser maior que zero.',
+            'preco_produto.decimal' => 'O preço pode ter no máximo duas casas decimais.',
             'venda_id.exists' => 'A venda selecionada não existe.',
         ];
     }
