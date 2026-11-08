@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Http\RedirectResponse;
 use App\Http\Requests\Vendas\AtualizarItemVendaRequest;
 use App\Http\Requests\Vendas\AtualizarClienteVendaRequest;
+use Illuminate\Validation\ValidationException;
 
 class VendaPdvController extends Controller
 {
@@ -82,6 +83,12 @@ class VendaPdvController extends Controller
                 ->lockForUpdate()
                 ->firstOrFail();
 
+            $produto = Produto::query()
+                ->lockForUpdate()
+                ->findOrFail($item->produto_id);
+
+            $this->validarEstoque($produto, $venda, (float) $dados['quantidade'], $item->id);
+
             $item->update([
                 'quantidade' => $dados['quantidade'],
             ]);
@@ -98,15 +105,11 @@ class VendaPdvController extends Controller
     /**
      * Add a product to a sale, creating the sale if necessary.
      */
-    public function adicionarProduto(AdicionarProdutoRequest $request): RedirectResponse
+    public function adicionarProduto(AdicionarProdutoRequest $request)
     {
         $dados = $request->validated();
 
         $venda = DB::transaction(function () use ($dados) {
-            $produto = Produto::query()
-                ->where('status', true)
-                ->findOrFail($dados['produto_id']);
-
             $precoProduto = $dados['preco_produto'];
 
             if (!empty($dados['venda_id'])) {
@@ -130,6 +133,18 @@ class VendaPdvController extends Controller
                     'data' => now(),
                 ]);
             }
+
+            $produto = Produto::query()
+                ->where('status', true)
+                ->lockForUpdate()
+                ->findOrFail($dados['produto_id']);
+
+            // Verifica se existe estoque suficiente
+            $this->validarEstoque(
+                $produto,
+                $venda,
+                (float)$dados['quantidade'],
+            );
 
             // Procura um item com o mesmo produto e preço.
             $item = $venda->itens()
@@ -245,6 +260,42 @@ class VendaPdvController extends Controller
 
         return redirect()
             ->route('vendas.edit', $venda->id)
-            ->with('success', 'Cliente atualizado com sucesso.');
+            ->with('success', 'Cliente atualizado com sucesso.')
+            ->with('aba_ativa', 'cliente');
+    }
+
+    private function validarEstoque(Produto $produto, Venda $venda, float $quantidadeAdicional, ?int $itemIgnoradoId = null) {
+        // Produtos que não controlam estoque não precisam dessa validação.
+        if (!$produto->controla_estoque) {
+            return;
+        }
+
+        // Soma as quantidades do mesmo produto já presentes na venda.
+        $consulta = $venda->itens()
+            ->where('produto_id', $produto->id);
+
+        // Na atualização, desconsidera o item que está sendo alterado.
+        if ($itemIgnoradoId !== null) {
+            $consulta->where('id', '!=', $itemIgnoradoId);
+        }
+
+        $quantidadeJaAdicionada = (float) $consulta->sum('quantidade');
+        $quantidadeSolicitada = $quantidadeJaAdicionada + $quantidadeAdicional;
+        $estoqueDisponivel = (float) ($produto->quantidade ?? 0);
+
+        // Compara em centésimos para evitar pequenas imprecisões de float.
+        $solicitadoEmCentésimos = (int) round($quantidadeSolicitada * 100);
+        $disponivelEmCentésimos = (int) round($estoqueDisponivel * 100);
+
+        $chaveErro = $itemIgnoradoId  ? 'quantidade_item_' . $itemIgnoradoId : 'produto_id';
+
+        if ($solicitadoEmCentésimos > $disponivelEmCentésimos) {
+            throw ValidationException::withMessages([
+                $chaveErro => sprintf(
+                    'Estoque insuficiente. Disponível: %s.',
+                    number_format($estoqueDisponivel, 2, ',', '.')
+                ),
+            ]);
+        }
     }
 }

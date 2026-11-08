@@ -55,16 +55,15 @@
             </header>
 
             {{-- CONTEÚDO PRINCIPAL --}}
-            <main class="flex min-h-0 flex-1">
+            <main class="flex min-h-0 flex-1 overflow-hidden">
 
                 {{-- PAINEL ESQUERDO --}}
-                <section class="flex w-1/2 flex-col border-r border-gray-300 p-6">
+                <section class="flex min-h-0 w-1/2 flex-col overflow-y-auto border-r border-gray-300 p-6">
 
                     {{-- NAVEGAÇÃO --}}
-                    <nav class="mb-2 flex overflow-hidden rounded-full border border-primary">
+                    <nav class="mb-2 flex shrink-0 overflow-hidden rounded-full border border-primary">
                         <button type="button" data-aba="produto" class="flex-1 rounded-full bg-primary px-4 py-3 font-semibold text-white"
-                            aria-selected="true"
-                        >
+                            aria-selected="true">
                             Produto
                         </button>
 
@@ -115,17 +114,16 @@
                                         </option>
                                     @endforeach
                                 </select>
+                            </div>
+
+                            <div class="mb-6">
+                                <x-input-label for="quantidade" :value="__('Quantidade')" />
+                                <x-input id="quantidade" name="quantidade" type="number" min="0.01" step="0.01" class="w-full"
+                                         :value="1" />
 
                                 @error('produto_id')
                                     <p class="mt-1 text-sm text-danger-500">{{ $message }}</p>
                                 @enderror
-                            </div>
-
-                            {{-- QUANTIDADE --}}
-                            <div class="mb-6">
-                                <x-input-label for="quantidade" :value="__('Quantidade')" />
-                                <x-input id="quantidade" name="quantidade" type="number" min="0.01" step="0.01" class="w-full"
-                                         :value="old('quantidade', '1')" />
                             </div>
 
                             <div class="mb-6">
@@ -148,19 +146,17 @@
 
                     {{-- ABA CLIENTE --}}
                     <div id="aba-cliente" class="flex-1 hidden">
-                        <h2 class="mb-8 text-lg font-semibold text-primary">
-                            Selecionar cliente
-                        </h2>
+                        <h2 class="mb-6 text-lg font-semibold text-primary">Cliente</h2>
 
                         @if(isset($venda))
-                            <form action="{{ route('vendas.cliente.update', $venda->id) }}" method="POST">
+                            <form id="form-cliente" action="{{ route('vendas.cliente.update', $venda->id) }}" method="POST">
                                 @csrf
                                 @method('PATCH')
 
                                 <div class="mb-6">
-                                    <x-input-label for="cliente_id" :value="__('Cliente')" />
+                                    <x-input-label for="cliente_id" value="Cliente" />
 
-                                    <select name="cliente_id" id="cliente_id" class="select2">
+                                    <select name="cliente_id" id="cliente_id" class="select2 w-full">
                                         <option value="">Venda sem cliente</option>
 
                                         @foreach($clientes as $cliente)
@@ -175,72 +171,94 @@
                                     </select>
 
                                     @error('cliente_id')
-                                        <p class="mt-1 text-sm text-danger-500">
-                                            {{ $message }}
-                                        </p>
+                                    <p class="mt-1 text-sm text-danger-500">
+                                        {{ $message }}
+                                    </p>
                                     @enderror
-
                                 </div>
-
-                                <div class="flex justify-end">
-                                    <button
-                                        type="submit"
-                                        class="btn bg-primary hover:bg-primary-600 active:bg-primary-700"
-                                    >
-                                        Salvar cliente
-                                    </button>
-                                </div>
-
                             </form>
 
+                            {{-- DADOS DO CLIENTE --}}
                             @if($venda->cliente && $venda->cliente->pessoa)
-
-                                <div class="mt-8 rounded-lg border border-gray-300 p-4">
-
-                                    <h3 class="mb-3 font-semibold text-text">
-                                        Cliente selecionado
+                                @php
+                                    $pessoa = $venda->cliente->pessoa;
+                                @endphp
+                                <div class="rounded-lg border border-gray-300 p-4">
+                                    <h3 class="mb-4 font-semibold text-text">
+                                        Dados do cliente
                                     </h3>
 
-                                    <p class="text-sm text-text">
-                                        {{ $venda->cliente->pessoa->nome }}
-                                    </p>
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div class="col-span-2">
+                                            <span class="text-xs text-text-light">Nome</span>
+                                            <p class="text-sm text-text">
+                                                {{ $pessoa->nome }}
+                                            </p>
+                                        </div>
+                                        <div>
+                                            <span class="text-xs text-text-light">CPF</span>
+                                            <p class="text-sm text-text">
 
-                                    @if($venda->cliente->pessoa->cpf)
-                                        <p class="mt-1 text-sm text-text-light">
-                                            CPF: {{ $venda->cliente->pessoa->cpf }}
-                                        </p>
-                                    @endif
+                                                @if($pessoa->tipo == 'f')
+                                                    {{ $pessoa->cpf }}
+                                                @elseif($pessoa->tipo == 'j')
+                                                    {{ $pessoa->cnpj }}
+                                                @else
+                                                    {{ 'Não informado' }}
+                                                @endif
+                                            </p>
+                                        </div>
+                                        <div>
+                                            <span class="text-xs text-text-light">Celular</span>
+                                            <p class="text-sm text-text">
+                                                {{ $pessoa->celular ?? 'Não informado' }}
+                                            </p>
+                                        </div>
+                                        <div>
+                                            <span class="text-xs text-text-light">Telefone</span>
+                                            <p class="text-sm text-text">
+                                                {{ $pessoa->telefone ?? 'Não informado'}}
+                                            </p>
+                                        </div>
+                                        <div class="col-span-2">
+                                            <span class="text-xs text-text-light">E-mail</span>
+                                            <p class="text-sm text-text">
+                                                {{ $pessoa->email ?? 'Não informado'}}
+                                            </p>
+                                        </div>
 
-                                    @if($venda->cliente->pessoa->cnpj)
-                                        <p class="mt-1 text-sm text-text-light">
-                                            CNPJ: {{ $venda->cliente->pessoa->cnpj }}
-                                        </p>
-                                    @endif
 
-                                    @if($venda->cliente->pessoa->celular)
-                                        <p class="mt-1 text-sm text-text-light">
-                                            Celular: {{ $venda->cliente->pessoa->celular }}
-                                        </p>
-                                    @endif
+                                            <div class="col-span-2">
+                                                <span class="text-xs text-text-light">Endereço</span>
+                                                <p class="text-sm text-text">
+                                                    @if($pessoa->logradouro)
+                                                        {{ $pessoa->logradouro }}
+                                                        @if($pessoa->bairro)
+                                                            - {{ $pessoa->bairro }}
+                                                        @endif
+                                                    @else
+                                                        {{ 'Não informado' }}
+                                                    @endif
+                                                </p>
+                                            </div>
 
+
+                                        @if($pessoa->cidade || $pessoa->uf)
+                                            <div>
+                                                <span class="text-xs text-text-light">Cidade/UF</span>
+                                                <p class="text-sm text-text">
+                                                    {{ $pessoa->cidade }}{{ $pessoa->uf ? ' / ' . $pessoa->uf : '' }}
+                                                </p>
+                                            </div>
+                                        @endif
+                                    </div>
                                 </div>
-
                             @else
-
-                                <p class="mt-6 text-sm text-text-light">
-                                    Nenhum cliente selecionado para esta venda.
-                                </p>
-
+                                <p class="text-sm text-text-light">Nenhum cliente selecionado para esta venda.</p>
                             @endif
-
                         @else
-
-                            <p class="text-sm text-text-light">
-                                Adicione pelo menos um produto para iniciar uma venda e selecionar um cliente.
-                            </p>
-
+                            <p class="text-sm text-text-light">Adicione um produto para iniciar uma venda e selecionar um cliente.</p>
                         @endif
-
                     </div>
 
                     {{-- ABA PAGAMENTO --}}
@@ -256,8 +274,8 @@
                 </section>
 
                 {{-- PAINEL DIREITO: ITENS DA VENDA --}}
-                <section class="w-1/2 overflow-auto p-6">
-                    <div class="flex flex-col h-full">
+                <section class="flex flex-col w-1/2 min-h-0 overflow-y-auto p-6">
+                    <div class="flex min-h-0 flex-1 flex-col">
                         <div class="flex items-center justify-between mb-4">
                             <h2 class="text-lg font-semibold text-text">
                                 Produtos da venda
@@ -265,12 +283,12 @@
 
                             <span class="text-sm text-text-light">
                                 {{ isset($venda) ? $venda->itens->count() : 0 }}
-                                                    {{ isset($venda) && $venda->itens->count() === 1 ? 'item' : 'itens' }}
+                                {{ isset($venda) && $venda->itens->count() === 1 ? 'item' : 'itens' }}
                             </span>
                         </div>
 
                         @if(isset($venda) && $venda->itens->isNotEmpty())
-                            <div class="flex-1 overflow-y-auto space-y-3">
+                            <div class="min-h-0 flex-1 space-y-3 overflow-y-auto">
                                 @foreach($venda->itens as $item)
                                     <div class="border border-gray-300 rounded-lg p-3">
                                         <div class="flex justify-between gap-3">
@@ -290,8 +308,13 @@
                                                     @csrf
                                                     @method('PATCH')
 
-                                                    <x-input type="number" name="quantidade" min="0.01" step="0.01" value="{{ $item->quantidade }}" class="w-20 text-sm" 
+                                                    <x-input type="number" name="quantidade" min="0.01" step="0.01" value="{{ $item->quantidade }}" class="w-20 text-sm"
                                                         data-valor-original="{{ $item->quantidade }}" onblur="atualizarQuantidade(this)"/>
+                                                    @error('quantidade_item_' . $item->id)
+                                                        <p class="mt-1 text-sm text-danger-500">
+                                                            {{ $message }}
+                                                        </p>
+                                                    @enderror
 
                                                     <span class="text-sm text-text-light">
                                                         x R$ {{ number_format($item->preco_unitario, 2, ',', '.') }}
@@ -358,14 +381,8 @@
             const produtoSelect = $('#produto_id');
             const precoInput = document.getElementById('preco_produto');
 
-            console.log('Select de produto:', produtoSelect);
-
             produtoSelect.on('change', function () {
-                console.log('Evento change acionado');
-
                 const opcaoSelecionada = this.options[this.selectedIndex];
-
-                console.log('Opção selecionada:', opcaoSelecionada);
 
                 if (!opcaoSelecionada.value) {
                     precoInput.value = '';
@@ -373,8 +390,6 @@
                 }
 
                 const preco = Number(opcaoSelecionada.dataset.preco);
-
-                console.log('Preço encontrado:', preco);
 
                 precoInput.value = preco.toLocaleString('pt-BR', {
                     minimumFractionDigits: 2,
@@ -385,6 +400,18 @@
                     bubbles: true
                 }));
             });
+
+            const campoCliente = document.getElementById('cliente_id');
+
+            if (campoCliente && window.jQuery) {
+                window.jQuery(document).on('change', '#cliente_id', function () {
+                    const formulario = document.getElementById('form-cliente');
+
+                    if (formulario) {
+                        formulario.requestSubmit();
+                    }
+                });
+            }
         });
 
         function atualizarQuantidade(input) {
@@ -432,6 +459,10 @@
                 alternarAba(this.dataset.aba);
             });
         });
+
+        const abaInicial = @json(session('aba_ativa', 'produto'));
+
+        alternarAba(abaInicial);
     </script>
 </body>
 </html>
