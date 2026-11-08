@@ -51,7 +51,7 @@ class VendaPdvController extends Controller
             ->where('status', true)
             ->orderBy('nome')
             ->get();
-            
+
         $clientes = $this->clientesAtivos();
 
         return view('vendas.pdv', compact(
@@ -198,7 +198,7 @@ class VendaPdvController extends Controller
         $valorTotal = $valorProdutos
             - $venda->descontos
             + $venda->outros_custos;
-            
+
             $venda->update([
                 'valor_produtos' => $valorProdutos,
                 'valor_total' => round($valorTotal, 2)
@@ -235,7 +235,7 @@ class VendaPdvController extends Controller
                     ->whereHas('pessoa', function ($query) {
                         $query->where('status', true);
                     })
-                    ->findtOrFail($dados['cliente_id']);
+                    ->findOrFail($dados['cliente_id']);
             }
 
             $venda->update([
