@@ -62,24 +62,25 @@
 
                     {{-- NAVEGAÇÃO --}}
                     <nav class="mb-2 flex overflow-hidden rounded-full border border-primary">
-                        <button type="button"
-                                class="flex-1 rounded-full bg-primary px-4 py-3 font-semibold text-white">
+                        <button type="button" data-aba="produto" class="flex-1 rounded-full bg-primary px-4 py-3 font-semibold text-white"
+                            aria-selected="true"
+                        >
                             Produto
                         </button>
 
-                        <button type="button"
-                                class="flex-1 px-4 py-3 font-semibold">
+                        <button type="button" data-aba="cliente" class="flex-1 px-4 py-3 font-semibold" aria-selected="false">
                             Cliente
                         </button>
 
-                        <button type="button"
-                                class="flex-1 px-4 py-3 font-semibold">
+                        <button type="button" data-aba="pagamento" class="flex-1 px-4 py-3 font-semibold" aria-selected="false">
                             Pagamento
                         </button>
+
                     </nav>
 
                     {{-- CONTEÚDO DA ABA --}}
-                    <div class="flex-1">
+                    {{-- ABA PRODUTO --}}
+                    <div id="aba-produto" class="flex-1">
                         <h2 class="mb-8 text-lg font-semibold text-primary">
                             Adicionar produto
                         </h2>
@@ -144,6 +145,114 @@
                             </div>
                         </form>
                     </div>
+
+                    {{-- ABA CLIENTE --}}
+                    <div id="aba-cliente" class="flex-1 hidden">
+                        <h2 class="mb-8 text-lg font-semibold text-primary">
+                            Selecionar cliente
+                        </h2>
+
+                        @if(isset($venda))
+                            <form action="{{ route('vendas.cliente.update', $venda->id) }}" method="POST">
+                                @csrf
+                                @method('PATCH')
+
+                                <div class="mb-6">
+                                    <x-input-label for="cliente_id" :value="__('Cliente')" />
+
+                                    <select name="cliente_id" id="cliente_id" class="select2">
+                                        <option value="">Venda sem cliente</option>
+
+                                        @foreach($clientes as $cliente)
+                                            <option
+                                                value="{{ $cliente->id }}"
+                                                {{ old('cliente_id', $venda->cliente_id) == $cliente->id ? 'selected' : '' }}
+                                            >
+                                                {{ $cliente->pessoa->nome }}
+                                            </option>
+                                        @endforeach
+
+                                    </select>
+
+                                    @error('cliente_id')
+                                        <p class="mt-1 text-sm text-danger-500">
+                                            {{ $message }}
+                                        </p>
+                                    @enderror
+
+                                </div>
+
+                                <div class="flex justify-end">
+                                    <button
+                                        type="submit"
+                                        class="btn bg-primary hover:bg-primary-600 active:bg-primary-700"
+                                    >
+                                        Salvar cliente
+                                    </button>
+                                </div>
+
+                            </form>
+
+                            @if($venda->cliente && $venda->cliente->pessoa)
+
+                                <div class="mt-8 rounded-lg border border-gray-300 p-4">
+
+                                    <h3 class="mb-3 font-semibold text-text">
+                                        Cliente selecionado
+                                    </h3>
+
+                                    <p class="text-sm text-text">
+                                        {{ $venda->cliente->pessoa->nome }}
+                                    </p>
+
+                                    @if($venda->cliente->pessoa->cpf)
+                                        <p class="mt-1 text-sm text-text-light">
+                                            CPF: {{ $venda->cliente->pessoa->cpf }}
+                                        </p>
+                                    @endif
+
+                                    @if($venda->cliente->pessoa->cnpj)
+                                        <p class="mt-1 text-sm text-text-light">
+                                            CNPJ: {{ $venda->cliente->pessoa->cnpj }}
+                                        </p>
+                                    @endif
+
+                                    @if($venda->cliente->pessoa->celular)
+                                        <p class="mt-1 text-sm text-text-light">
+                                            Celular: {{ $venda->cliente->pessoa->celular }}
+                                        </p>
+                                    @endif
+
+                                </div>
+
+                            @else
+
+                                <p class="mt-6 text-sm text-text-light">
+                                    Nenhum cliente selecionado para esta venda.
+                                </p>
+
+                            @endif
+
+                        @else
+
+                            <p class="text-sm text-text-light">
+                                Adicione pelo menos um produto para iniciar uma venda e selecionar um cliente.
+                            </p>
+
+                        @endif
+
+                    </div>
+
+                    {{-- ABA PAGAMENTO --}}
+                    <div id="aba-pagamento" class="flex-1 hidden">
+                        <h2 class="mb-8 text-lg font-semibold text-primary">
+                            Pagamento
+                        </h2>
+
+                        <p class="text-sm text-text-light">
+                            As informações de pagamento serão implementadas posteriormente.
+                        </p>
+                    </div>
                 </section>
 
                 {{-- PAINEL DIREITO: ITENS DA VENDA --}}
@@ -181,15 +290,12 @@
                                                     @csrf
                                                     @method('PATCH')
 
-                                                    <x-input type="number" name="quantidade" min="0.01" step="0.01" value="{{ $item->quantidade }}" class="w-20 text-sm" />
+                                                    <x-input type="number" name="quantidade" min="0.01" step="0.01" value="{{ $item->quantidade }}" class="w-20 text-sm" 
+                                                        data-valor-original="{{ $item->quantidade }}" onblur="atualizarQuantidade(this)"/>
 
                                                     <span class="text-sm text-text-light">
                                                         x R$ {{ number_format($item->preco_unitario, 2, ',', '.') }}
                                                     </span>
-
-                                                    <button type="submit" class="text-sm text-primary hover:text-primary-700">
-                                                        Atualizar
-                                                    </button>
                                                 </form>
                                             </div>
 
@@ -278,6 +384,52 @@
                 precoInput.dispatchEvent(new Event('input', {
                     bubbles: true
                 }));
+            });
+        });
+
+        function atualizarQuantidade(input) {
+            const valorOriginal = input.dataset.valorOriginal;
+            const valorAtual = input.value;
+
+            // Não envia se o valor não foi alterado.
+            if (valorAtual === valorOriginal) {
+                return;
+            }
+
+            // Não envia campos vazios ou inválidos.
+            if (!input.checkValidity()) {
+                input.reportValidity();
+                return;
+            }
+
+            // Envia o formulário.
+            input.form.requestSubmit();
+        }
+
+        function alternarAba(abaSelecionada) {
+            const abas = ['produto', 'cliente', 'pagamento'];
+
+            abas.forEach(function (aba) {
+                const botao = document.querySelector(`[data-aba="${aba}"]`);
+                const conteudo = document.getElementById(`aba-${aba}`);
+
+                const selecionada = aba === abaSelecionada;
+
+                // Atualiza o conteúdo visível.
+                conteudo.classList.toggle('hidden', !selecionada);
+
+                // Atualiza a aparência do botão.
+                botao.classList.toggle('bg-primary', selecionada);
+                botao.classList.toggle('text-white', selecionada);
+                botao.classList.toggle('rounded-full', selecionada);
+
+                botao.setAttribute('aria-selected', selecionada);
+            });
+        }
+
+        document.querySelectorAll('[data-aba]').forEach(function (botao) {
+            botao.addEventListener('click', function () {
+                alternarAba(this.dataset.aba);
             });
         });
     </script>

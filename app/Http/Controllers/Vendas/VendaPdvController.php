@@ -6,11 +6,13 @@ use App\Http\Controllers\Controller;
 use App\Models\ItemVenda;
 use App\Models\Produto;
 use App\Models\Venda;
+use App\Models\Cliente;
 use Illuminate\View\View;
 use App\Http\Requests\Vendas\AdicionarProdutoRequest;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\RedirectResponse;
 use App\Http\Requests\Vendas\AtualizarItemVendaRequest;
+use App\Http\Requests\Vendas\AtualizarClienteVendaRequest;
 
 class VendaPdvController extends Controller
 {
@@ -26,7 +28,9 @@ class VendaPdvController extends Controller
             ->orderBy('nome')
             ->get();
 
-        return view('vendas.pdv', compact('vendasAbertas', 'produtos'));
+        $clientes = $this->clientesAtivos();
+
+        return view('vendas.pdv', compact('vendasAbertas', 'produtos', 'clientes'));
     }
 
     public function edit(string $id)
@@ -47,11 +51,14 @@ class VendaPdvController extends Controller
             ->where('status', true)
             ->orderBy('nome')
             ->get();
+            
+        $clientes = $this->clientesAtivos();
 
         return view('vendas.pdv', compact(
             'venda',
             'vendasAbertas',
-            'produtos'
+            'produtos',
+            'clientes'
         ));
     }
 
@@ -79,16 +86,7 @@ class VendaPdvController extends Controller
                 'quantidade' => $dados['quantidade'],
             ]);
 
-            $valorProdutos = $venda->itens()
-                ->get()
-                ->sum(fn ($item) => $item->quantidade * $item->preco_unitario);
-
-            $venda->update([
-                'valor_produtos' => $valorProdutos,
-                'valor_total' => $valorProdutos
-                    - $venda->descontos
-                    + $venda->outros_custos,
-            ]);
+            $this->recalcularTotais($venda);
         });
 
         return redirect()
@@ -151,27 +149,7 @@ class VendaPdvController extends Controller
                 ]);
             }
 
-            // Recalcula o valor dos produtos.
-            $valorProdutos = $venda->itens()
-                ->get()
-                ->sum(function ($item) {
-                    return round(
-                        $item->quantidade * $item->preco_unitario,
-                        2
-                    );
-                });
-
-            $valorProdutos = round($valorProdutos, 2);
-
-            $venda->update([
-                'valor_produtos' => $valorProdutos,
-                'valor_total' => round(
-                    $valorProdutos
-                    - $venda->descontos
-                    + $venda->outros_custos,
-                    2
-                ),
-            ]);
+            $this->recalcularTotais($venda);
 
             return $venda;
         });
@@ -201,18 +179,72 @@ class VendaPdvController extends Controller
 
             $item->delete();
 
-            $valorProdutos = $venda->itens()
-                ->get()
-                ->sum(function ($item) {
-                    return $item->quantidade * $item->preco_unitario;
-                });
-
-            $venda->update([
-               'valor_produtos' => $valorProdutos,
-               'valor_total' => $valorProdutos - $venda->descontos + $venda->outros_custos,
-            ]);
+            $this->recalcularTotais($venda);
         });
 
         return redirect()->route('vendas.edit', $venda->id)->with('success', 'Produto removida com sucesso.');
+    }
+
+    private function recalcularTotais(Venda $venda)
+    {
+        $valorProdutos = $venda->itens()
+            ->get()
+            ->sum(function ($item) {
+                return $item->quantidade * $item->preco_unitario;
+            });
+
+        $valorProdutos = round($valorProdutos, 2);
+
+        $valorTotal = $valorProdutos
+            - $venda->descontos
+            + $venda->outros_custos;
+            
+            $venda->update([
+                'valor_produtos' => $valorProdutos,
+                'valor_total' => round($valorTotal, 2)
+            ]);
+    }
+
+    private function clientesAtivos()
+    {
+        return Cliente::query()
+            ->join('pessoas', 'pessoas.id', '=', 'clientes.pessoa_id')
+            ->where('pessoas.status', true)
+            ->select('clientes.*')
+            ->with('pessoa')
+            ->orderBy('pessoas.nome')
+            ->get();
+    }
+
+    public function atualizarCliente(AtualizarClienteVendaRequest $request, Venda $venda)
+    {
+        $dados = $request->validated();
+
+        DB::transaction(function () use ($venda, $dados) {
+            $venda = Venda::query()
+                ->whereKey($venda->id)
+                ->lockForUpdate()
+                ->firstOrFail();
+
+            if ($venda->status !== Venda::STATUS_ABERTA) {
+                abort(422, 'Somente vendas abertas podem ser alteradas.');
+            }
+
+            if (!empty($dados['cliente_id'])) {
+                Cliente::query()
+                    ->whereHas('pessoa', function ($query) {
+                        $query->where('status', true);
+                    })
+                    ->findtOrFail($dados['cliente_id']);
+            }
+
+            $venda->update([
+                'cliente_id' => $dados['cliente_id'] ?? null,
+            ]);
+        });
+
+        return redirect()
+            ->route('vendas.edit', $venda->id)
+            ->with('success', 'Cliente atualizado com sucesso.');
     }
 }
