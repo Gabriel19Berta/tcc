@@ -263,13 +263,332 @@
 
                     {{-- ABA PAGAMENTO --}}
                     <div id="aba-pagamento" class="flex-1 hidden">
-                        <h2 class="mb-8 text-lg font-semibold text-primary">
+                        <h2 class="mb-6 text-lg font-semibold text-primary">
                             Pagamento
                         </h2>
 
-                        <p class="text-sm text-text-light">
-                            As informações de pagamento serão implementadas posteriormente.
-                        </p>
+                        @if(isset($venda))
+                            <form
+                                id="form-valores"
+                                action="{{ route('vendas.valores.update', $venda->id) }}"
+                                method="POST"
+                            >
+                                @csrf
+                                @method('PATCH')
+
+                                <input type="hidden" name="aba_ativa" value="pagamento">
+
+                                {{-- TIPO DE DESCONTO --}}
+                                <div class="mb-5">
+                                    <x-input-label for="tipo_desconto" value="Tipo de desconto" />
+
+                                    <select
+                                        name="tipo_desconto"
+                                        id="tipo_desconto"
+                                        class="mt-1 block w-full rounded-lg border-gray-300 focus:border-primary focus:ring-primary"
+                                    >
+                                        <option
+                                            value="valor"
+                                            {{ old('tipo_desconto', 'valor') === 'valor' ? 'selected' : '' }}
+                                        >
+                                            Valor fixo (R$)
+                                        </option>
+
+                                        <option
+                                            value="percentual"
+                                            {{ old('tipo_desconto') === 'percentual' ? 'selected' : '' }}
+                                        >
+                                            Percentual (%)
+                                        </option>
+                                    </select>
+
+                                    <div id="erro-tipo-desconto" class="mt-1 text-sm text-danger-500"></div>
+
+                                    @error('tipo_desconto')
+                                    <p class="mt-1 text-sm text-danger-500">{{ $message }}</p>
+                                    @enderror
+                                </div>
+
+                                {{-- DESCONTO --}}
+                                <div class="mb-5">
+                                    <x-input-label
+                                        for="desconto"
+                                        id="label-desconto"
+                                        value="Desconto (R$)"
+                                    />
+
+                                    <x-input
+                                        id="desconto"
+                                        name="desconto"
+                                        type="text"
+                                        inputmode="decimal"
+                                        class="w-full mask-valor"
+                                        data-mask-prefix="{{ old('tipo_desconto') === 'percentual' ? '' : 'R$ ' }}"
+                                        placeholder="R$ 0,00"
+                                        :value="old('desconto', '0')"
+                                    />
+
+                                    <div id="erro-desconto" class="mt-1 text-sm text-danger-500"></div>
+                                </div>
+
+                                {{-- ACRÉSCIMO --}}
+                                <div class="mb-6">
+                                    <x-input-label
+                                        for="outros_custos"
+                                        value="Acréscimo (R$)"
+                                    />
+
+                                    <x-input
+                                        id="outros_custos"
+                                        name="outros_custos"
+                                        type="text"
+                                        inputmode="decimal"
+                                        class="w-full mask-valor"
+                                        data-mask-prefix="R$ "
+                                        placeholder="R$ 0,00"
+                                        :value="old('outros_custos', '0')"
+                                    />
+
+                                    <div id="erro-outros-custos" class="mt-1 text-sm text-danger-500"></div>
+                                </div>
+
+                                {{-- RESUMO --}}
+                                <div class="mb-6 rounded-lg border border-gray-300 p-4">
+                                    <h3 class="mb-4 font-semibold text-text">
+                                        Resumo da venda
+                                    </h3>
+
+                                    <div class="space-y-3 text-sm">
+                                        <div class="flex justify-between">
+                                            <span class="text-text-light">Produtos</span>
+                                            <span id="resumo-produtos" class="font-medium">
+                            R$ {{ number_format($venda->valor_produtos, 2, ',', '.') }}
+                        </span>
+                                        </div>
+
+                                        <div class="flex justify-between">
+                                            <span class="text-text-light">Desconto</span>
+                                            <span id="resumo-desconto" class="font-medium text-danger-500">
+                            - R$ {{ number_format($venda->descontos, 2, ',', '.') }}
+                        </span>
+                                        </div>
+
+                                        <div class="flex justify-between">
+                                            <span class="text-text-light">Acréscimo</span>
+                                            <span id="resumo-acrescimo" class="font-medium">
+                            R$ {{ number_format($venda->outros_custos, 2, ',', '.') }}
+                        </span>
+                                        </div>
+
+                                        <div class="border-t border-gray-300 pt-3">
+                                            <div class="flex justify-between">
+                                                <span class="font-semibold text-text">Total</span>
+                                                <span id="resumo-total" class="text-lg font-bold text-primary">
+                                R$ {{ number_format($venda->valor_total, 2, ',', '.') }}
+                            </span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <p id="status-salvamento" class="mt-3 text-xs text-text-light"></p>
+                                </div>
+                            </form>
+                        @else
+                            <p class="text-sm text-text-light">
+                                Adicione um produto para iniciar uma venda e informar descontos e acréscimos.
+                            </p>
+                        @endif
+
+                        @if(isset($venda))
+                            {{-- ADICIONAR RECEBIMENTO --}}
+                            <div class="mt-6 border-t border-gray-300 pt-5">
+                                <h3 class="mb-4 font-semibold text-text">
+                                    Adicionar recebimento
+                                </h3>
+
+                                <form
+                                    action="{{ route('vendas.recebimentos.store', $venda->id) }}"
+                                    method="POST"
+                                    id="form-recebimento"
+                                >
+                                    @csrf
+
+                                    <input type="hidden" name="aba_ativa" value="pagamento">
+
+                                    {{-- FORMA DE PAGAMENTO --}}
+                                    <div class="mb-4">
+                                        <x-input-label for="forma_pagamento_id" value="Forma de pagamento" />
+
+                                        <select
+                                            name="forma_pagamento_id"
+                                            id="forma_pagamento_id"
+                                            class="mt-1 block w-full rounded-lg border-gray-300 focus:border-primary focus:ring-primary"
+                                            required
+                                        >
+                                            <option value="">Selecione uma forma de pagamento</option>
+
+                                            @foreach ($formasPagamento as $forma)
+                                                <option
+                                                    value="{{ $forma->id }}"
+                                                    {{ old('forma_pagamento_id') == $forma->id ? 'selected' : '' }}
+                                                >
+                                                    {{ $forma->nome }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+
+                                        @error('forma_pagamento_id')
+                                        <p class="mt-1 text-sm text-danger-500">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+
+                                    {{-- VALOR --}}
+                                    <div class="mb-4">
+                                        <x-input-label for="valor" value="Valor" />
+
+                                        <x-input
+                                            id="valor"
+                                            name="valor"
+                                            type="text"
+                                            inputmode="decimal"
+                                            class="w-full mask-valor"
+                                            data-mask-prefix="R$ "
+                                            placeholder="R$ 0,00"
+                                            :value="old('valor')"
+                                        />
+                                    </div>
+
+                                    {{-- SITUAÇÃO --}}
+                                    <div class="mb-4">
+                                        <x-input-label for="status_recebimento" value="Situação" />
+
+                                        <select
+                                            name="status"
+                                            id="status_recebimento"
+                                            class="mt-1 block w-full rounded-lg border-gray-300 focus:border-primary focus:ring-primary"
+                                            required
+                                        >
+                                            <option
+                                                value="pago"
+                                                {{ old('status', 'pago') === 'pago' ? 'selected' : '' }}
+                                            >
+                                                Pago
+                                            </option>
+
+                                            <option
+                                                value="pendente"
+                                                {{ old('status') === 'pendente' ? 'selected' : '' }}
+                                            >
+                                                Pendente
+                                            </option>
+                                        </select>
+
+                                        @error('status')
+                                        <p class="mt-1 text-sm text-danger-500">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+
+                                    {{-- DATA DE VENCIMENTO --}}
+                                    <div id="campo-data-vencimento" class="mb-4 hidden">
+                                        <x-input-label for="data_vencimento" value="Data de vencimento" />
+
+                                        <x-input
+                                            id="data_vencimento"
+                                            name="data_vencimento"
+                                            type="date"
+                                            class="w-full"
+                                            :value="old('data_vencimento')"
+                                        />
+                                    </div>
+
+                                    {{-- DESCRIÇÃO --}}
+                                    <div class="mb-5">
+                                        <x-input-label for="descricao" value="Descrição (opcional)" />
+
+                                        <x-input
+                                            id="descricao"
+                                            name="descricao"
+                                            type="text"
+                                            class="w-full"
+                                            placeholder="Ex.: pagamento realizado via aplicativo"
+                                            :value="old('descricao')"
+                                        />
+                                    </div>
+
+                                    <div class="flex justify-end">
+                                        <button
+                                            type="submit"
+                                            class="btn bg-primary hover:bg-primary-600 active:bg-primary-700"
+                                        >
+                                            Adicionar recebimento
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+
+                            {{-- RECEBIMENTOS DA VENDA --}}
+                            <div class="mt-8 border-t border-gray-300 pt-5">
+                                <h3 class="mb-4 font-semibold text-text">
+                                    Recebimentos
+                                </h3>
+
+                                @if ($venda->recebimentos->isNotEmpty())
+                                    <div class="space-y-3">
+                                        @foreach ($venda->recebimentos as $recebimento)
+                                            <div class="rounded-lg border border-gray-300 p-3">
+                                                <div class="flex items-start justify-between gap-3">
+                                                    <div>
+                                                        <p class="font-medium text-text">
+                                                            {{ $recebimento->formaPagamento->nome }}
+                                                        </p>
+
+                                                        <p class="mt-1 text-sm text-text-light">
+                                                            {{ $recebimento->descricao ?: 'Sem descrição' }}
+                                                        </p>
+
+                                                        <p class="mt-1 text-xs text-text-light">
+                                                            Vencimento:
+                                                            {{ \Carbon\Carbon::parse($recebimento->data_vencimento)->format('d/m/Y') }}
+                                                        </p>
+
+                                                        @if ($recebimento->data_pagamento)
+                                                            <p class="text-xs text-text-light">
+                                                                Pago em:
+                                                                {{ \Carbon\Carbon::parse($recebimento->data_pagamento)->format('d/m/Y H:i') }}
+                                                            </p>
+                                                        @endif
+                                                    </div>
+
+                                                    <div class="shrink-0 text-right">
+                                                        <p class="font-semibold text-text">
+                                                            R$ {{ number_format($recebimento->valor, 2, ',', '.') }}
+                                                        </p>
+
+                                                        @if ($recebimento->status === 'pago')
+                                                            <span class="text-xs font-semibold text-primary">
+                                        Pago
+                                    </span>
+                                                        @elseif ($recebimento->status === 'pendente')
+                                                            <span class="text-xs font-semibold text-beige-700">
+                                        Pendente
+                                    </span>
+                                                        @else
+                                                            <span class="text-xs font-semibold text-danger-500">
+                                        Cancelado
+                                    </span>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                @else
+                                    <p class="text-sm text-text-light">
+                                        Nenhum recebimento registrado nesta venda.
+                                    </p>
+                                @endif
+                            </div>
+                        @endif
                     </div>
                 </section>
 
@@ -370,7 +689,9 @@
 
                 <div class="text-right">
                     <span class="mr-3 font-semibold">Total</span>
-                    <span class="text-2xl font-bold">R$ {{ number_format($venda->valor_total ?? 0, 2, ',', '.') }}</span>
+                    <span id="total-venda" class="text-2xl font-bold">
+                        R$ {{ number_format($venda->valor_total ?? 0, 2, ',', '.') }}
+                    </span>
                 </div>
             </footer>
         </div>
@@ -411,6 +732,23 @@
                         formulario.requestSubmit();
                     }
                 });
+            }
+
+            const statusRecebimento = document.getElementById('status_recebimento');
+            const campoDataVencimento = document.getElementById('campo-data-vencimento');
+            const dataVencimento = document.getElementById('data_vencimento');
+
+            if (statusRecebimento && campoDataVencimento) {
+                function atualizarDataVencimento() {
+                    const pendente = statusRecebimento.value === 'pendente';
+
+                    campoDataVencimento.classList.toggle('hidden', !pendente);
+                    dataVencimento.required = pendente;
+                }
+
+                statusRecebimento.addEventListener('change', atualizarDataVencimento);
+
+                atualizarDataVencimento();
             }
         });
 
@@ -460,9 +798,176 @@
             });
         });
 
-        const abaInicial = @json(session('aba_ativa', 'produto'));
+        const abaInicial = @json(session('aba_ativa', old('aba_ativa', 'produto')));
 
         alternarAba(abaInicial);
+
+        const formValores = document.getElementById('form-valores');
+
+        if (formValores) {
+            const tipoDesconto = document.getElementById('tipo_desconto');
+            const campoDesconto = document.getElementById('desconto');
+            const campoAcrescimo = document.getElementById('outros_custos');
+
+            let temporizador = null;
+            let salvando = false;
+            let alterado = false;
+            let salvamentoPendente = false;
+
+            // Alterna o prefixo da máscara conforme o tipo de desconto.
+            function atualizarTipoDesconto() {
+                const percentual = tipoDesconto.value === 'percentual';
+
+                document.getElementById('label-desconto').textContent =
+                    percentual ? 'Desconto (%)' : 'Desconto (R$)';
+
+                campoDesconto.dataset.maskPrefix = percentual ? '' : 'R$ ';
+                campoDesconto.placeholder = percentual ? '0,00' : 'R$ 0,00';
+
+                if (window.aplicarMascaraValor) {
+                    window.aplicarMascaraValor(campoDesconto);
+                }
+            }
+
+            tipoDesconto.addEventListener('change', function () {
+                atualizarTipoDesconto();
+                alterado = true;
+                agendarSalvamento();
+            });
+
+            // Limpa mensagens de erro ao editar o campo.
+            function limparErro(campo) {
+                const erro = document.getElementById(campo);
+
+                if (erro) {
+                    erro.textContent = '';
+                }
+            }
+
+            campoDesconto.addEventListener('input', function () {
+                limparErro('erro-desconto');
+                alterado = true;
+            });
+
+            campoAcrescimo.addEventListener('input', function () {
+                limparErro('erro-outros-custos');
+                alterado = true;
+            });
+
+            tipoDesconto.addEventListener('change', function () {
+                limparErro('erro-tipo-desconto');
+            });
+
+            // Formata os valores retornados pelo backend.
+            function atualizarResumo(dados) {
+                document.getElementById('resumo-produtos').textContent =
+                    'R$ ' + dados.valor_produtos;
+
+                document.getElementById('resumo-desconto').textContent =
+                    '- R$ ' + dados.descontos;
+
+                document.getElementById('resumo-acrescimo').textContent =
+                    'R$ ' + dados.outros_custos;
+
+                document.getElementById('resumo-total').textContent =
+                    'R$ ' + dados.valor_total;
+
+                // Atualiza também o total do rodapé do PDV.
+                const totalRodape = document.getElementById('total-venda');
+
+                if (totalRodape) {
+                    totalRodape.textContent = 'R$ ' + dados.valor_total;
+                }
+            }
+
+            function exibirErros(erros) {
+                const campos = {
+                    tipo_desconto: 'erro-tipo-desconto',
+                    desconto: 'erro-desconto',
+                    outros_custos: 'erro-outros-custos'
+                };
+
+                Object.entries(campos).forEach(([campo, elemento]) => {
+                    const mensagem = erros[campo]?.[0] ?? '';
+
+                    document.getElementById(elemento).textContent = mensagem;
+                });
+            }
+
+            async function salvarValores() {
+                if (!alterado) {
+                    return;
+                }
+
+                if (salvando) {
+                    salvamentoPendente = true;
+                    return;
+                }
+
+                salvando = true;
+                alterado = false;
+
+                const status = document.getElementById('status-salvamento');
+                status.textContent = 'Salvando...';
+
+                try {
+                    const resposta = await fetch(formValores.action, {
+                        method: 'POST',
+                        headers: {
+                            'Accept': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        body: new FormData(formValores)
+                    });
+
+                    const dados = await resposta.json();
+
+                    if (resposta.status === 422) {
+                        exibirErros(dados.errors ?? {});
+                        status.textContent = 'Não foi possível salvar os valores.';
+                        return;
+                    }
+
+                    if (!resposta.ok) {
+                        throw new Error('Erro ao salvar os valores.');
+                    }
+
+                    exibirErros({});
+                    atualizarResumo(dados);
+
+                    status.textContent = 'Valores salvos com sucesso.';
+                } catch (erro) {
+                    status.textContent = 'Erro ao salvar. Tente novamente.';
+                    alterado = true;
+                } finally {
+                    salvando = false;
+
+                    if (salvamentoPendente) {
+                        salvamentoPendente = false;
+                        agendarSalvamento();
+                    }
+                }
+            }
+
+            function agendarSalvamento() {
+                clearTimeout(temporizador);
+
+                temporizador = setTimeout(salvarValores, 400);
+            }
+
+            // Salva ao perder o foco dos campos.
+            [campoDesconto, campoAcrescimo].forEach(campo => {
+                campo.addEventListener('blur', agendarSalvamento);
+            });
+
+            // Se o usuário alterar outro campo enquanto salva,
+            // agenda uma nova atualização ao terminar a requisição atual.
+            formValores.addEventListener('input', function () {
+                clearTimeout(temporizador);
+            });
+
+            atualizarTipoDesconto();
+        }
     </script>
 </body>
 </html>

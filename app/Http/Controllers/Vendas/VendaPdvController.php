@@ -7,13 +7,17 @@ use App\Models\ItemVenda;
 use App\Models\Produto;
 use App\Models\Venda;
 use App\Models\Cliente;
+use App\Models\FormaPagamento;
 use Illuminate\View\View;
 use App\Http\Requests\Vendas\AdicionarProdutoRequest;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\RedirectResponse;
 use App\Http\Requests\Vendas\AtualizarItemVendaRequest;
 use App\Http\Requests\Vendas\AtualizarClienteVendaRequest;
+use App\Http\Requests\Vendas\AtualizarValoresVendaRequest;
+use App\Http\Requests\Vendas\AdicionarRecebimentoRequest;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Carbon;
 
 class VendaPdvController extends Controller
 {
@@ -36,8 +40,11 @@ class VendaPdvController extends Controller
 
     public function edit(string $id)
     {
-        $venda = Venda::with(['itens.produto', 'cliente.pessoa'])
-            ->findOrFail($id);
+        $venda = Venda::with([
+            'itens.produto',
+            'cliente.pessoa',
+            'recebimentos.formaPagamento',
+        ])->findOrFail($id);
 
         if ($venda->status !== Venda::STATUS_ABERTA) {
             abort(404);
@@ -55,11 +62,17 @@ class VendaPdvController extends Controller
 
         $clientes = $this->clientesAtivos();
 
+        $formasPagamento = FormaPagamento::query()
+            ->where('status', true)
+            ->orderBy('nome')
+            ->get();
+
         return view('vendas.pdv', compact(
             'venda',
             'vendasAbertas',
             'produtos',
-            'clientes'
+            'clientes',
+            'formasPagamento'
         ));
     }
 
@@ -297,5 +310,129 @@ class VendaPdvController extends Controller
                 ),
             ]);
         }
+    }
+
+    public function atualizarValores(AtualizarValoresVendaRequest $request, Venda $venda)
+    {
+        $dados = $request->validated();
+
+        $venda = DB::transaction(function () use ($venda, $dados) {
+            $venda = Venda::query()
+                ->whereKey($venda->id)
+                ->lockForUpdate()
+                ->firstOrFail();
+
+            if ($venda->status !== Venda::STATUS_ABERTA) {
+                throw ValidationException::withMessages([
+                    'status' => 'Somente vendas abertas podem receber pagamentos.',
+                ]);
+            }
+
+            $valorProdutos = (float) $venda->itens()
+                ->get()
+                ->sum(fn ($item) => $item->quantidade * $item->preco_unitario);
+
+            $valorProdutos = round($valorProdutos, 2);
+
+            if ($dados['tipo_desconto'] === 'percentual') {
+                $desconto = round(
+                    $valorProdutos * ((float) $dados['desconto'] / 100),
+                    2
+                );
+            } else {
+                $desconto = round((float) $dados['desconto'], 2);
+            }
+
+            if ($desconto > $valorProdutos) {
+                throw ValidationException::withMessages([
+                    'desconto' => 'O desconto não pode ser maior que o valor dos produtos.',
+                ]);
+            }
+
+            $venda->update([
+                'descontos' => $desconto,
+                'outros_custos' => round((float) $dados['outros_custos'], 2),
+            ]);
+
+            $this->recalcularTotais($venda);
+
+            return $venda->fresh();
+        });
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'valor_produtos' => number_format($venda->valor_produtos, 2, ',', '.'),
+                'descontos' => number_format($venda->descontos, 2, ',', '.'),
+                'outros_custos' => number_format($venda->outros_custos, 2, ',', '.'),
+                'valor_total' => number_format($venda->valor_total, 2, ',', '.'),
+            ]);
+        }
+
+        return redirect()
+            ->route('vendas.edit', $venda->id)
+            ->with('success', 'Valores da venda atualizados com sucesso.')
+            ->with('aba_ativa', 'pagamento');
+    }
+
+    public function store(AdicionarRecebimentoRequest $request, Venda $venda)
+    {
+        $dados = $request->validated();
+
+        DB::transaction(function () use ($venda, $dados) {
+            $venda = Venda::query()
+                ->whereKey($venda->id)
+                ->lockForUpdate()
+                ->firstOrFail();
+
+            if ($venda->status !== Venda::STATUS_ABERTA) {
+                abort(422, 'Somente vendas abertas podem receber pagamentos.');
+            }
+
+            $formaPagamentoAtiva = FormaPagamento::query()
+                ->whereKey($dados['forma_pagamento_id'])
+                ->where('status', true)
+                ->exists();
+
+            if (!$formaPagamentoAtiva) {
+                throw ValidationException::withMessages([
+                    'forma_pagamento_id' => 'A forma de pagamento selecionada não está disponível.',
+                ]);
+            }
+
+            // Soma os recebimentos que ainda não foram cancelados.
+            $valorRecebido = $venda->recebimentos()
+                ->whereIn('status', ['pago', 'pendente'])
+                ->sum('valor');
+
+            // Trabalha com centavos para evitar imprecisão de ponto flutuante.
+            $totalEmCentavos = (int) round((float) $venda->valor_total * 100);
+            $recebidoEmCentavos = (int) round((float) $valorRecebido * 100);
+            $novoValorEmCentavos = (int) round((float) $dados['valor'] * 100);
+
+            $restanteEmCentavos = $totalEmCentavos - $recebidoEmCentavos;
+
+            if ($novoValorEmCentavos > $restanteEmCentavos) {
+                throw ValidationException::withMessages([
+                    'valor' => 'O valor informado ultrapassa o valor restante da venda.',
+                ]);
+            }
+
+            $pago = $dados['status'] === 'pago';
+
+            $venda->recebimentos()->create([
+                'forma_pagamento_id' => $dados['forma_pagamento_id'],
+                'valor' => $dados['valor'],
+                'descricao' => $dados['descricao'] ?? '',
+                'data_vencimento' => $dados['data_vencimento'] ?? Carbon::now(),
+                'data_pagamento' => $pago ? Carbon::now() : null,
+                'status' => $dados['status'],
+            ]);
+        });
+
+        return redirect()
+            ->route('vendas.edit', $venda->id)
+            ->with('success', 'Recebimento adicionado com sucesso.')
+            ->with('aba_ativa', 'pagamento');
     }
 }

@@ -89,6 +89,8 @@ Route::get('/vendas/{id}/edit', [VendaPdvController::class, 'edit'])->name('vend
 Route::delete('/vendas/{venda}/itens/{item}', [VendaPdvController::class, 'destroy'])->name('vendas.itens.destroy');
 Route::patch('/vendas/{venda}/itens/{item}', [VendaPdvController::class, 'update'])->name('vendas.itens.update');
 Route::patch('/vendas/{venda}/cliente', [VendaPdvController::class, 'atualizarCliente'])->name('vendas.cliente.update');
+Route::patch('/vendas/{venda}/valores', [vendaPdvController::class, 'atualizarValores'])->name('vendas.valores.update');
+Route::post('/vendas/{venda}/recebimentos', [VendaPdvController::class, 'store'])->name('vendas.recebimentos.store');
 
 Route::get('/relatorios', [RelatorioController::class, 'index'])->name('relatorios.index');
 Route::get('relatorios/gerar', [RelatorioController::class, 'gerar'])->name('relatorios.gerar');

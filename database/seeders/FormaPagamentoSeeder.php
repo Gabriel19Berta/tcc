@@ -16,6 +16,7 @@ class FormaPagamentoSeeder extends Seeder
         $formas = [
             'Dinheiro',
             'Pix',
+            'Boleto',
             'Cartão de débito',
             'Cartão de crédito',
         ];
