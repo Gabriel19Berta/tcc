@@ -36,11 +36,8 @@
                     </form>
 
                     <div>
-                        <select
-                            id="venda_aberta"
-                            class="rounded-lg border-gray-300 text-sm"
-                            onchange="if (this.value) window.location.href = this.value"
-                        >
+                        <select id="venda_aberta" class="rounded-lg border-gray-300 text-sm" 
+                            onchange="if (this.value) window.location.href = this.value">
                             <option value="">Continuar venda...</option>
 
                             @foreach ($vendasAbertas as $vendaAberta)
@@ -74,7 +71,6 @@
                         <button type="button" data-aba="pagamento" class="flex-1 px-4 py-3 font-semibold" aria-selected="false">
                             Pagamento
                         </button>
-
                     </nav>
 
                     {{-- CONTEÚDO DA ABA --}}
@@ -96,48 +92,42 @@
                             <div class="mb-5">
                                 <x-input-label for="produto_id" :value=" __('Produto')" />
 
-                                <select
-                                    name="produto_id"
-                                    id="produto_id"
-                                    class="select2"
-                                >
+                                <select name="produto_id" id="produto_id" class="select2 w-full">
                                     <option value="">Selecione um produto</option>
 
                                     @foreach ($produtos as $produto)
-                                        <option
-                                            value="{{ $produto->id }}"
-                                            data-preco="{{ $produto->preco_venda }}"
-                                            {{ old('produto_id') == $produto->id ? 'selected' : '' }}
-                                        >
-                                            {{ $produto->nome }}
-                                            - R$ {{ number_format($produto->preco_venda, 2, ',', '.') }}
+                                        <option value="{{ $produto->id }}" data-preco="{{ $produto->preco_venda }}"
+                                            {{ old('produto_id') == $produto->id ? 'selected' : '' }}>
+                                            {{ $produto->nome }} - R$ {{ number_format($produto->preco_venda, 2, ',', '.') }}
                                         </option>
                                     @endforeach
                                 </select>
                             </div>
 
-                            <div class="mb-6">
-                                <x-input-label for="quantidade" :value="__('Quantidade')" />
-                                <x-input id="quantidade" name="quantidade" type="number" min="0.01" step="0.01" class="w-full"
-                                         :value="1" />
+                            <div class="grid grid-cols-2 gap-4 mb-6">
 
-                                @error('produto_id')
-                                    <p class="mt-1 text-sm text-danger-500">{{ $message }}</p>
-                                @enderror
-                            </div>
+                                <div>
+                                    <x-input-label for="quantidade" :value="__('Quantidade')" />
 
-                            <div class="mb-6">
-                                <x-input-label for="preco_produto" :value="__('Preço')" />
-                                <x-input id="preco_produto" name="preco_produto" type="text" class="w-full mask-valor" placeholder="R$ 0,00"
-                                         min="0" :value="old('preco_produto')" />
+                                    <x-input id="quantidade" name="quantidade" type="number" min="0.01"
+                                        step="0.01" class="w-full" :value="old('quantidade', 1)"
+                                    />
+                                </div>
+
+                                <div>
+                                    <x-input-label for="preco_produto" :value="__('Preço')" />
+
+                                    <x-input id="preco_produto" name="preco_produto" type="text"
+                                        class="w-full mask-valor" placeholder="R$ 0,00" min="0"
+                                        :value="old('preco_produto')"
+                                    />
+                                </div>
+
                             </div>
 
                             {{-- BOTÃO --}}
-                            <div class="flex justify-end">
-                                <button
-                                    type="submit"
-                                    class="btn bg-primary hover:bg-primary-600 active:bg-primary-700"
-                                >
+                            <div class="w-full text-center">
+                                <button type="submit" class="w-full block text-center btn bg-primary hover:bg-primary-600 active:bg-primary-700">
                                     Adicionar produto
                                 </button>
                             </div>
@@ -160,14 +150,12 @@
                                         <option value="">Venda sem cliente</option>
 
                                         @foreach($clientes as $cliente)
-                                            <option
-                                                value="{{ $cliente->id }}"
+                                            <option value="{{ $cliente->id }}"
                                                 {{ old('cliente_id', $venda->cliente_id) == $cliente->id ? 'selected' : '' }}
                                             >
                                                 {{ $cliente->pessoa->nome }}
                                             </option>
                                         @endforeach
-
                                     </select>
 
                                     @error('cliente_id')
@@ -183,78 +171,93 @@
                                 @php
                                     $pessoa = $venda->cliente->pessoa;
                                 @endphp
+
                                 <div class="rounded-lg border border-gray-300 p-4">
                                     <h3 class="mb-4 font-semibold text-text">
                                         Dados do cliente
                                     </h3>
 
-                                    <div class="grid grid-cols-2 gap-4">
-                                        <div class="col-span-2">
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-4">
+
+                                        {{-- NOME --}}
+                                        <div class="min-w-0">
                                             <span class="text-xs text-text-light">Nome</span>
-                                            <p class="text-sm text-text">
+                                            <p class="text-sm text-text break-words">
                                                 {{ $pessoa->nome }}
                                             </p>
                                         </div>
-                                        <div>
-                                            <span class="text-xs text-text-light">CPF</span>
-                                            <p class="text-sm text-text">
 
+                                        {{-- CPF / CNPJ --}}
+                                        <div class="min-w-0">
+                                            <span class="text-xs text-text-light">
+                                                {{ $pessoa->tipo == 'j' ? 'CNPJ' : 'CPF' }}
+                                            </span>
+
+                                            <p class="text-sm text-text break-words">
                                                 @if($pessoa->tipo == 'f')
-                                                    {{ $pessoa->cpf }}
+                                                    {{ $pessoa->cpf ?? 'Não informado' }}
                                                 @elseif($pessoa->tipo == 'j')
-                                                    {{ $pessoa->cnpj }}
+                                                    {{ $pessoa->cnpj ?? 'Não informado' }}
                                                 @else
-                                                    {{ 'Não informado' }}
+                                                    Não informado
                                                 @endif
                                             </p>
                                         </div>
-                                        <div>
+
+                                        {{-- TELEFONE --}}
+                                        <div class="min-w-0">
+                                            <span class="text-xs text-text-light">Telefone</span>
+                                            <p class="text-sm text-text break-words">
+                                                {{ $pessoa->telefone ?? 'Não informado' }}
+                                            </p>
+                                        </div>
+
+                                        {{-- CELULAR --}}
+                                        <div class="min-w-0">
                                             <span class="text-xs text-text-light">Celular</span>
-                                            <p class="text-sm text-text">
+                                            <p class="text-sm text-text break-words">
                                                 {{ $pessoa->celular ?? 'Não informado' }}
                                             </p>
                                         </div>
-                                        <div>
-                                            <span class="text-xs text-text-light">Telefone</span>
-                                            <p class="text-sm text-text">
-                                                {{ $pessoa->telefone ?? 'Não informado'}}
-                                            </p>
-                                        </div>
-                                        <div class="col-span-2">
+
+                                        {{-- E-MAIL --}}
+                                        <div class="min-w-0 sm:col-span-2">
                                             <span class="text-xs text-text-light">E-mail</span>
-                                            <p class="text-sm text-text">
-                                                {{ $pessoa->email ?? 'Não informado'}}
+                                            <p class="text-sm text-text break-words">
+                                                {{ $pessoa->email ?? 'Não informado' }}
                                             </p>
                                         </div>
 
+                                        {{-- ENDEREÇO --}}
+                                        <div class="min-w-0 sm:col-span-2">
+                                            <span class="text-xs text-text-light">Endereço</span>
 
-                                            <div class="col-span-2">
-                                                <span class="text-xs text-text-light">Endereço</span>
-                                                <p class="text-sm text-text">
-                                                    @if($pessoa->logradouro)
-                                                        {{ $pessoa->logradouro }}
-                                                        @if($pessoa->bairro)
-                                                            - {{ $pessoa->bairro }}
-                                                        @endif
-                                                    @else
-                                                        {{ 'Não informado' }}
+                                            <p class="text-sm text-text break-words">
+                                                @if($pessoa->logradouro)
+                                                    {{ $pessoa->logradouro }}
+
+                                                    @if($pessoa->bairro)
+                                                        - {{ $pessoa->bairro }}
                                                     @endif
-                                                </p>
-                                            </div>
+                                                @else
+                                                    Não informado
+                                                @endif
 
+                                                @if($pessoa->cidade || $pessoa->uf)
+                                                    <span class="block">
+                                                        {{ $pessoa->cidade }}{{ $pessoa->uf ? ' / ' . $pessoa->uf : '' }}
+                                                    </span>
+                                                @endif
+                                            </p>
+                                        </div>
 
-                                        @if($pessoa->cidade || $pessoa->uf)
-                                            <div>
-                                                <span class="text-xs text-text-light">Cidade/UF</span>
-                                                <p class="text-sm text-text">
-                                                    {{ $pessoa->cidade }}{{ $pessoa->uf ? ' / ' . $pessoa->uf : '' }}
-                                                </p>
-                                            </div>
-                                        @endif
                                     </div>
                                 </div>
+
                             @else
-                                <p class="text-sm text-text-light">Nenhum cliente selecionado para esta venda.</p>
+                                <p class="text-sm text-text-light">
+                                    Nenhum cliente selecionado para esta venda.
+                                </p>
                             @endif
                         @else
                             <p class="text-sm text-text-light">Adicione um produto para iniciar uma venda e selecionar um cliente.</p>
@@ -263,145 +266,149 @@
 
                     {{-- ABA PAGAMENTO --}}
                     <div id="aba-pagamento" class="flex-1 hidden">
-                        <h2 class="mb-6 text-lg font-semibold text-primary">
+
+                        <h2 class="mb-5 text-lg font-semibold text-primary">
                             Pagamento
                         </h2>
 
                         @if(isset($venda))
+
+                            {{-- VALORES DA VENDA --}}
                             <form
                                 id="form-valores"
                                 action="{{ route('vendas.valores.update', $venda->id) }}"
                                 method="POST"
+                                class="mb-5"
                             >
                                 @csrf
                                 @method('PATCH')
 
                                 <input type="hidden" name="aba_ativa" value="pagamento">
 
-                                {{-- TIPO DE DESCONTO --}}
-                                <div class="mb-5">
-                                    <x-input-label for="tipo_desconto" value="Tipo de desconto" />
-
-                                    <select
-                                        name="tipo_desconto"
-                                        id="tipo_desconto"
-                                        class="mt-1 block w-full rounded-lg border-gray-300 focus:border-primary focus:ring-primary"
-                                    >
-                                        <option
-                                            value="valor"
-                                            {{ old('tipo_desconto', 'valor') === 'valor' ? 'selected' : '' }}
-                                        >
-                                            Valor fixo (R$)
-                                        </option>
-
-                                        <option
-                                            value="percentual"
-                                            {{ old('tipo_desconto') === 'percentual' ? 'selected' : '' }}
-                                        >
-                                            Percentual (%)
-                                        </option>
-                                    </select>
-
-                                    <div id="erro-tipo-desconto" class="mt-1 text-sm text-danger-500"></div>
-
-                                    @error('tipo_desconto')
-                                    <p class="mt-1 text-sm text-danger-500">{{ $message }}</p>
-                                    @enderror
-                                </div>
-
-                                {{-- DESCONTO --}}
-                                <div class="mb-5">
-                                    <x-input-label
-                                        for="desconto"
-                                        id="label-desconto"
-                                        value="Desconto (R$)"
-                                    />
-
-                                    <x-input
-                                        id="desconto"
-                                        name="desconto"
-                                        type="text"
-                                        inputmode="decimal"
-                                        class="w-full mask-valor"
-                                        data-mask-prefix="{{ old('tipo_desconto') === 'percentual' ? '' : 'R$ ' }}"
-                                        placeholder="R$ 0,00"
-                                        :value="old('desconto', '0')"
-                                    />
-
-                                    <div id="erro-desconto" class="mt-1 text-sm text-danger-500"></div>
-                                </div>
-
-                                {{-- ACRÉSCIMO --}}
-                                <div class="mb-6">
-                                    <x-input-label
-                                        for="outros_custos"
-                                        value="Acréscimo (R$)"
-                                    />
-
-                                    <x-input
-                                        id="outros_custos"
-                                        name="outros_custos"
-                                        type="text"
-                                        inputmode="decimal"
-                                        class="w-full mask-valor"
-                                        data-mask-prefix="R$ "
-                                        placeholder="R$ 0,00"
-                                        :value="old('outros_custos', '0')"
-                                    />
-
-                                    <div id="erro-outros-custos" class="mt-1 text-sm text-danger-500"></div>
-                                </div>
-
                                 {{-- RESUMO --}}
-                                <div class="mb-6 rounded-lg border border-gray-300 p-4">
-                                    <h3 class="mb-4 font-semibold text-text">
-                                        Resumo da venda
-                                    </h3>
+                                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 rounded-lg border border-gray-300 p-3">
 
-                                    <div class="space-y-3 text-sm">
-                                        <div class="flex justify-between">
-                                            <span class="text-text-light">Produtos</span>
-                                            <span id="resumo-produtos" class="font-medium">
-                            R$ {{ number_format($venda->valor_produtos, 2, ',', '.') }}
-                        </span>
-                                        </div>
+                                    <div class="min-w-0">
+                                        <span class="text-xs text-text-light">
+                                            Produtos
+                                        </span>
 
-                                        <div class="flex justify-between">
-                                            <span class="text-text-light">Desconto</span>
-                                            <span id="resumo-desconto" class="font-medium text-danger-500">
-                            - R$ {{ number_format($venda->descontos, 2, ',', '.') }}
-                        </span>
-                                        </div>
-
-                                        <div class="flex justify-between">
-                                            <span class="text-text-light">Acréscimo</span>
-                                            <span id="resumo-acrescimo" class="font-medium">
-                            R$ {{ number_format($venda->outros_custos, 2, ',', '.') }}
-                        </span>
-                                        </div>
-
-                                        <div class="border-t border-gray-300 pt-3">
-                                            <div class="flex justify-between">
-                                                <span class="font-semibold text-text">Total</span>
-                                                <span id="resumo-total" class="text-lg font-bold text-primary">
-                                R$ {{ number_format($venda->valor_total, 2, ',', '.') }}
-                            </span>
-                                            </div>
-                                        </div>
+                                        <p id="resumo-produtos" class="font-medium text-text">
+                                            R$ {{ number_format($venda->valor_produtos, 2, ',', '.') }}
+                                        </p>
                                     </div>
 
-                                    <p id="status-salvamento" class="mt-3 text-xs text-text-light"></p>
-                                </div>
-                            </form>
-                        @else
-                            <p class="text-sm text-text-light">
-                                Adicione um produto para iniciar uma venda e informar descontos e acréscimos.
-                            </p>
-                        @endif
+                                    <div class="min-w-0">
+                                        <span class="text-xs text-text-light">
+                                            Desconto
+                                        </span>
 
-                        @if(isset($venda))
+                                        <p id="resumo-desconto" class="font-medium text-danger-500">
+                                            - R$ {{ number_format($venda->descontos, 2, ',', '.') }}
+                                        </p>
+                                    </div>
+
+                                    <div class="min-w-0">
+                                        <span class="text-xs text-text-light">
+                                            Acréscimo
+                                        </span>
+
+                                        <p id="resumo-acrescimo" class="font-medium text-text">
+                                            R$ {{ number_format($venda->outros_custos, 2, ',', '.') }}
+                                        </p>
+                                    </div>
+
+                                    <div class="min-w-0">
+                                        <span class="text-xs text-text-light">
+                                            Total
+                                        </span>
+
+                                        <p id="resumo-total" class="font-bold text-primary">
+                                            R$ {{ number_format($venda->valor_total, 2, ',', '.') }}
+                                        </p>
+                                    </div>
+
+                                </div>
+
+                                {{-- DESCONTO E ACRÉSCIMO --}}
+                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4">
+
+                                    {{-- TIPO DE DESCONTO --}}
+                                    <div>
+                                        <x-input-label for="tipo_desconto" value="Tipo" />
+
+                                        <select
+                                            name="tipo_desconto"
+                                            id="tipo_desconto"
+                                            class="mt-1 block w-full rounded-lg border-gray-300 focus:border-primary focus:ring-primary"
+                                        >
+                                            <option
+                                                value="valor"
+                                                {{ old('tipo_desconto', 'valor') === 'valor' ? 'selected' : '' }}
+                                            >
+                                                R$
+                                            </option>
+
+                                            <option
+                                                value="percentual"
+                                                {{ old('tipo_desconto') === 'percentual' ? 'selected' : '' }}
+                                            >
+                                                %
+                                            </option>
+                                        </select>
+
+                                        <div id="erro-tipo-desconto" class="mt-1 text-sm text-danger-500"></div>
+                                    </div>
+
+                                    {{-- DESCONTO --}}
+                                    <div>
+                                        <x-input-label
+                                            for="desconto"
+                                            id="label-desconto"
+                                            value="Desconto (R$)"
+                                        />
+
+                                        <x-input
+                                            id="desconto"
+                                            name="desconto"
+                                            type="text"
+                                            inputmode="decimal"
+                                            class="w-full mask-valor"
+                                            data-mask-prefix="{{ old('tipo_desconto') === 'percentual' ? '' : 'R$ ' }}"
+                                            placeholder="R$ 0,00"
+                                            :value="old('desconto', number_format($venda->descontos, 2, ',', '.'))"
+                                        />
+
+                                        <div id="erro-desconto" class="mt-1 text-sm text-danger-500"></div>
+                                    </div>
+
+                                    {{-- ACRÉSCIMO --}}
+                                    <div>
+                                        <x-input-label for="outros_custos" value="Acréscimo (R$)" />
+
+                                        <x-input
+                                            id="outros_custos"
+                                            name="outros_custos"
+                                            type="text"
+                                            inputmode="decimal"
+                                            class="w-full mask-valor"
+                                            data-mask-prefix="R$ "
+                                            placeholder="R$ 0,00"
+                                            :value="old('outros_custos', number_format($venda->outros_custos, 2, ',', '.'))"
+                                        />
+
+                                        <div id="erro-outros-custos" class="mt-1 text-sm text-danger-500"></div>
+                                    </div>
+
+                                </div>
+
+                                <p id="status-salvamento" class="mt-2 text-xs text-text-light"></p>
+
+                            </form>
+
                             {{-- ADICIONAR RECEBIMENTO --}}
-                            <div class="mt-6 border-t border-gray-300 pt-5">
+                            <div class="border-t border-gray-300 pt-5">
+
                                 <h3 class="mb-4 font-semibold text-text">
                                     Adicionar recebimento
                                 </h3>
@@ -417,13 +424,15 @@
 
                                     {{-- FORMA DE PAGAMENTO --}}
                                     <div class="mb-4">
-                                        <x-input-label for="forma_pagamento_id" value="Forma de pagamento" />
+                                        <x-input-label
+                                            for="forma_pagamento_id"
+                                            value="Forma de pagamento"
+                                        />
 
                                         <select
                                             name="forma_pagamento_id"
                                             id="forma_pagamento_id"
                                             class="mt-1 block w-full rounded-lg border-gray-300 focus:border-primary focus:ring-primary"
-                                            required
                                         >
                                             <option value="">Selecione uma forma de pagamento</option>
 
@@ -438,83 +447,67 @@
                                         </select>
 
                                         @error('forma_pagamento_id')
-                                        <p class="mt-1 text-sm text-danger-500">{{ $message }}</p>
+                                            <p class="mt-1 text-sm text-danger-500">
+                                                {{ $message }}
+                                            </p>
                                         @enderror
                                     </div>
 
-                                    {{-- VALOR --}}
-                                    <div class="mb-4">
-                                        <x-input-label for="valor" value="Valor" />
+                                    {{-- VALOR E SITUAÇÃO --}}
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
 
-                                        <x-input
-                                            id="valor"
-                                            name="valor"
-                                            type="text"
-                                            inputmode="decimal"
-                                            class="w-full mask-valor"
-                                            data-mask-prefix="R$ "
-                                            placeholder="R$ 0,00"
-                                            :value="old('valor')"
-                                        />
-                                    </div>
+                                        <div>
+                                            <x-input-label for="valor" value="Valor" />
 
-                                    {{-- SITUAÇÃO --}}
-                                    <div class="mb-4">
-                                        <x-input-label for="status_recebimento" value="Situação" />
+                                            <x-input
+                                                id="valor"
+                                                name="valor"
+                                                type="text"
+                                                inputmode="decimal"
+                                                class="w-full mask-valor"
+                                                data-mask-prefix="R$ "
+                                                placeholder="R$ 0,00"
+                                                :value="old('valor')"
+                                            />
+                                        </div>
 
-                                        <select
-                                            name="status"
-                                            id="status_recebimento"
-                                            class="mt-1 block w-full rounded-lg border-gray-300 focus:border-primary focus:ring-primary"
-                                            required
-                                        >
-                                            <option
-                                                value="pago"
-                                                {{ old('status', 'pago') === 'pago' ? 'selected' : '' }}
+                                        <div>
+                                            <x-input-label
+                                                for="status_recebimento"
+                                                value="Situação"
+                                            />
+
+                                            <select name="status" id="status_recebimento"
+                                                class="mt-1 block w-full rounded-lg border-gray-300 focus:border-primary focus:ring-primary"
                                             >
-                                                Pago
-                                            </option>
+                                                <option value="pago" {{ old('status', 'pago') === 'pago' ? 'selected' : '' }}>
+                                                    Pago
+                                                </option>
 
-                                            <option
-                                                value="pendente"
-                                                {{ old('status') === 'pendente' ? 'selected' : '' }}
-                                            >
-                                                Pendente
-                                            </option>
-                                        </select>
+                                                <option value="pendente" {{ old('status') === 'pendente' ? 'selected' : '' }}>
+                                                    Pendente
+                                                </option>
+                                            </select>
 
-                                        @error('status')
-                                        <p class="mt-1 text-sm text-danger-500">{{ $message }}</p>
-                                        @enderror
+                                            @error('status')
+                                                <p class="mt-1 text-sm text-danger-500">
+                                                    {{ $message }}
+                                                </p>
+                                            @enderror
+                                        </div>
+
                                     </div>
 
                                     {{-- DATA DE VENCIMENTO --}}
                                     <div id="campo-data-vencimento" class="mb-4 hidden">
-                                        <x-input-label for="data_vencimento" value="Data de vencimento" />
+                                        <x-input-label for="data_vencimento" value="Data de vencimento"/>
 
-                                        <x-input
-                                            id="data_vencimento"
-                                            name="data_vencimento"
-                                            type="date"
-                                            class="w-full"
-                                            :value="old('data_vencimento')"
+                                        <x-input id="data_vencimento" name="data_vencimento" type="date"
+                                            class="w-full" :value="old('data_vencimento')"
                                         />
                                     </div>
 
-                                    {{-- DESCRIÇÃO --}}
-                                    <div class="mb-5">
-                                        <x-input-label for="descricao" value="Descrição (opcional)" />
-
-                                        <x-input
-                                            id="descricao"
-                                            name="descricao"
-                                            type="text"
-                                            class="w-full"
-                                            placeholder="Ex.: pagamento realizado via aplicativo"
-                                            :value="old('descricao')"
-                                        />
-                                    </div>
-
+                                    {{-- BOTÃO --}}
                                     <div class="flex justify-end">
                                         <button
                                             type="submit"
@@ -523,72 +516,95 @@
                                             Adicionar recebimento
                                         </button>
                                     </div>
+
                                 </form>
+
                             </div>
 
-                            {{-- RECEBIMENTOS DA VENDA --}}
-                            <div class="mt-8 border-t border-gray-300 pt-5">
-                                <h3 class="mb-4 font-semibold text-text">
-                                    Recebimentos
-                                </h3>
+                            {{-- RECEBIMENTOS REGISTRADOS --}}
+                            <div class="mt-6 border-t border-gray-300 pt-5">
+
+                                <div class="mb-3 flex items-center justify-between">
+                                    <h3 class="font-semibold text-text">
+                                        Recebimentos
+                                    </h3>
+
+                                    <span class="text-xs text-text-light">
+                                        {{ $venda->recebimentos->count() }}
+                                        {{ $venda->recebimentos->count() === 1 ? 'registro' : 'registros' }}
+                                    </span>
+                                </div>
 
                                 @if ($venda->recebimentos->isNotEmpty())
-                                    <div class="space-y-3">
+
+                                    <div class="divide-y divide-gray-200">
+
                                         @foreach ($venda->recebimentos as $recebimento)
-                                            <div class="rounded-lg border border-gray-300 p-3">
-                                                <div class="flex items-start justify-between gap-3">
-                                                    <div>
-                                                        <p class="font-medium text-text">
-                                                            {{ $recebimento->formaPagamento->nome }}
-                                                        </p>
 
-                                                        <p class="mt-1 text-sm text-text-light">
-                                                            {{ $recebimento->descricao ?: 'Sem descrição' }}
-                                                        </p>
+                                            <div class="flex items-center justify-between gap-3 py-3">
 
-                                                        <p class="mt-1 text-xs text-text-light">
+                                                <div class="min-w-0">
+                                                    <p class="break-words font-medium text-text">
+                                                        {{ $recebimento->formaPagamento->nome }}
+                                                    </p>
+
+                                                    <p class="mt-1 text-xs text-text-light">
+                                                        @if ($recebimento->status === 'pago')
+                                                            Pago em
+                                                            {{ \Carbon\Carbon::parse($recebimento->data_pagamento)->format('d/m/Y') }}
+                                                        @elseif ($recebimento->status === 'pendente')
                                                             Vencimento:
                                                             {{ \Carbon\Carbon::parse($recebimento->data_vencimento)->format('d/m/Y') }}
-                                                        </p>
-
-                                                        @if ($recebimento->data_pagamento)
-                                                            <p class="text-xs text-text-light">
-                                                                Pago em:
-                                                                {{ \Carbon\Carbon::parse($recebimento->data_pagamento)->format('d/m/Y H:i') }}
-                                                            </p>
-                                                        @endif
-                                                    </div>
-
-                                                    <div class="shrink-0 text-right">
-                                                        <p class="font-semibold text-text">
-                                                            R$ {{ number_format($recebimento->valor, 2, ',', '.') }}
-                                                        </p>
-
-                                                        @if ($recebimento->status === 'pago')
-                                                            <span class="text-xs font-semibold text-primary">
-                                        Pago
-                                    </span>
-                                                        @elseif ($recebimento->status === 'pendente')
-                                                            <span class="text-xs font-semibold text-beige-700">
-                                        Pendente
-                                    </span>
                                                         @else
-                                                            <span class="text-xs font-semibold text-danger-500">
-                                        Cancelado
-                                    </span>
+                                                            Cancelado
                                                         @endif
-                                                    </div>
+                                                    </p>
                                                 </div>
+
+                                                <div class="shrink-0 text-right">
+                                                    <p class="font-semibold text-text">
+                                                        R$ {{ number_format($recebimento->valor, 2, ',', '.') }}
+                                                    </p>
+
+                                                    @if ($recebimento->status === 'pago')
+                                                        <span class="text-xs font-semibold text-primary">
+                                                            Pago
+                                                        </span>
+                                                    @elseif ($recebimento->status === 'pendente')
+                                                        <span class="text-xs font-semibold text-beige-700">
+                                                            Pendente
+                                                        </span>
+                                                    @else
+                                                        <span class="text-xs font-semibold text-danger-500">
+                                                            Cancelado
+                                                        </span>
+                                                    @endif
+                                                </div>
+
                                             </div>
+
                                         @endforeach
+
                                     </div>
+
                                 @else
+
                                     <p class="text-sm text-text-light">
                                         Nenhum recebimento registrado nesta venda.
                                     </p>
+
                                 @endif
+
                             </div>
+
+                        @else
+
+                            <p class="text-sm text-text-light">
+                                Adicione um produto para iniciar uma venda e registrar recebimentos.
+                            </p>
+
                         @endif
+
                     </div>
                 </section>
 
