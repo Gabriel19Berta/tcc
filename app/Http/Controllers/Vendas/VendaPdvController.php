@@ -8,6 +8,7 @@ use App\Models\Produto;
 use App\Models\Venda;
 use App\Models\Cliente;
 use App\Models\FormaPagamento;
+use App\Models\Recebimento;
 use Illuminate\View\View;
 use App\Http\Requests\Vendas\AdicionarProdutoRequest;
 use Illuminate\Support\Facades\DB;
@@ -67,12 +68,20 @@ class VendaPdvController extends Controller
             ->orderBy('nome')
             ->get();
 
+        $totalRecebido = $venda->recebimentos()
+            ->whereIn('status', ['pago', 'pendente'])
+            ->sum('valor');
+
+        $saldoRestante = $venda->valor_total - $totalRecebido;
+
         return view('vendas.pdv', compact(
             'venda',
             'vendasAbertas',
             'produtos',
             'clientes',
-            'formasPagamento'
+            'formasPagamento',
+            'totalRecebido',
+            'saldoRestante'
         ));
     }
 
@@ -424,7 +433,7 @@ class VendaPdvController extends Controller
                 'forma_pagamento_id' => $dados['forma_pagamento_id'],
                 'valor' => $dados['valor'],
                 'descricao' => $dados['descricao'] ?? '',
-                'data_vencimento' => $dados['data_vencimento'] ?? Carbon::now(),
+                'data_vencimento' => $dados['data_vencimento'],
                 'data_pagamento' => $pago ? Carbon::now() : null,
                 'status' => $dados['status'],
             ]);
@@ -434,5 +443,32 @@ class VendaPdvController extends Controller
             ->route('vendas.edit', $venda->id)
             ->with('success', 'Recebimento adicionado com sucesso.')
             ->with('aba_ativa', 'pagamento');
+    }
+
+    public function destroyRecebimento(Venda $venda, Recebimento $recebimento)
+    {
+        DB::transaction(function () use ($venda, $recebimento) {
+            $venda = Venda::query()
+                ->lockForUpdate()
+                ->findOrFail($venda->id);
+
+            if ($venda->status !== Venda::STATUS_ABERTA) {
+                throw ValidationException::withMessages([
+                    'recebimento' => 'Não é possível remover recebimentos de uma venda que não está aberta.',
+                ]);
+            }
+
+            $recebimento = $venda->recebimentos()
+                ->whereKey($recebimento->id)
+                ->lockForUpdate()
+                ->firstOrFail();
+
+            $recebimento->delete();
+        });
+
+        return redirect()
+            ->route('vendas.edit', $venda)
+            ->with('aba_ativa', 'pagamento')
+            ->with('success', 'Parcela removida com sucesso.');
     }
 }

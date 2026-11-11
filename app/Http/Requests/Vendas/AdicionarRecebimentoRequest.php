@@ -62,8 +62,7 @@ class AdicionarRecebimentoRequest extends FormRequest
                 'max:255',
             ],
             'data_vencimento' => [
-                'required_if:status,pendente',
-                'nullable',
+                'required',
                 'date',
             ],
         ];

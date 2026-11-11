@@ -36,7 +36,7 @@
                     </form>
 
                     <div>
-                        <select id="venda_aberta" class="rounded-lg border-gray-300 text-sm" 
+                        <select id="venda_aberta" class="rounded-lg border-gray-300 text-sm"
                             onchange="if (this.value) window.location.href = this.value">
                             <option value="">Continuar venda...</option>
 
@@ -274,11 +274,8 @@
                         @if(isset($venda))
 
                             {{-- VALORES DA VENDA --}}
-                            <form
-                                id="form-valores"
-                                action="{{ route('vendas.valores.update', $venda->id) }}"
-                                method="POST"
-                                class="mb-5"
+                            <form id="form-valores" action="{{ route('vendas.valores.update', $venda->id) }}"
+                                method="POST" class="mb-5"
                             >
                                 @csrf
                                 @method('PATCH')
@@ -287,7 +284,6 @@
 
                                 {{-- RESUMO --}}
                                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 rounded-lg border border-gray-300 p-3">
-
                                     <div class="min-w-0">
                                         <span class="text-xs text-text-light">
                                             Produtos
@@ -327,7 +323,6 @@
                                             R$ {{ number_format($venda->valor_total, 2, ',', '.') }}
                                         </p>
                                     </div>
-
                                 </div>
 
                                 {{-- DESCONTO E ACRÉSCIMO --}}
@@ -337,22 +332,14 @@
                                     <div>
                                         <x-input-label for="tipo_desconto" value="Tipo" />
 
-                                        <select
-                                            name="tipo_desconto"
-                                            id="tipo_desconto"
+                                        <select name="tipo_desconto" id="tipo_desconto"
                                             class="mt-1 block w-full rounded-lg border-gray-300 focus:border-primary focus:ring-primary"
                                         >
-                                            <option
-                                                value="valor"
-                                                {{ old('tipo_desconto', 'valor') === 'valor' ? 'selected' : '' }}
-                                            >
+                                            <option value="valor" {{ old('tipo_desconto', 'valor') === 'valor' ? 'selected' : '' }}>
                                                 R$
                                             </option>
 
-                                            <option
-                                                value="percentual"
-                                                {{ old('tipo_desconto') === 'percentual' ? 'selected' : '' }}
-                                            >
+                                            <option value="percentual" {{ old('tipo_desconto') === 'percentual' ? 'selected' : '' }}>
                                                 %
                                             </option>
                                         </select>
@@ -362,20 +349,10 @@
 
                                     {{-- DESCONTO --}}
                                     <div>
-                                        <x-input-label
-                                            for="desconto"
-                                            id="label-desconto"
-                                            value="Desconto (R$)"
-                                        />
+                                        <x-input-label for="desconto" id="label-desconto" value="Desconto (R$)"/>
 
-                                        <x-input
-                                            id="desconto"
-                                            name="desconto"
-                                            type="text"
-                                            inputmode="decimal"
-                                            class="w-full mask-valor"
-                                            data-mask-prefix="{{ old('tipo_desconto') === 'percentual' ? '' : 'R$ ' }}"
-                                            placeholder="R$ 0,00"
+                                        <x-input id="desconto" name="desconto" type="text" inputmode="decimal" class="w-full mask-valor"
+                                             data-mask-prefix="{{ old('tipo_desconto') === 'percentual' ? '' : 'R$ ' }}" placeholder="R$ 0,00"
                                             :value="old('desconto', number_format($venda->descontos, 2, ',', '.'))"
                                         />
 
@@ -386,14 +363,8 @@
                                     <div>
                                         <x-input-label for="outros_custos" value="Acréscimo (R$)" />
 
-                                        <x-input
-                                            id="outros_custos"
-                                            name="outros_custos"
-                                            type="text"
-                                            inputmode="decimal"
-                                            class="w-full mask-valor"
-                                            data-mask-prefix="R$ "
-                                            placeholder="R$ 0,00"
+                                        <x-input id="outros_custos" name="outros_custos" type="text" inputmode="decimal"
+                                            class="w-full mask-valor" data-mask-prefix="R$ " placeholder="R$ 0,00"
                                             :value="old('outros_custos', number_format($venda->outros_custos, 2, ',', '.'))"
                                         />
 
@@ -408,15 +379,12 @@
 
                             {{-- ADICIONAR RECEBIMENTO --}}
                             <div class="border-t border-gray-300 pt-5">
-
                                 <h3 class="mb-4 font-semibold text-text">
                                     Adicionar recebimento
                                 </h3>
 
-                                <form
-                                    action="{{ route('vendas.recebimentos.store', $venda->id) }}"
-                                    method="POST"
-                                    id="form-recebimento"
+                                <form action="{{ route('vendas.recebimentos.store', $venda->id) }}"
+                                    method="POST" id="form-recebimento"
                                 >
                                     @csrf
 
@@ -424,14 +392,9 @@
 
                                     {{-- FORMA DE PAGAMENTO --}}
                                     <div class="mb-4">
-                                        <x-input-label
-                                            for="forma_pagamento_id"
-                                            value="Forma de pagamento"
-                                        />
+                                        <x-input-label for="forma_pagamento_id" value="Forma de pagamento" />
 
-                                        <select
-                                            name="forma_pagamento_id"
-                                            id="forma_pagamento_id"
+                                        <select name="forma_pagamento_id" id="forma_pagamento_id"
                                             class="mt-1 block w-full rounded-lg border-gray-300 focus:border-primary focus:ring-primary"
                                         >
                                             <option value="">Selecione uma forma de pagamento</option>
@@ -453,29 +416,27 @@
                                         @enderror
                                     </div>
 
-                                    {{-- VALOR E SITUAÇÃO --}}
-                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-
+                                    {{-- VALOR/SITUAÇÃO/DATA DE VENCIMENTO --}}
+                                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
                                         <div>
                                             <x-input-label for="valor" value="Valor" />
 
-                                            <x-input
-                                                id="valor"
-                                                name="valor"
-                                                type="text"
-                                                inputmode="decimal"
-                                                class="w-full mask-valor"
-                                                data-mask-prefix="R$ "
-                                                placeholder="R$ 0,00"
+                                            <x-input id="valor" name="valor" type="text" inputmode="decimal"
+                                                class="w-full mask-valor" data-mask-prefix="R$ " placeholder="R$ 0,00"
                                                 :value="old('valor')"
                                             />
                                         </div>
 
-                                        <div>
-                                            <x-input-label
-                                                for="status_recebimento"
-                                                value="Situação"
+                                        <div id="campo-data-vencimento" class="mb-4">
+                                            <x-input-label for="data_vencimento" value="Data de vencimento"/>
+
+                                            <x-input id="data_vencimento" name="data_vencimento" type="date"
+                                                     class="w-full" :value="old('data_vencimento')"
                                             />
+                                        </div>
+
+                                        <div>
+                                            <x-input-label for="status_recebimento" value="Situação"/>
 
                                             <select name="status" id="status_recebimento"
                                                 class="mt-1 block w-full rounded-lg border-gray-300 focus:border-primary focus:ring-primary"
@@ -495,24 +456,11 @@
                                                 </p>
                                             @enderror
                                         </div>
-
-                                    </div>
-
-                                    {{-- DATA DE VENCIMENTO --}}
-                                    <div id="campo-data-vencimento" class="mb-4 hidden">
-                                        <x-input-label for="data_vencimento" value="Data de vencimento"/>
-
-                                        <x-input id="data_vencimento" name="data_vencimento" type="date"
-                                            class="w-full" :value="old('data_vencimento')"
-                                        />
                                     </div>
 
                                     {{-- BOTÃO --}}
-                                    <div class="flex justify-end">
-                                        <button
-                                            type="submit"
-                                            class="btn bg-primary hover:bg-primary-600 active:bg-primary-700"
-                                        >
+                                    <div>
+                                        <button type="submit" class="w-full block text-center btn bg-primary hover:bg-primary-600 active:bg-primary-700">
                                             Adicionar recebimento
                                         </button>
                                     </div>
@@ -523,7 +471,6 @@
 
                             {{-- RECEBIMENTOS REGISTRADOS --}}
                             <div class="mt-6 border-t border-gray-300 pt-5">
-
                                 <div class="mb-3 flex items-center justify-between">
                                     <h3 class="font-semibold text-text">
                                         Recebimentos
@@ -542,7 +489,6 @@
                                         @foreach ($venda->recebimentos as $recebimento)
 
                                             <div class="flex items-center justify-between gap-3 py-3">
-
                                                 <div class="min-w-0">
                                                     <p class="break-words font-medium text-text">
                                                         {{ $recebimento->formaPagamento->nome }}
@@ -580,19 +526,26 @@
                                                         </span>
                                                     @endif
                                                 </div>
+                                                <form action="{{ route('vendas.recebimentos.destroy', ['venda' => $venda, 'recebimento' => $recebimento]) }}" \
+                                                      method="POST"
+                                                      onsubmit="return confirm('Deseja realmente remover esta parcela?')">
 
+                                                    @csrf
+                                                    @method('DELETE')
+
+                                                    <button type="submit"  class="text-danger-500 hover:text-danger-600 transition"
+                                                            title="Remover parcela">
+
+                                                        <i class="fa-solid fa-trash"></i>
+                                                    </button>
+                                                </form>
                                             </div>
-
                                         @endforeach
-
                                     </div>
-
                                 @else
-
                                     <p class="text-sm text-text-light">
                                         Nenhum recebimento registrado nesta venda.
                                     </p>
-
                                 @endif
 
                             </div>
@@ -632,13 +585,8 @@
                                                     {{ $item->produto->nome }}
                                                 </h3>
 
-                                                <form
-                                                    action="{{ route('vendas.itens.update', [
-                                                        'venda' => $venda->id,
-                                                        'item' => $item->id
-                                                    ]) }}"
-                                                    method="POST"
-                                                    class="flex items-center gap-2 mt-2"
+                                                <form action="{{ route('vendas.itens.update', ['venda' => $venda->id, 'item' => $item->id]) }}"
+                                                    method="POST" class="flex items-center gap-2 mt-2"
                                                 >
                                                     @csrf
                                                     @method('PATCH')
@@ -660,12 +608,7 @@
                                             <div class="text-right shrink-0">
                                                 <p class="font-semibold text-text">
                                                     R$
-                                                    {{ number_format(
-                                                        $item->quantidade * $item->preco_unitario,
-                                                        2,
-                                                        ',',
-                                                        '.'
-                                                    ) }}
+                                                    {{ number_format($item->quantidade * $item->preco_unitario, 2, ',', '.') }}
                                                 </p>
                                                 <form action="{{ route('vendas.itens.destroy', ['venda' => $venda->id, 'item' => $item->id]) }}"
                                                     method="POST"
@@ -748,23 +691,6 @@
                         formulario.requestSubmit();
                     }
                 });
-            }
-
-            const statusRecebimento = document.getElementById('status_recebimento');
-            const campoDataVencimento = document.getElementById('campo-data-vencimento');
-            const dataVencimento = document.getElementById('data_vencimento');
-
-            if (statusRecebimento && campoDataVencimento) {
-                function atualizarDataVencimento() {
-                    const pendente = statusRecebimento.value === 'pendente';
-
-                    campoDataVencimento.classList.toggle('hidden', !pendente);
-                    dataVencimento.required = pendente;
-                }
-
-                statusRecebimento.addEventListener('change', atualizarDataVencimento);
-
-                atualizarDataVencimento();
             }
         });
 
