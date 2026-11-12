@@ -57,6 +57,15 @@
                 {{-- PAINEL ESQUERDO --}}
                 <section class="flex min-h-0 w-1/2 flex-col overflow-y-auto border-r border-gray-300 p-6">
 
+                    {{-- MENSAGENS DE ERRO --}}
+                    @if ($errors->has('venda'))
+                        <div class="mb-4">
+                            <x-alert type="error">
+                                {{ $errors->first('venda') }}
+                            </x-alert>
+                        </div>
+                    @endif
+
                     {{-- NAVEGAÇÃO --}}
                     <nav class="mb-2 flex shrink-0 overflow-hidden rounded-full border border-primary">
                         <button type="button" data-aba="produto" class="flex-1 rounded-full bg-primary px-4 py-3 font-semibold text-white"
@@ -112,6 +121,10 @@
                                     <x-input id="quantidade" name="quantidade" type="number" min="0.01"
                                         step="0.01" class="w-full" :value="old('quantidade', 1)"
                                     />
+
+                                    @error('produto_id')
+                                        <p class="mt-1 text-sm text-danger-500">{{ $message }}</p>
+                                    @enderror
                                 </div>
 
                                 <div>
@@ -644,10 +657,27 @@
                        class="rounded-lg border border-primary px-6 py-2 font-semibold text-primary hover:bg-primary hover:text-white">
                         Sair do PDV
                     </a>
+
+                    @isset($venda)
+                        @if($venda->itens->isNotEmpty())
+
+                            <form action="{{ route('vendas.finalizar', $venda) }}" method="POST"
+                                  onsubmit="return confirm('Deseja realmente finalizar esta venda?');">
+
+                                @csrf
+
+                                <button type="submit"
+                                        class="rounded-lg border border-primary px-6 py-2 font-semibold text-white bg-primary hover:bg-primary-700">
+                                    Finalizar venda
+                                </button>
+                            </form>
+                        @endif
+                    @endisset
                 </div>
 
                 <div class="text-right">
                     <span class="mr-3 font-semibold">Total</span>
+
                     <span id="total-venda" class="text-2xl font-bold">
                         R$ {{ number_format($venda->valor_total ?? 0, 2, ',', '.') }}
                     </span>

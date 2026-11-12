@@ -471,4 +471,146 @@ class VendaPdvController extends Controller
             ->with('aba_ativa', 'pagamento')
             ->with('success', 'Parcela removida com sucesso.');
     }
+
+    public function finalizar(Venda $venda)
+    {
+        DB::transaction(function () use ($venda) {
+
+            // Bloqueia a venda durante a finalização.
+            $venda = Venda::query()
+                ->whereKey($venda->id)
+                ->lockForUpdate()
+                ->firstOrFail();
+
+            // Somente vendas abertas podem ser finalizadas.
+            if ($venda->status !== Venda::STATUS_ABERTA) {
+                throw ValidationException::withMessages([
+                    'venda' => 'Esta venda não está aberta.',
+                ]);
+            }
+
+            // Busca os itens da venda.
+            $itens = $venda->itens()
+                ->lockForUpdate()
+                ->get();
+
+            // Não permite finalizar uma venda sem produtos.
+            if ($itens->isEmpty()) {
+                throw ValidationException::withMessages([
+                    'venda' => 'Adicione pelo menos um produto antes de finalizar a venda.',
+                ]);
+            }
+
+            // Recalcula os valores antes da finalização.
+            $this->recalcularTotais($venda);
+
+            $venda->refresh();
+
+            // Garante que o desconto não ultrapasse o valor dos produtos.
+            if ((float) $venda->descontos > (float) $venda->valor_produtos) {
+                throw ValidationException::withMessages([
+                    'desconto' => 'O desconto não pode ser maior que o valor dos produtos.',
+                ]);
+            }
+
+            // Não permite valores negativos.
+            if ((float) $venda->valor_total < 0) {
+                throw ValidationException::withMessages([
+                    'venda' => 'O valor total da venda não pode ser negativo.',
+                ]);
+            }
+
+            /*
+             * Agrupa os produtos para garantir que, caso o mesmo produto
+             * apareça em mais de um item, seu estoque seja validado e
+             * atualizado considerando a quantidade total.
+             */
+            $quantidadesPorProduto = $itens->groupBy('produto_id');
+
+            foreach ($quantidadesPorProduto as $produtoId => $itensProduto) {
+
+                $produto = Produto::query()
+                    ->whereKey($produtoId)
+                    ->lockForUpdate()
+                    ->firstOrFail();
+
+                // Produtos sem controle de estoque não recebem baixa.
+                if (!$produto->controla_estoque) {
+                    continue;
+                }
+
+                $quantidadeVendida = $itensProduto->sum('quantidade');
+
+                // Estoque disponível em centésimos.
+                $estoqueEmCentésimos = (int) round(
+                    (float) $produto->quantidade * 100
+                );
+
+                // Quantidade vendida em centésimos.
+                $vendidoEmCentésimos = (int) round(
+                    (float) $quantidadeVendida * 100
+                );
+
+                if ($vendidoEmCentésimos > $estoqueEmCentésimos) {
+                    throw ValidationException::withMessages([
+                        'venda' => "Estoque insuficiente para o produto {$produto->nome}.",
+                    ]);
+                }
+
+                // Realiza a baixa do estoque.
+                $novoEstoque = (
+                        $estoqueEmCentésimos - $vendidoEmCentésimos
+                    ) / 100;
+
+                $produto->update([
+                    'quantidade' => $novoEstoque,
+                ]);
+            }
+
+            // Calcula os valores efetivamente pagos.
+            $totalPago = $venda->recebimentos()
+                ->where('status', Recebimento::STATUS_PAGO)
+                ->sum('valor');
+
+            // Soma os recebimentos pagos e pendentes.
+            $totalRecebimentos = $venda->recebimentos()
+                ->whereIn('status', [
+                    Recebimento::STATUS_PAGO,
+                    Recebimento::STATUS_PENDENTE,
+                ])
+                ->sum('valor');
+
+            $totalEmCentésimos = (int) round(
+                (float) $venda->valor_total * 100
+            );
+
+            $recebimentosEmCentésimos = (int) round(
+                (float) $totalRecebimentos * 100
+            );
+
+            $totalPagoEmCentésimos = (int) round(
+                (float) $totalPago * 100
+            );
+
+            // Impede finalizar uma venda com recebimentos acima do total.
+            if ($recebimentosEmCentésimos > $totalEmCentésimos) {
+                throw ValidationException::withMessages([
+                    'recebimento' => 'O total dos recebimentos ultrapassa o valor da venda. Ajuste os recebimentos antes de finalizar.',
+                ]);
+            }
+
+            // Define se a venda está quitada ou apenas finalizada.
+            $status = $totalPagoEmCentésimos >= $totalEmCentésimos
+                ? Venda::STATUS_QUITADA
+                : Venda::STATUS_FINALIZADA;
+
+            $venda->update([
+                'status' => $status,
+            ]);
+        });
+
+        return redirect()
+            ->route('vendas.index')
+            ->with('success', 'Venda finalizada com sucesso.');
+    }
 }
