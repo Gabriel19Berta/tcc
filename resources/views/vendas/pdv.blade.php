@@ -660,9 +660,8 @@
 
                     @isset($venda)
                         @if($venda->itens->isNotEmpty())
-
                             <form action="{{ route('vendas.finalizar', $venda) }}" method="POST"
-                                  onsubmit="return confirm('Deseja realmente finalizar esta venda?');">
+                                  data-confirm="Deseja realmente finalizar esta venda?">
 
                                 @csrf
 
