@@ -79,10 +79,8 @@ Route::get('/vendas', [VendaController::class, 'index'])->name('vendas.index');
 
 /* PDV */
 Route::get('/vendas/create', [VendaPdvController::class, 'create'])->name('vendas.create');
-
 /* ADICIONAR PRODUTO À VENDA */
 Route::post('/vendas/itens', [VendaPdvController::class, 'adicionarProduto'])->name('vendas.itens.store');
-
 /* ABRIR VENDA EXISTENTE NO PDV */
 Route::get('/vendas/{id}/edit', [VendaPdvController::class, 'edit'])->name('vendas.edit');
 

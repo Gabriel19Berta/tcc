@@ -48,7 +48,7 @@ class VendaPdvController extends Controller
         ])->findOrFail($id);
 
         if ($venda->status !== Venda::STATUS_ABERTA) {
-            abort(404);
+            return redirect()->route('vendas.index')->with('error', 'Somente vendas abertas podem ser editadas.');
         }
 
         $vendasAbertas = Venda::query()
