@@ -47,7 +47,7 @@ class ProdutoRequest extends FormRequest
             'preco_custo' => ['nullable', 'numeric'],
             'preco_venda' => ['nullable ', 'numeric', 'gte:preco_custo'],
             'controla_estoque' => ['nullable', 'boolean'],
-            'quantidade' => ['required_if:controla_estoque, 1', 'nullable', 'numeric'],
+            'quantidade' => ['required_if:controla_estoque, 1', 'nullable', 'numeric', 'gte:0',],
         ];
     }
 
@@ -56,7 +56,8 @@ class ProdutoRequest extends FormRequest
         return [
             'nome.required' => 'Nome é obrigatório!',
             'quantidade.required' => 'Quantidade é obrigatório!',
-            'preco_venda.gte' => 'Preço de venda deve ser maior ou igual ao preço de custo!'
+            'preco_venda.gte' => 'Preço de venda deve ser maior ou igual ao preço de custo!',
+            'quantidade.gt' => 'Quantidade deve ser igual ou maior que 0!',
         ];
     }
 }
