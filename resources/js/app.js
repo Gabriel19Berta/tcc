@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         },
     });
-   
+
     /* ADICIONE/REMOVE loading */
     const loader = document.getElementById("loader");
 
@@ -85,6 +85,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.querySelectorAll("form").forEach(form => {
         form.addEventListener("submit", (e) => {
+
             if (!form.checkValidity()) {
                 return;
             }
@@ -95,15 +96,24 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
+            // Verifica se o formulário precisa de confirmação
+            const mensagem = form.dataset.confirm;
+
+            if (mensagem && !confirm(mensagem)) {
+                e.preventDefault();
+                return;
+            }
+
+            // Exibe o loading somente após a confirmação
             showLoader();
         });
     });
-    
+
 
     window.addEventListener("load", hideLoader);
 
     window.addEventListener("pageshow", hideLoader);
-    
+
 
     // Controla a exibição dos campos com base no tipo de pessoa (Física ou Jurídica)
     const cpfField = document.getElementById("cpf-field");

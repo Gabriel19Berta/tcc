@@ -3,9 +3,11 @@
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
 
-        <x-alert type="error">
-            Usuário ou Senha incorreto(s).
-        </x-alert>
+        @if ($errors->has('email'))
+            <x-alert type="error">
+                Usuário ou senha incorretos.
+            </x-alert>
+        @endif
 
 
     <form method="POST" action="{{ route('login') }}">
