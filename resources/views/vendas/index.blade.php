@@ -1,4 +1,3 @@
-
 <x-app-layout>
     <x-slot name="header">
         <div class="flex justify-between items-center">
@@ -18,13 +17,8 @@
     <x-filter-form :action="route('vendas.index')">
         <div>
             <x-input-label for="codigo" :value="__('Código')" />
-            <x-input
-                id="codigo"
-                name="codigo"
-                type="number"
-                min="1"
-                :value="request('codigo')"
-                class="w-24"
+            <x-input id="codigo" name="codigo" type="number" min="1"
+                :value="request('codigo')" class="w-24"
             />
         </div>
 
@@ -56,36 +50,26 @@
 
         <div>
             <x-input-label for="data_inicio" :value="__('Data inicial')" />
-            <x-input
-                id="data_inicio"
-                name="data_inicio"
-                type="date"
-                :value="request('data_inicio')"
-            />
+            <x-input id="data_inicio" name="data_inicio" type="date" :value="request('data_inicio')" />
         </div>
 
         <div>
             <x-input-label for="data_fim" :value="__('Data final')" />
-            <x-input
-                id="data_fim"
-                name="data_fim"
-                type="date"
-                :value="request('data_fim')"
-            />
+            <x-input id="data_fim" name="data_fim" type="date" :value="request('data_fim')" />
         </div>
     </x-filter-form>
 
     <table>
         <thead>
-        <tr>
-            <th class="text-center">Código</th>
-            <th>Data</th>
-            <th>Cliente</th>
-            <th>Funcionário</th>
-            <th class="text-center">Status</th>
-            <th class="text-right">Valor total</th>
-            <th class="text-center">Ações</th>
-        </tr>
+            <tr>
+                <th class="text-center">Código</th>
+                <th>Data</th>
+                <th>Cliente</th>
+                <th>Funcionário</th>
+                <th class="text-center">Status</th>
+                <th class="text-right">Valor total</th>
+                <th class="text-center">Ações</th>
+            </tr>
         </thead>
 
         <tbody>
@@ -110,19 +94,19 @@
                 <td class="text-center">
                     @switch($venda->status)
                         @case('aberta')
-                            <span class="">Aberta</span>
+                            <span class="btn btn-warning">Aberta</span>
                             @break
 
                         @case('finalizada')
-                            <span class="">Finalizada</span>
+                            <span class="btn btn-info">Finalizada</span>
                             @break
 
                         @case('quitada')
-                            <span class="">Quitada</span>
+                            <span class="btn bg-primary">Quitada</span>
                             @break
 
                         @case('cancelada')
-                            <span class="">Cancelada</span>
+                            <span class="btn btn-danger">Cancelada</span>
                             @break
 
                         @default
@@ -136,12 +120,8 @@
 
                 <td class="w-24">
                     <div class="flex gap-2 justify-center">
-                        <a
-                            href="{{ route('vendas.edit', $venda->id) }}"
-                            class="btn btn-info"
-                            title="Abrir venda no PDV"
-                        >
-                            <i class="fa-solid fa-magnifying-glass"></i>
+                        <a href="{{ route('vendas.edit', $venda->id) }}" class="btn btn-warning" title="Abrir venda no PDV">
+                            <i class="fa-solid fa-pen-to-square"></i> 
                         </a>
                     </div>
                 </td>
