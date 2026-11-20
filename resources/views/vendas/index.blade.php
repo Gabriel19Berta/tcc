@@ -59,6 +59,16 @@
             <x-input-label for="data_fim" :value="__('Data final')" />
             <x-input id="data_fim" name="data_fim" type="date" :value="request('data_fim')" />
         </div>
+
+        <div class="w-full sm:w-56">
+            <x-input-label for="cliente" :value="__('Cliente')" />
+            <x-select-pessoa name="cliente" tipo="cliente" />
+        </div>
+
+        <div class="w-full sm:w-56">
+            <x-input-label for="funcionario" :value="__('Funcionário')" />
+            <x-select-pessoa name="funcionario" tipo="funcionario" />
+        </div>
     </x-filter-form>
 
     <table>

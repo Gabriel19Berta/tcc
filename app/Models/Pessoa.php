@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\Formatador;
 use Illuminate\Database\Eloquent\Model;
 
 class Pessoa extends Model
@@ -63,7 +64,28 @@ class Pessoa extends Model
         return $query;
     }
 
-    public function scopeFiltroNome($query, $nome) 
+    public function scopeFiltroBusca($query, ?string $busca)
+    {
+        if ($busca && preg_match('/^pessoa:(\d+)$/', $busca, $partes)) {
+            return $query->whereKey($partes[1]);
+        }
+
+        return $query->filtroNome($busca);
+    }
+
+    /**
+     * Texto exibido nas sugestões de busca: "Nome — documento (Inativo)".
+     */
+    public function descricaoBusca(): string
+    {
+        $documento = Formatador::cpf($this->cpf) ?: Formatador::cnpj($this->cnpj);
+
+        return $this->nome
+            . ($documento ? " — {$documento}" : '')
+            . ($this->status ? '' : ' (Inativo)');
+    }
+
+    public function scopeFiltroNome($query, $nome)
     {
         if (!$nome) {
             return $query;

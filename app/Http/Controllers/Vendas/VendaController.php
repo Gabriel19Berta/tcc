@@ -31,6 +31,12 @@ class VendaController extends Controller
             ->when($request->filled('data_fim'), function ($query) use ($request) {
                 $query->whereDate('data', '<=', $request->data_fim);
             })
+            ->when($request->filled('cliente'), function ($query) use ($request) {
+                $query->whereHas('cliente.pessoa', fn ($pessoa) => $pessoa->filtroBusca($request->cliente));
+            })
+            ->when($request->filled('funcionario'), function ($query) use ($request) {
+                $query->whereHas('funcionario.pessoa', fn ($pessoa) => $pessoa->filtroBusca($request->funcionario));
+            })
             ->orderByDesc('id')
             ->paginate(15);
 

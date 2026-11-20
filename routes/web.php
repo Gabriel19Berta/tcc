@@ -3,6 +3,7 @@
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\FuncionarioController;
 use App\Http\Controllers\MarcaController;
+use App\Http\Controllers\PessoaController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProdutoController;
@@ -35,6 +36,7 @@ Route::middleware('auth')->group(function () {
 
 /* ALTERAR STATUS */
 Route::patch('/status/{model}/{id}', [StatusController::class, 'toggle'])->name('status.toggle');
+Route::get('/pessoas/buscar', [PessoaController::class, 'buscar'])->name('pessoas.buscar');
 
 /* CLIENTES */
 Route::get('/clientes', [ClienteController::class, 'index'])->name('clientes.index');

@@ -20,20 +20,43 @@ document.addEventListener("DOMContentLoaded", () => {
     iniMascaras();
     consultaCep();
 
+    const idiomaSelect2 = {
+        noResults: function () {
+            return "Nenhum resultado encontrado";
+        },
+        searching: function () {
+            return "Pesquisando...";
+        },
+        inputTooShort: function (args) {
+            return `Digite ${args.minimum - args.input.length} ou mais caracteres`;
+        }
+    };
+
     $('.select2').select2({
         placeholder: 'Selecione',
         allowClear: true,
-        language: {
-            noResults: function () {
-                return "Nenhum resultado encontrado";
+        language: idiomaSelect2,
+    });
+
+    /*
+     * Busca de cliente/funcionário por nome, CPF ou CNPJ (componente <x-select-pessoa>).
+     */
+    $('.select-pessoa').each(function () {
+        const campo = $(this);
+
+        campo.select2({
+            placeholder: 'Nome, CPF ou CNPJ',
+            allowClear: true,
+            tags: campo.data('texto-livre') === 1,
+            minimumInputLength: 1,
+            language: idiomaSelect2,
+            ajax: {
+                url: campo.data('url'),
+                dataType: 'json',
+                delay: 300,
+                data: (params) => ({ termo: params.term }),
             },
-            searching: function () {
-                return "Pesquisando...";
-            },
-            inputTooShort: function (args) {
-                return `Digite ${args.minimum - args.input.length} ou mais caracteres`;
-            }
-        },
+        });
     });
 
     /* ADICIONE/REMOVE loading */

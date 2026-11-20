@@ -26,9 +26,9 @@
                 <option value="0" {{ request('status') === '0' ? 'selected' : '' }}>Inativo</option>
             </select>
         </div>
-        <div>
-            <x-input-label for="nome" :value="__('Nome')" />
-            <x-input id="nome" name="nome" type="text" :value="request('nome')" class="w-96" placeholder="Digite o nome, cpf ou cnpj"/>
+        <div class="w-full sm:w-96">
+            <x-input-label for="nome" :value="__('Nome, CPF ou CNPJ')" />
+            <x-select-pessoa name="nome" tipo="funcionario" texto-livre />
         </div>
         <div>
             <x-input-label for="tipo" :value="__('Tipo')" />

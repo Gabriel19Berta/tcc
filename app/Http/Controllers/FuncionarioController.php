@@ -20,7 +20,7 @@ class FuncionarioController extends Controller
         ->wherehas('funcionario')
         ->filtroCodigo($request->codigo, 'funcionario')
         ->filtroStatus($request->input('status', '1'))
-        ->filtroNome($request->nome)
+        ->filtroBusca($request->nome)
         ->filtroTipo($request->tipo)
         ->OrderByDesc('id')
         ->paginate(15);
