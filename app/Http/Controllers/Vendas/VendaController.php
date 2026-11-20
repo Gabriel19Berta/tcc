@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Vendas;
 
 use App\Http\Controllers\Controller;
+use App\Models\Recebimento;
 use App\Models\Venda;
 use Illuminate\Http\Request;
 
@@ -31,5 +32,30 @@ class VendaController extends Controller
             ->paginate(15);
 
         return view('vendas.index', compact('vendas'));
+    }
+
+    /**
+     * Consulta detalhada de uma venda
+     */
+    public function show(Venda $venda)
+    {
+        $venda->load([
+            'cliente.pessoa',
+            'funcionario.pessoa',
+            'itens.produto',
+            'recebimentos.formaPagamento',
+        ]);
+
+        // Separa os recebimentos já carregados por status (sem novas consultas).
+        $recebimentos = $venda->recebimentos->groupBy('status');
+
+        // Totalização dos pendentes, somada em centavos para evitar imprecisão.
+        $pendentes = $recebimentos->get(Recebimento::STATUS_PENDENTE, collect());
+        $totalPendentes = [
+            'quantidade' => $pendentes->count(),
+            'valor' => $pendentes->sum(fn (Recebimento $r) => (int) round((float) $r->valor * 100)) / 100.0,
+        ];
+
+        return view('vendas.show', compact('venda', 'recebimentos', 'totalPendentes'));
     }
 }

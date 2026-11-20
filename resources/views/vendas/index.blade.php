@@ -92,26 +92,7 @@
                 </td>
 
                 <td class="text-center">
-                    @switch($venda->status)
-                        @case('aberta')
-                            <span class="btn btn-warning">Aberta</span>
-                            @break
-
-                        @case('finalizada')
-                            <span class="btn btn-info">Finalizada</span>
-                            @break
-
-                        @case('quitada')
-                            <span class="btn bg-primary">Quitada</span>
-                            @break
-
-                        @case('cancelada')
-                            <span class="btn btn-danger">Cancelada</span>
-                            @break
-
-                        @default
-                            {{ $venda->status }}
-                    @endswitch
+                    <x-status-badge :status="$venda->status" />
                 </td>
 
                 <td class="text-right">
@@ -120,6 +101,9 @@
 
                 <td class="w-24">
                     <div class="flex gap-2 justify-center">
+                        <a href="{{ route('vendas.show', $venda->id) }}" class="btn btn-info" title="Visualizar venda">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </a>
                         <a href="{{ route('vendas.edit', $venda->id) }}" class="btn btn-warning" title="Abrir venda no PDV">
                             <i class="fa-solid fa-pen-to-square"></i> 
                         </a>
