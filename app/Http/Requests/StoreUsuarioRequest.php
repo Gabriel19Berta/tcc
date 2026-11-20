@@ -8,9 +8,12 @@ use Illuminate\Validation\Rules\Password;
 
 class StoreUsuarioRequest extends FormRequest
 {
+    /**
+     * Somente administradores podem cadastrar contas de acesso.
+     */
     public function authorize(): bool
     {
-        return true;
+        return (bool) $this->user()?->admin;
     }
 
     public function rules(): array
@@ -42,6 +45,24 @@ class StoreUsuarioRequest extends FormRequest
                 Rule::exists('funcionarios', 'id')
                     ->where(fn ($query) => $query->whereNull('user_id')),
             ],
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'funcionario_id.exists' => 'O funcionário selecionado não existe ou já possui uma conta vinculada.',
+        ];
+    }
+
+    public function attributes(): array
+    {
+        return [
+            'name' => 'nome',
+            'email' => 'e-mail',
+            'password' => 'senha',
+            'admin' => 'tipo de acesso',
+            'funcionario_id' => 'funcionário',
         ];
     }
 }

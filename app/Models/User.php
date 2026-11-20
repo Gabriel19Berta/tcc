@@ -46,4 +46,13 @@ class User extends Authenticatable
             'admin' => 'boolean',
         ];
     }
+
+    /**
+     * Relacionamento
+     * Uma conta de acesso pode estar vinculada a, no máximo, um funcionário.
+     */
+    public function funcionario()
+    {
+        return $this->hasOne(Funcionario::class);
+    }
 }

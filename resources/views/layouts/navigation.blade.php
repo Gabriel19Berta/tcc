@@ -129,6 +129,12 @@
                             {{ __('Perfil') }}
                         </x-dropdown-link>
 
+                        @if (Auth::user()->admin)
+                            <x-dropdown-link :href="route('usuarios.index')">
+                                {{ __('Usuários') }}
+                            </x-dropdown-link>
+                        @endif
+
                         <!-- Authentication -->
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
@@ -184,6 +190,12 @@
                 <x-responsive-nav-link :href="route('profile.edit')">
                     {{ __('Perfil') }}
                 </x-responsive-nav-link>
+
+                @if (Auth::user()->admin)
+                    <x-responsive-nav-link :href="route('usuarios.index')" :active="request()->routeIs('usuarios.*')">
+                        {{ __('Usuários') }}
+                    </x-responsive-nav-link>
+                @endif
         </div>
 
         <!-- Responsive Settings Options -->

@@ -20,10 +20,18 @@ Route::get('/dashboard', function () {
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
 require __DIR__.'/auth.php';
+
+/*
+|--------------------------------------------------------------------------
+| MÓDULOS DO SISTEMA
+|--------------------------------------------------------------------------
+| Disponíveis para qualquer usuário autenticado (administrador ou funcionário).
+*/
+
+Route::middleware('auth')->group(function () {
 
 /* ALTERAR STATUS */
 Route::patch('/status/{model}/{id}', [StatusController::class, 'toggle'])->name('status.toggle');
@@ -95,6 +103,8 @@ Route::delete('/vendas/{venda}/recebimentos/{recebimento}', [VendaPdvController:
 /* RELATÓRIOS */
 Route::get('/relatorios', [RelatorioController::class, 'index'])->name('relatorios.index');
 Route::get('relatorios/gerar', [RelatorioController::class, 'gerar'])->name('relatorios.gerar');
+
+});
 
 /*
 |--------------------------------------------------------------------------

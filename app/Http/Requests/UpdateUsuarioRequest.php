@@ -9,9 +9,12 @@ use Illuminate\Validation\Rules\Password;
 
 class UpdateUsuarioRequest extends FormRequest
 {
+    /**
+     * Somente administradores podem editar contas de acesso.
+     */
     public function authorize(): bool
     {
-        return true;
+        return (bool) $this->user()?->admin;
     }
 
     public function rules(): array
@@ -31,6 +34,7 @@ class UpdateUsuarioRequest extends FormRequest
                 Rule::unique('users', 'email')->ignore($usuario->id),
             ],
 
+            // Opcional na edição: se vazio, a senha atual é mantida.
             'password' => [
                 'nullable',
                 'string',
@@ -45,10 +49,30 @@ class UpdateUsuarioRequest extends FormRequest
                 'integer',
                 Rule::exists('funcionarios', 'id')
                     ->where(function ($query) use ($usuario) {
-                        $query->whereNull('user_id')
-                            ->orWhere('user_id', $usuario->id);
+                        $query->where(function ($q) use ($usuario) {
+                            $q->whereNull('user_id')
+                                ->orWhere('user_id', $usuario->id);
+                        });
                     }),
             ],
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'funcionario_id.exists' => 'O funcionário selecionado não existe ou já possui outra conta vinculada.',
+        ];
+    }
+
+    public function attributes(): array
+    {
+        return [
+            'name' => 'nome',
+            'email' => 'e-mail',
+            'password' => 'senha',
+            'admin' => 'tipo de acesso',
+            'funcionario_id' => 'funcionário',
         ];
     }
 }
