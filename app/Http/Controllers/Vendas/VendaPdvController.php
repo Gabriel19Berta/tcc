@@ -3,106 +3,60 @@
 namespace App\Http\Controllers\Vendas;
 
 use App\Http\Controllers\Controller;
-use App\Models\ItemVenda;
-use App\Models\Produto;
-use App\Models\Venda;
-use App\Models\Cliente;
-use App\Models\Funcionario;
-use App\Models\FormaPagamento;
-use App\Models\Recebimento;
-use Illuminate\View\View;
 use App\Http\Requests\Vendas\AdicionarProdutoRequest;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use App\Http\Requests\Vendas\AtualizarItemVendaRequest;
+use App\Http\Requests\Vendas\AdicionarRecebimentoRequest;
 use App\Http\Requests\Vendas\AtualizarClienteVendaRequest;
 use App\Http\Requests\Vendas\AtualizarFuncionarioVendaRequest;
+use App\Http\Requests\Vendas\AtualizarItemVendaRequest;
 use App\Http\Requests\Vendas\AtualizarValoresVendaRequest;
-use App\Http\Requests\Vendas\AdicionarRecebimentoRequest;
-use Illuminate\Validation\ValidationException;
-use Illuminate\Support\Carbon;
+use App\Models\Cliente;
+use App\Models\FormaPagamento;
+use App\Models\Funcionario;
+use App\Models\ItemVenda;
+use App\Models\Produto;
+use App\Models\Recebimento;
+use App\Models\Venda;
 use App\Support\Formatador;
+use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class VendaPdvController extends Controller
 {
     public function create(Request $request)
     {
         // Nova venda: responsável o funcionário vinculado ao usuário logado.
-        $funcionarios = $this->funcionariosDisponiveis();
-        $funcionarioSelecionadoId = $request->user()->funcionario?->id;
-
-        $vendasAbertas = Venda::query()
-            ->where('status', Venda::STATUS_ABERTA)
-            ->orderByDesc('id')
-            ->get();
-
-        $produtos = Produto::query()
-            ->where('status', true)
-            ->orderBy('nome')
-            ->get();
-
-        $clientes = $this->clientesAtivos();
-
-        return view('vendas.pdv', compact(
-            'vendasAbertas',
-            'produtos',
-            'clientes',
-            'funcionarios',
-            'funcionarioSelecionadoId'
-        ));
+        return view('vendas.pdv', $this->dadosPdv() + [
+            'funcionarios' => $this->funcionariosDisponiveis(),
+            'funcionarioSelecionadoId' => $request->user()->funcionario?->id,
+        ]);
     }
 
-    public function edit(string $id)
+    public function edit(Venda $venda)
     {
-        $venda = Venda::with([
-            'itens.produto',
-            'cliente.pessoa',
-            'recebimentos.formaPagamento',
-        ])->findOrFail($id);
-
         if ($venda->status !== Venda::STATUS_ABERTA) {
             return redirect()->route('vendas.index')->with('error', 'Somente vendas abertas podem ser editadas.');
         }
 
-        // Venda existente: mantém o responsável salvo, independente de quem a abriu agora.
-        $funcionarios = $this->funcionariosDisponiveis($venda->funcionario_id);
-        $funcionarioSelecionadoId = $venda->funcionario_id;
-
-        $vendasAbertas = Venda::query()
-            ->where('status', Venda::STATUS_ABERTA)
-            ->orderByDesc('id')
-            ->get();
-
-        $produtos = Produto::query()
-            ->where('status', true)
-            ->orderBy('nome')
-            ->get();
-
-        $clientes = $this->clientesAtivos();
+        $venda->load([
+            'itens.produto',
+            'cliente.pessoa',
+            'recebimentos.formaPagamento',
+        ]);
 
         $formasPagamento = FormaPagamento::query()
             ->where('status', true)
             ->orderBy('nome')
             ->get();
 
-        $totalRecebido = $venda->recebimentos()
-            ->whereIn('status', ['pago', 'pendente'])
-            ->sum('valor');
-
-        $saldoRestante = $venda->valor_total - $totalRecebido;
-
-        return view('vendas.pdv', compact(
-            'venda',
-            'vendasAbertas',
-            'produtos',
-            'clientes',
-            'formasPagamento',
-            'totalRecebido',
-            'saldoRestante',
-            'funcionarios',
-            'funcionarioSelecionadoId'
-        ));
+        // Venda existente: mantém o responsável salvo, independente de quem a abriu agora.
+        return view('vendas.pdv', $this->dadosPdv() + [
+            'venda' => $venda,
+            'formasPagamento' => $formasPagamento,
+            'funcionarios' => $this->funcionariosDisponiveis($venda->funcionario_id),
+            'funcionarioSelecionadoId' => $venda->funcionario_id,
+        ]);
     }
 
     public function update(AtualizarItemVendaRequest $request, Venda $venda, ItemVenda $item)
@@ -110,14 +64,7 @@ class VendaPdvController extends Controller
         $dados = $request->validated();
 
         DB::transaction(function () use ($venda, $item, $dados) {
-            $venda = Venda::query()
-                ->whereKey($venda->id)
-                ->lockForUpdate()
-                ->firstOrFail();
-
-            if ($venda->status !== Venda::STATUS_ABERTA) {
-                abort(422, 'Somente vendas abertas podem ser alteradas.');
-            }
+            $venda = $this->bloquearVendaAberta($venda->id);
 
             $item = ItemVenda::query()
                 ->whereKey($item->id)
@@ -143,9 +90,8 @@ class VendaPdvController extends Controller
             ->with('success', 'Quantidade atualizada com sucesso.');
     }
 
-
     /**
-     * Add a product to a sale, creating the sale if necessary.
+     * Adiciona um produto à venda, criando a venda quando ainda não existir.
      */
     public function adicionarProduto(AdicionarProdutoRequest $request)
     {
@@ -159,14 +105,7 @@ class VendaPdvController extends Controller
             $precoProduto = $dados['preco_produto'];
 
             if (!empty($dados['venda_id'])) {
-                $venda = Venda::query()
-                    ->whereKey($dados['venda_id'])
-                    ->lockForUpdate()
-                    ->firstOrFail();
-
-                if ($venda->status !== Venda::STATUS_ABERTA) {
-                    abort(422, 'Somente vendas abertas podem ser alteradas.');
-                }
+                $venda = $this->bloquearVendaAberta((int) $dados['venda_id']);
             } else {
                 $venda = Venda::create([
                     'cliente_id' => null,
@@ -189,7 +128,7 @@ class VendaPdvController extends Controller
             $this->validarEstoque(
                 $produto,
                 $venda,
-                (float)$dados['quantidade'],
+                (float) $dados['quantidade'],
             );
 
             // Procura um item com o mesmo produto e preço.
@@ -223,14 +162,7 @@ class VendaPdvController extends Controller
     public function destroy(Venda $venda, ItemVenda $item)
     {
         DB::transaction(function () use ($venda, $item) {
-            $venda = Venda::query()
-                ->whereKey($venda->id)
-                ->lockForUpdate()
-                ->firstOrFail();
-
-            if ($venda->status !== Venda::STATUS_ABERTA) {
-                abort(422, 'Somente vendas abertas podem ser alteradas.');
-            }
+            $venda = $this->bloquearVendaAberta($venda->id);
 
             $item = ItemVenda::query()
                 ->whereKey($item->id)
@@ -243,55 +175,7 @@ class VendaPdvController extends Controller
             $this->recalcularTotais($venda);
         });
 
-        return redirect()->route('vendas.edit', $venda->id)->with('success', 'Produto removida com sucesso.');
-    }
-
-    private function recalcularTotais(Venda $venda)
-    {
-        $valorProdutos = $venda->itens()
-            ->get()
-            ->sum(function ($item) {
-                return $item->quantidade * $item->preco_unitario;
-            });
-
-        $valorProdutos = round($valorProdutos, 2);
-
-        $valorTotal = $valorProdutos
-            - $venda->descontos
-            + $venda->outros_custos;
-
-            $venda->update([
-                'valor_produtos' => $valorProdutos,
-                'valor_total' => round($valorTotal, 2)
-            ]);
-    }
-
-    private function clientesAtivos()
-    {
-        return Cliente::query()
-            ->join('pessoas', 'pessoas.id', '=', 'clientes.pessoa_id')
-            ->where('pessoas.status', true)
-            ->select('clientes.*')
-            ->with('pessoa')
-            ->orderBy('pessoas.nome')
-            ->get();
-    }
-
-    /**
-     * Funcionários ativos para o select de responsável.
-     */
-    private function funcionariosDisponiveis(?int $funcionarioAtualId = null)
-    {
-        return Funcionario::query()
-            ->join('pessoas', 'pessoas.id', '=', 'funcionarios.pessoa_id')
-            ->where(function ($query) use ($funcionarioAtualId) {
-                $query->where('pessoas.status', true)
-                    ->orWhere('funcionarios.id', $funcionarioAtualId);
-            })
-            ->select('funcionarios.*')
-            ->with('pessoa')
-            ->orderBy('pessoas.nome')
-            ->get();
+        return redirect()->route('vendas.edit', $venda->id)->with('success', 'Produto removido com sucesso.');
     }
 
     public function atualizarFuncionario(AtualizarFuncionarioVendaRequest $request, Venda $venda)
@@ -299,16 +183,11 @@ class VendaPdvController extends Controller
         $dados = $request->validated();
 
         DB::transaction(function () use ($venda, $dados) {
-            $venda = Venda::query()
-                ->whereKey($venda->id)
-                ->lockForUpdate()
-                ->firstOrFail();
-
-            if ($venda->status !== Venda::STATUS_ABERTA) {
-                throw ValidationException::withMessages([
-                    'funcionario_id' => 'Somente vendas abertas podem ter o responsável alterado.',
-                ]);
-            }
+            $venda = $this->bloquearVendaAberta(
+                $venda->id,
+                'funcionario_id',
+                'Somente vendas abertas podem ter o responsável alterado.'
+            );
 
             $venda->update([
                 'funcionario_id' => $dados['funcionario_id'] ?? null,
@@ -325,14 +204,7 @@ class VendaPdvController extends Controller
         $dados = $request->validated();
 
         DB::transaction(function () use ($venda, $dados) {
-            $venda = Venda::query()
-                ->whereKey($venda->id)
-                ->lockForUpdate()
-                ->firstOrFail();
-
-            if ($venda->status !== Venda::STATUS_ABERTA) {
-                abort(422, 'Somente vendas abertas podem ser alteradas.');
-            }
+            $venda = $this->bloquearVendaAberta($venda->id);
 
             if (!empty($dados['cliente_id'])) {
                 Cliente::query()
@@ -353,62 +225,14 @@ class VendaPdvController extends Controller
             ->with('aba_ativa', 'cliente');
     }
 
-    private function validarEstoque(Produto $produto, Venda $venda, float $quantidadeAdicional, ?int $itemIgnoradoId = null) {
-        // Produtos que não controlam estoque não precisam dessa validação.
-        if (!$produto->controla_estoque) {
-            return;
-        }
-
-        // Soma as quantidades do mesmo produto já presentes na venda.
-        $consulta = $venda->itens()
-            ->where('produto_id', $produto->id);
-
-        // Na atualização, desconsidera o item que está sendo alterado.
-        if ($itemIgnoradoId !== null) {
-            $consulta->where('id', '!=', $itemIgnoradoId);
-        }
-
-        $quantidadeJaAdicionada = (float) $consulta->sum('quantidade');
-        $quantidadeSolicitada = $quantidadeJaAdicionada + $quantidadeAdicional;
-        $estoqueDisponivel = (float) ($produto->quantidade ?? 0);
-
-        // Compara em centésimos para evitar pequenas imprecisões de float.
-        $solicitadoEmCentésimos = (int) round($quantidadeSolicitada * 100);
-        $disponivelEmCentésimos = (int) round($estoqueDisponivel * 100);
-
-        $chaveErro = $itemIgnoradoId  ? 'quantidade_item_' . $itemIgnoradoId : 'produto_id';
-
-        if ($solicitadoEmCentésimos > $disponivelEmCentésimos) {
-            throw ValidationException::withMessages([
-                $chaveErro => sprintf(
-                    'Estoque insuficiente. Disponível: %s.',
-                    number_format($estoqueDisponivel, 2, ',', '.')
-                ),
-            ]);
-        }
-    }
-
     public function atualizarValores(AtualizarValoresVendaRequest $request, Venda $venda)
     {
         $dados = $request->validated();
 
         $venda = DB::transaction(function () use ($venda, $dados) {
-            $venda = Venda::query()
-                ->whereKey($venda->id)
-                ->lockForUpdate()
-                ->firstOrFail();
+            $venda = $this->bloquearVendaAberta($venda->id);
 
-            if ($venda->status !== Venda::STATUS_ABERTA) {
-                throw ValidationException::withMessages([
-                    'status' => 'Somente vendas abertas podem receber pagamentos.',
-                ]);
-            }
-
-            $valorProdutos = (float) $venda->itens()
-                ->get()
-                ->sum(fn ($item) => $item->quantidade * $item->preco_unitario);
-
-            $valorProdutos = round($valorProdutos, 2);
+            $valorProdutos = $this->calcularValorProdutos($venda);
 
             if ($dados['tipo_desconto'] === 'percentual') {
                 $desconto = round(
@@ -453,40 +277,19 @@ class VendaPdvController extends Controller
 
     public function store(AdicionarRecebimentoRequest $request, Venda $venda)
     {
+        // Forma de pagamento ativa já é garantida pela validação do request.
         $dados = $request->validated();
 
         DB::transaction(function () use ($venda, $dados) {
-            $venda = Venda::query()
-                ->whereKey($venda->id)
-                ->lockForUpdate()
-                ->firstOrFail();
-
-            if ($venda->status !== Venda::STATUS_ABERTA) {
-                abort(422, 'Somente vendas abertas podem receber pagamentos.');
-            }
-
-            $formaPagamentoAtiva = FormaPagamento::query()
-                ->whereKey($dados['forma_pagamento_id'])
-                ->where('status', true)
-                ->exists();
-
-            if (!$formaPagamentoAtiva) {
-                throw ValidationException::withMessages([
-                    'forma_pagamento_id' => 'A forma de pagamento selecionada não está disponível.',
-                ]);
-            }
-
-            // Soma os recebimentos que ainda não foram cancelados.
-            $valorRecebido = $venda->recebimentos()
-                ->whereIn('status', ['pago', 'pendente'])
-                ->sum('valor');
+            $venda = $this->bloquearVendaAberta(
+                $venda->id,
+                mensagem: 'Somente vendas abertas podem receber pagamentos.'
+            );
 
             // Trabalha com centavos para evitar imprecisão de ponto flutuante.
             $totalEmCentavos = (int) round((float) $venda->valor_total * 100);
-            $recebidoEmCentavos = (int) round((float) $valorRecebido * 100);
+            $restanteEmCentavos = $totalEmCentavos - $venda->recebimentosComprometidosEmCentavos();
             $novoValorEmCentavos = (int) round((float) $dados['valor'] * 100);
-
-            $restanteEmCentavos = $totalEmCentavos - $recebidoEmCentavos;
 
             if ($novoValorEmCentavos > $restanteEmCentavos) {
                 throw ValidationException::withMessages([
@@ -494,7 +297,7 @@ class VendaPdvController extends Controller
                 ]);
             }
 
-            $pago = $dados['status'] === 'pago';
+            $pago = $dados['status'] === Recebimento::STATUS_PAGO;
 
             $recebimento = $venda->recebimentos()->create([
                 'forma_pagamento_id' => $dados['forma_pagamento_id'],
@@ -520,15 +323,11 @@ class VendaPdvController extends Controller
     public function destroyRecebimento(Venda $venda, Recebimento $recebimento)
     {
         DB::transaction(function () use ($venda, $recebimento) {
-            $venda = Venda::query()
-                ->lockForUpdate()
-                ->findOrFail($venda->id);
-
-            if ($venda->status !== Venda::STATUS_ABERTA) {
-                throw ValidationException::withMessages([
-                    'recebimento' => 'Não é possível remover recebimentos de uma venda que não está aberta.',
-                ]);
-            }
+            $venda = $this->bloquearVendaAberta(
+                $venda->id,
+                'recebimento',
+                'Não é possível remover recebimentos de uma venda que não está aberta.'
+            );
 
             $recebimento = $venda->recebimentos()
                 ->whereKey($recebimento->id)
@@ -561,18 +360,8 @@ class VendaPdvController extends Controller
     {
         DB::transaction(function () use ($venda) {
 
-            // Bloqueia a venda durante a finalização.
-            $venda = Venda::query()
-                ->whereKey($venda->id)
-                ->lockForUpdate()
-                ->firstOrFail();
-
-            // Somente vendas abertas podem ser finalizadas.
-            if ($venda->status !== Venda::STATUS_ABERTA) {
-                throw ValidationException::withMessages([
-                    'venda' => 'Esta venda não está aberta.',
-                ]);
-            }
+            // Bloqueia a venda durante a finalização (somente vendas abertas).
+            $venda = $this->bloquearVendaAberta($venda->id, mensagem: 'Esta venda não está aberta.');
 
             // Busca os itens da venda.
             $itens = $venda->itens()
@@ -652,24 +441,12 @@ class VendaPdvController extends Controller
                 ]);
             }
 
-            // Soma os recebimentos pagos e pendentes.
-            $totalRecebimentos = $venda->recebimentos()
-                ->whereIn('status', [
-                    Recebimento::STATUS_PAGO,
-                    Recebimento::STATUS_PENDENTE,
-                ])
-                ->sum('valor');
-
             $totalEmCentésimos = (int) round(
                 (float) $venda->valor_total * 100
             );
 
-            $recebimentosEmCentésimos = (int) round(
-                (float) $totalRecebimentos * 100
-            );
-
-            // Impede finalizar uma venda com recebimentos acima do total.
-            if ($recebimentosEmCentésimos > $totalEmCentésimos) {
+            // Impede finalizar uma venda com recebimentos (pagos e pendentes) acima do total.
+            if ($venda->recebimentosComprometidosEmCentavos() > $totalEmCentésimos) {
                 throw ValidationException::withMessages([
                     'recebimento' => 'O total dos recebimentos ultrapassa o valor da venda. Ajuste os recebimentos antes de finalizar.',
                 ]);
@@ -684,5 +461,135 @@ class VendaPdvController extends Controller
         return redirect()
             ->route('vendas.index')
             ->with('success', 'Venda finalizada com sucesso.');
+    }
+
+    /**
+     * Dados comuns às telas de nova venda e de venda em andamento.
+     */
+    private function dadosPdv(): array
+    {
+        return [
+            'vendasAbertas' => Venda::query()
+                ->where('status', Venda::STATUS_ABERTA)
+                ->orderByDesc('id')
+                ->get(),
+            'produtos' => Produto::query()
+                ->where('status', true)
+                ->orderBy('nome')
+                ->get(),
+            'clientes' => $this->clientesAtivos(),
+        ];
+    }
+
+    /**
+     * Bloqueia a venda (lockForUpdate, dentro da transação) e garante que ela
+     * continua aberta. Toda alteração feita pelo PDV passa por aqui, com a
+     * mensagem exibida no campo indicado da tela.
+     */
+    private function bloquearVendaAberta(
+        int $vendaId,
+        string $chave = 'venda',
+        string $mensagem = 'Somente vendas abertas podem ser alteradas.'
+    ): Venda {
+        $venda = Venda::query()
+            ->whereKey($vendaId)
+            ->lockForUpdate()
+            ->firstOrFail();
+
+        if ($venda->status !== Venda::STATUS_ABERTA) {
+            throw ValidationException::withMessages([$chave => $mensagem]);
+        }
+
+        return $venda;
+    }
+
+    /**
+     * Soma dos itens (quantidade × preço unitário), arredondada em 2 casas.
+     */
+    private function calcularValorProdutos(Venda $venda): float
+    {
+        $valorProdutos = (float) $venda->itens()
+            ->get()
+            ->sum(fn (ItemVenda $item) => $item->quantidade * $item->preco_unitario);
+
+        return round($valorProdutos, 2);
+    }
+
+    private function recalcularTotais(Venda $venda): void
+    {
+        $valorProdutos = $this->calcularValorProdutos($venda);
+
+        $valorTotal = $valorProdutos
+            - $venda->descontos
+            + $venda->outros_custos;
+
+        $venda->update([
+            'valor_produtos' => $valorProdutos,
+            'valor_total' => round($valorTotal, 2),
+        ]);
+    }
+
+    private function clientesAtivos()
+    {
+        return Cliente::query()
+            ->join('pessoas', 'pessoas.id', '=', 'clientes.pessoa_id')
+            ->where('pessoas.status', true)
+            ->select('clientes.*')
+            ->with('pessoa')
+            ->orderBy('pessoas.nome')
+            ->get();
+    }
+
+    /**
+     * Funcionários ativos para o select de responsável.
+     */
+    private function funcionariosDisponiveis(?int $funcionarioAtualId = null)
+    {
+        return Funcionario::query()
+            ->join('pessoas', 'pessoas.id', '=', 'funcionarios.pessoa_id')
+            ->where(function ($query) use ($funcionarioAtualId) {
+                $query->where('pessoas.status', true)
+                    ->orWhere('funcionarios.id', $funcionarioAtualId);
+            })
+            ->select('funcionarios.*')
+            ->with('pessoa')
+            ->orderBy('pessoas.nome')
+            ->get();
+    }
+
+    private function validarEstoque(Produto $produto, Venda $venda, float $quantidadeAdicional, ?int $itemIgnoradoId = null): void
+    {
+        // Produtos que não controlam estoque não precisam dessa validação.
+        if (!$produto->controla_estoque) {
+            return;
+        }
+
+        // Soma as quantidades do mesmo produto já presentes na venda.
+        $consulta = $venda->itens()
+            ->where('produto_id', $produto->id);
+
+        // Na atualização, desconsidera o item que está sendo alterado.
+        if ($itemIgnoradoId !== null) {
+            $consulta->where('id', '!=', $itemIgnoradoId);
+        }
+
+        $quantidadeJaAdicionada = (float) $consulta->sum('quantidade');
+        $quantidadeSolicitada = $quantidadeJaAdicionada + $quantidadeAdicional;
+        $estoqueDisponivel = (float) ($produto->quantidade ?? 0);
+
+        // Compara em centésimos para evitar pequenas imprecisões de float.
+        $solicitadoEmCentésimos = (int) round($quantidadeSolicitada * 100);
+        $disponivelEmCentésimos = (int) round($estoqueDisponivel * 100);
+
+        $chaveErro = $itemIgnoradoId ? 'quantidade_item_' . $itemIgnoradoId : 'produto_id';
+
+        if ($solicitadoEmCentésimos > $disponivelEmCentésimos) {
+            throw ValidationException::withMessages([
+                $chaveErro => sprintf(
+                    'Estoque insuficiente. Disponível: %s.',
+                    number_format($estoqueDisponivel, 2, ',', '.')
+                ),
+            ]);
+        }
     }
 }

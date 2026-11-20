@@ -96,13 +96,13 @@ Route::get('/vendas/create', [VendaPdvController::class, 'create'])->name('venda
 /* ADICIONAR PRODUTO À VENDA */
 Route::post('/vendas/itens', [VendaPdvController::class, 'adicionarProduto'])->name('vendas.itens.store');
 /* ABRIR VENDA EXISTENTE NO PDV */
-Route::get('/vendas/{id}/edit', [VendaPdvController::class, 'edit'])->name('vendas.edit');
+Route::get('/vendas/{venda}/edit', [VendaPdvController::class, 'edit'])->whereNumber('venda')->name('vendas.edit');
 
 Route::delete('/vendas/{venda}/itens/{item}', [VendaPdvController::class, 'destroy'])->name('vendas.itens.destroy');
 Route::patch('/vendas/{venda}/itens/{item}', [VendaPdvController::class, 'update'])->name('vendas.itens.update');
 Route::patch('/vendas/{venda}/cliente', [VendaPdvController::class, 'atualizarCliente'])->name('vendas.cliente.update');
 Route::patch('/vendas/{venda}/funcionario', [VendaPdvController::class, 'atualizarFuncionario'])->name('vendas.funcionario.update');
-Route::patch('/vendas/{venda}/valores', [vendaPdvController::class, 'atualizarValores'])->name('vendas.valores.update');
+Route::patch('/vendas/{venda}/valores', [VendaPdvController::class, 'atualizarValores'])->name('vendas.valores.update');
 Route::post('/vendas/{venda}/recebimentos', [VendaPdvController::class, 'store'])->name('vendas.recebimentos.store');
 Route::post('/vendas/{venda}/finalizar', [VendaPdvController::class, 'finalizar'])->name('vendas.finalizar');
 Route::delete('/vendas/{venda}/recebimentos/{recebimento}', [VendaPdvController::class, 'destroyRecebimento'])->name('vendas.recebimentos.destroy');

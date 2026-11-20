@@ -27,6 +27,4 @@ export function iniMascaras() {
     document.querySelectorAll(".mask-valor").forEach(campo => {
         aplicarMascaraValor(campo);
     });
-
-    window.aplicarMascaraValor = aplicarMascaraValor;
 }

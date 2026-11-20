@@ -22,6 +22,21 @@ class Produto extends Model
     ];
 
     /**
+     * Booleanos como true/false (e não 0/1) e valores monetários e de estoque
+     * com 2 casas decimais, igual às colunas e aos models de venda.
+     */
+    protected function casts(): array
+    {
+        return [
+            'status' => 'boolean',
+            'controla_estoque' => 'boolean',
+            'preco_venda' => 'decimal:2',
+            'preco_custo' => 'decimal:2',
+            'quantidade' => 'decimal:2',
+        ];
+    }
+
+    /**
      *  Relacionamento
      *  Um produto pode ter uma marca
      */

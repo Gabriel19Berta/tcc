@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Vendas\AtualizarRecebimentoRequest;
 use App\Http\Requests\Vendas\LancarRecebimentoRequest;
 use App\Http\Requests\Vendas\ReceberRecebimentoRequest;
-use Illuminate\Support\Carbon;
 use App\Models\FormaPagamento;
 use App\Models\Pagamento;
 use App\Models\Recebimento;
@@ -13,6 +12,7 @@ use App\Models\Venda;
 use App\Support\Formatador;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
@@ -84,9 +84,9 @@ class RecebimentoController extends Controller
     }
 
     /**
-     * Estorna o recebimento como um todo: registra o estorno da soma de todos
-     * os pagamentos
-     * */
+     * Estorna o recebimento como um todo: registra o estorno da soma dos
+     * pagamentos ainda válidos e reabre o recebimento como pendente.
+     */
     public function estornar(Recebimento $recebimento)
     {
         $resultado = DB::transaction(function () use ($recebimento) {
@@ -125,9 +125,7 @@ class RecebimentoController extends Controller
             ]);
 
             // Mesma regra da finalização: sem o valor estornado, uma venda quitada volta a finalizada.
-            if (in_array($venda->status, [Venda::STATUS_FINALIZADA, Venda::STATUS_QUITADA], true)) {
-                $venda->update(['status' => $venda->situacaoPorPagamentos()]);
-            }
+            $venda->atualizarSituacaoFinanceira();
 
             return ['success', "Recebimento #{$recebimento->id} estornado. Valor estornado: "
                 . Formatador::reais($estornoCentavos / 100) . '. O recebimento voltou a ficar pendente.'];
@@ -170,9 +168,7 @@ class RecebimentoController extends Controller
             $recebimento->update(['status' => Recebimento::STATUS_CANCELADO]);
 
             // Mesma regra das demais operações para a situação da venda.
-            if (in_array($venda->status, [Venda::STATUS_FINALIZADA, Venda::STATUS_QUITADA], true)) {
-                $venda->update(['status' => $venda->situacaoPorPagamentos()]);
-            }
+            $venda->atualizarSituacaoFinanceira();
 
             return ['success', "Recebimento #{$recebimento->id} cancelado."];
         });
@@ -197,15 +193,11 @@ class RecebimentoController extends Controller
 
         $recebimento->load(['venda.cliente.pessoa', 'formaPagamento']);
 
-        $formasPagamento = FormaPagamento::query()
-            ->where('status', true)
-            ->orWhere('id', $recebimento->forma_pagamento_id)
-            ->orderBy('nome')
-            ->get(['id', 'nome']);
+        $formasPagamento = $this->formasPagamentoDisponiveis($recebimento);
 
         // Valor máximo que este recebimento pode ter sem ultrapassar o total da venda.
         $limiteCentavos = (int) round((float) $recebimento->venda->valor_total * 100)
-            - $this->recebimentosComprometidosEmCentavos($recebimento->venda_id, ignorarId: $recebimento->id);
+            - $recebimento->venda->recebimentosComprometidosEmCentavos(ignorarId: $recebimento->id);
         $valorMaximo = max(0, $limiteCentavos) / 100;
 
         return view('recebimentos.edit', compact('recebimento', 'formasPagamento', 'valorMaximo'));
@@ -233,7 +225,7 @@ class RecebimentoController extends Controller
 
             // Compara em centavos, com os valores atuais do banco.
             $totalVendaCentavos = (int) round((float) $venda->valor_total * 100);
-            $outrosCentavos = $this->recebimentosComprometidosEmCentavos($venda->id, ignorarId: $recebimento->id, bloquear: true);
+            $outrosCentavos = $venda->recebimentosComprometidosEmCentavos(ignorarId: $recebimento->id, bloquear: true);
             $novoValorCentavos = (int) round((float) $dados['valor'] * 100);
 
             if ($outrosCentavos + $novoValorCentavos > $totalVendaCentavos) {
@@ -284,11 +276,7 @@ class RecebimentoController extends Controller
 
         $recebimento->load(['venda.cliente.pessoa', 'formaPagamento', 'pagamentos']);
 
-        $formasPagamento = FormaPagamento::query()
-            ->where('status', true)
-            ->orWhere('id', $recebimento->forma_pagamento_id)
-            ->orderBy('nome')
-            ->get(['id', 'nome']);
+        $formasPagamento = $this->formasPagamentoDisponiveis($recebimento);
 
         $totalRecebido = $recebimento->totalRecebidoEmCentavos() / 100;
         $saldoRestante = $recebimento->saldoEmCentavos() / 100;
@@ -349,11 +337,9 @@ class RecebimentoController extends Controller
                     'status' => Recebimento::STATUS_PAGO,
                 ]);
 
-                // Venda finalizada: mesma regra da finalização (pago ≥ total → quitada).
+                // Venda concluída: mesma regra da finalização (pago ≥ total → quitada).
                 // Venda aberta permanece aberta (a finalização do PDV define a situação).
-                if ($venda->status === Venda::STATUS_FINALIZADA) {
-                    $venda->update(['status' => $venda->situacaoPorPagamentos()]);
-                }
+                $venda->atualizarSituacaoFinanceira();
             }
 
             return $restanteCentavos === 0
@@ -384,7 +370,7 @@ class RecebimentoController extends Controller
 
         // Saldo disponível = total da venda − recebimentos não cancelados (mesma regra do store).
         $totalCentavos = (int) round((float) $venda->valor_total * 100);
-        $lancadoCentavos = $this->recebimentosComprometidosEmCentavos($venda->id);
+        $lancadoCentavos = $venda->recebimentosComprometidosEmCentavos();
 
         // Sem saldo, nem apresenta a tela (mesmo comportamento da venda quitada).
         if ($totalCentavos - $lancadoCentavos <= 0) {
@@ -424,7 +410,7 @@ class RecebimentoController extends Controller
 
             // Compara em centavos, com os valores atuais do banco.
             $totalCentavos = (int) round((float) $venda->valor_total * 100);
-            $saldoCentavos = $totalCentavos - $this->recebimentosComprometidosEmCentavos($venda->id, bloquear: true);
+            $saldoCentavos = $totalCentavos - $venda->recebimentosComprometidosEmCentavos(bloquear: true);
 
             if ($saldoCentavos <= 0) {
                 return self::MSG_SEM_SALDO;
@@ -456,7 +442,7 @@ class RecebimentoController extends Controller
             }
 
             // Mesma regra da finalização: se o total pago cobrir a venda, ela fica quitada.
-            $venda->update(['status' => $venda->situacaoPorPagamentos()]);
+            $venda->atualizarSituacaoFinanceira();
 
             return null;
         });
@@ -487,6 +473,19 @@ class RecebimentoController extends Controller
     }
 
     /**
+     * Formas de pagamento ativas, mais a atual do recebimento (mesmo que inativa),
+     * para não perder a seleção salva na edição e no recebimento.
+     */
+    private function formasPagamentoDisponiveis(Recebimento $recebimento)
+    {
+        return FormaPagamento::query()
+            ->where('status', true)
+            ->orWhere('id', $recebimento->forma_pagamento_id)
+            ->orderBy('nome')
+            ->get(['id', 'nome']);
+    }
+
+    /**
      * Mensagem para vendas cujo status não permite lançar recebimentos.
      */
     private function motivoSemLancamento(Venda $venda): string
@@ -497,21 +496,5 @@ class RecebimentoController extends Controller
             Venda::STATUS_CANCELADA => 'Não é possível lançar recebimentos em uma venda cancelada.',
             default => 'Esta venda não permite lançar recebimentos.',
         };
-    }
-
-    /**
-     * Soma, em centavos, do valor original dos recebimentos que comprometem a
-     * venda (pagos e pendentes), opcionalmente sem contar um recebimento (edição).
-     * Cancelados e estornados ficam fora: o valor volta a ficar disponível.
-     */
-    private function recebimentosComprometidosEmCentavos(int $vendaId, ?int $ignorarId = null, bool $bloquear = false): int
-    {
-        return Recebimento::query()
-            ->where('venda_id', $vendaId)
-            ->when($ignorarId, fn ($query) => $query->whereKeyNot($ignorarId))
-            ->where('status', '!=', Recebimento::STATUS_CANCELADO)
-            ->when($bloquear, fn ($query) => $query->lockForUpdate())
-            ->get()
-            ->sum(fn (Recebimento $outro) => (int) round((float) $outro->valor * 100));
     }
 }

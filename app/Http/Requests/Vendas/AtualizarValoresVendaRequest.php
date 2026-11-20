@@ -60,16 +60,13 @@ class AtualizarValoresVendaRequest extends FormRequest
 
             $valor = trim(str_replace(['R$', ' '], '', (string) $valor));
 
-            if ($valor !== null) {
-                $valor = trim(str_replace(['R$', ' '], '', $valor));
-
-                if (str_contains($valor, ',')) {
-                    $valor = str_replace('.', '', $valor);
-                    $valor = str_replace(',', '.', $valor);
-                }
-
-                $dados[$campo] = $valor;
+            // Quando houver vírgula, considera o formato brasileiro.
+            if (str_contains($valor, ',')) {
+                $valor = str_replace('.', '', $valor);
+                $valor = str_replace(',', '.', $valor);
             }
+
+            $dados[$campo] = $valor;
         }
 
         $this->merge($dados);

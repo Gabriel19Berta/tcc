@@ -72,7 +72,7 @@ class Venda extends Model
     /**
      * Situação financeira de uma venda concluída, conforme os recebimentos pagos:
      * total pago ≥ valor total → quitada; caso contrário → finalizada.
-     * (Regra usada na finalização do PDV e no lançamento de recebimentos.)
+     * (Regra usada na finalização do PDV e nas operações de recebimentos.)
      */
     public function situacaoPorPagamentos(): string
     {
@@ -87,6 +87,37 @@ class Venda extends Model
         return $pagoCentavos >= $totalCentavos
             ? self::STATUS_QUITADA
             : self::STATUS_FINALIZADA;
+    }
+
+    /**
+     * Reaplica a situação financeira (quitada ou finalizada) de uma venda já
+     * concluída, depois de pagamentos, lançamentos, estornos ou cancelamentos.
+     * Vendas abertas ou canceladas não mudam: na aberta, quem define a situação
+     * é a finalização do PDV.
+     */
+    public function atualizarSituacaoFinanceira(): void
+    {
+        if (!in_array($this->status, [self::STATUS_FINALIZADA, self::STATUS_QUITADA], true)) {
+            return;
+        }
+
+        $this->update(['status' => $this->situacaoPorPagamentos()]);
+    }
+
+    /**
+     * Soma, em centavos, do valor original dos recebimentos que comprometem a
+     * venda (pagos e pendentes). Cancelados ficam fora: o valor volta a ficar
+     * disponível. Opcionalmente ignora um recebimento (edição) e bloqueia as
+     * linhas somadas (dentro de transação).
+     */
+    public function recebimentosComprometidosEmCentavos(?int $ignorarId = null, bool $bloquear = false): int
+    {
+        return $this->recebimentos()
+            ->where('status', '!=', Recebimento::STATUS_CANCELADO)
+            ->when($ignorarId, fn ($query) => $query->whereKeyNot($ignorarId))
+            ->when($bloquear, fn ($query) => $query->lockForUpdate())
+            ->get()
+            ->sum(fn (Recebimento $recebimento) => (int) round((float) $recebimento->valor * 100));
     }
 
     /**
