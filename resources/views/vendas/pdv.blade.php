@@ -24,9 +24,51 @@
 
             {{-- CABEÇALHO --}}
             <header class="flex h-[68px] shrink-0 items-center justify-between bg-primary px-6 text-white">
-                <h1 class="text-2xl font-bold text-white">
-                    PDV @isset($venda) {{ ' - ' . $venda->id }} @endisset
-                </h1>
+                <div class="flex items-baseline gap-6">
+                    <h1 class="text-2xl font-bold text-white">
+                        PDV @isset($venda) {{ ' - ' . $venda->id }} @endisset
+                    </h1>
+
+                    {{--
+                        FUNCIONÁRIO RESPONSÁVEL
+                        - Venda existente: formulário próprio, salvo ao alterar a seleção.
+                        - Nova venda: o select pertence ao formulário de produto (atributo form)
+                          e é enviado junto com o primeiro produto, quando a venda é criada.
+                    --}}
+                    @isset($venda)
+                        <form id="form-funcionario" action="{{ route('vendas.funcionario.update', $venda->id) }}" method="POST">
+                            @csrf
+                            @method('PATCH')
+                    @endisset
+
+                    <div class="flex items-center gap-2">
+                        <label for="funcionario_id" class="text-sm font-medium text-white whitespace-nowrap">
+                            Funcionário responsável:
+                        </label>
+
+                        <select id="funcionario_id" name="funcionario_id"
+                            class="w-56 rounded-lg border-gray-300 text-sm text-gray-700"
+                            @isset($venda)
+                                onchange="this.form.requestSubmit()"
+                            @else
+                                form="form-produto"
+                            @endisset
+                        >
+                            <option value="">Nenhum funcionário</option>
+
+                            @foreach ($funcionarios as $funcionario)
+                                <option value="{{ $funcionario->id }}"
+                                    @selected((string) $funcionario->id === (string) $funcionarioSelecionadoId)>
+                                    {{ $funcionario->pessoa->nome }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    @isset($venda)
+                        </form>
+                    @endisset
+                </div>
 
                 <div class="flex items-center gap-4">
                     <form method="GET" action="{{ route('vendas.index') }}">
@@ -66,6 +108,14 @@
                         </div>
                     @endif
 
+                    @if ($errors->has('funcionario_id'))
+                        <div class="mb-4">
+                            <x-alert type="error">
+                                {{ $errors->first('funcionario_id') }}
+                            </x-alert>
+                        </div>
+                    @endif
+
                     {{-- NAVEGAÇÃO --}}
                     <nav class="mb-2 flex shrink-0 overflow-hidden rounded-full border border-primary">
                         <button type="button" data-aba="produto" class="flex-1 rounded-full bg-primary px-4 py-3 font-semibold text-white"
@@ -89,7 +139,7 @@
                             Adicionar produto
                         </h2>
 
-                        <form action="{{ route('vendas.itens.store') }}" method="POST">
+                        <form id="form-produto" action="{{ route('vendas.itens.store') }}" method="POST">
                             @csrf
 
                             {{-- IDENTIFICAÇÃO DA VENDA --}}

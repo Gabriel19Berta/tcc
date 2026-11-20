@@ -7,14 +7,17 @@ use App\Models\ItemVenda;
 use App\Models\Produto;
 use App\Models\Venda;
 use App\Models\Cliente;
+use App\Models\Funcionario;
 use App\Models\FormaPagamento;
 use App\Models\Recebimento;
 use Illuminate\View\View;
 use App\Http\Requests\Vendas\AdicionarProdutoRequest;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use App\Http\Requests\Vendas\AtualizarItemVendaRequest;
 use App\Http\Requests\Vendas\AtualizarClienteVendaRequest;
+use App\Http\Requests\Vendas\AtualizarFuncionarioVendaRequest;
 use App\Http\Requests\Vendas\AtualizarValoresVendaRequest;
 use App\Http\Requests\Vendas\AdicionarRecebimentoRequest;
 use Illuminate\Validation\ValidationException;
@@ -22,8 +25,12 @@ use Illuminate\Support\Carbon;
 
 class VendaPdvController extends Controller
 {
-    public function create()
+    public function create(Request $request)
     {
+        // Nova venda: responsável o funcionário vinculado ao usuário logado.
+        $funcionarios = $this->funcionariosDisponiveis();
+        $funcionarioSelecionadoId = $request->user()->funcionario?->id;
+
         $vendasAbertas = Venda::query()
             ->where('status', Venda::STATUS_ABERTA)
             ->orderByDesc('id')
@@ -36,7 +43,13 @@ class VendaPdvController extends Controller
 
         $clientes = $this->clientesAtivos();
 
-        return view('vendas.pdv', compact('vendasAbertas', 'produtos', 'clientes'));
+        return view('vendas.pdv', compact(
+            'vendasAbertas',
+            'produtos',
+            'clientes',
+            'funcionarios',
+            'funcionarioSelecionadoId'
+        ));
     }
 
     public function edit(string $id)
@@ -50,6 +63,10 @@ class VendaPdvController extends Controller
         if ($venda->status !== Venda::STATUS_ABERTA) {
             return redirect()->route('vendas.index')->with('error', 'Somente vendas abertas podem ser editadas.');
         }
+
+        // Venda existente: mantém o responsável salvo, independente de quem a abriu agora.
+        $funcionarios = $this->funcionariosDisponiveis($venda->funcionario_id);
+        $funcionarioSelecionadoId = $venda->funcionario_id;
 
         $vendasAbertas = Venda::query()
             ->where('status', Venda::STATUS_ABERTA)
@@ -81,7 +98,9 @@ class VendaPdvController extends Controller
             'clientes',
             'formasPagamento',
             'totalRecebido',
-            'saldoRestante'
+            'saldoRestante',
+            'funcionarios',
+            'funcionarioSelecionadoId'
         ));
     }
 
@@ -131,7 +150,11 @@ class VendaPdvController extends Controller
     {
         $dados = $request->validated();
 
-        $venda = DB::transaction(function () use ($dados) {
+        $funcionarioId = array_key_exists('funcionario_id', $dados)
+            ? $dados['funcionario_id']
+            : $request->user()->funcionario?->id;
+
+        $venda = DB::transaction(function () use ($dados, $funcionarioId) {
             $precoProduto = $dados['preco_produto'];
 
             if (!empty($dados['venda_id'])) {
@@ -146,7 +169,7 @@ class VendaPdvController extends Controller
             } else {
                 $venda = Venda::create([
                     'cliente_id' => null,
-                    'funcionario_id' => null,
+                    'funcionario_id' => $funcionarioId,
                     'status' => Venda::STATUS_ABERTA,
                     'valor_produtos' => 0,
                     'descontos' => 0,
@@ -251,6 +274,49 @@ class VendaPdvController extends Controller
             ->with('pessoa')
             ->orderBy('pessoas.nome')
             ->get();
+    }
+
+    /**
+     * Funcionários ativos para o select de responsável.
+     */
+    private function funcionariosDisponiveis(?int $funcionarioAtualId = null)
+    {
+        return Funcionario::query()
+            ->join('pessoas', 'pessoas.id', '=', 'funcionarios.pessoa_id')
+            ->where(function ($query) use ($funcionarioAtualId) {
+                $query->where('pessoas.status', true)
+                    ->orWhere('funcionarios.id', $funcionarioAtualId);
+            })
+            ->select('funcionarios.*')
+            ->with('pessoa')
+            ->orderBy('pessoas.nome')
+            ->get();
+    }
+
+    public function atualizarFuncionario(AtualizarFuncionarioVendaRequest $request, Venda $venda)
+    {
+        $dados = $request->validated();
+
+        DB::transaction(function () use ($venda, $dados) {
+            $venda = Venda::query()
+                ->whereKey($venda->id)
+                ->lockForUpdate()
+                ->firstOrFail();
+
+            if ($venda->status !== Venda::STATUS_ABERTA) {
+                throw ValidationException::withMessages([
+                    'funcionario_id' => 'Somente vendas abertas podem ter o responsável alterado.',
+                ]);
+            }
+
+            $venda->update([
+                'funcionario_id' => $dados['funcionario_id'] ?? null,
+            ]);
+        });
+
+        return redirect()
+            ->route('vendas.edit', $venda->id)
+            ->with('success', 'Funcionário responsável atualizado com sucesso.');
     }
 
     public function atualizarCliente(AtualizarClienteVendaRequest $request, Venda $venda)

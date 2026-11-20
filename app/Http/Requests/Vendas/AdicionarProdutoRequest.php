@@ -63,6 +63,7 @@ class AdicionarProdutoRequest extends FormRequest
                 'integer',
                 'exists:vendas,id',
             ],
+            'funcionario_id' => AtualizarFuncionarioVendaRequest::regraFuncionario(),
         ];
     }
 
@@ -80,6 +81,7 @@ class AdicionarProdutoRequest extends FormRequest
             'preco_produto.gt' => 'O preço deve ser maior que zero.',
             'preco_produto.decimal' => 'O preço pode ter no máximo duas casas decimais.',
             'venda_id.exists' => 'A venda selecionada não existe.',
+            ...AtualizarFuncionarioVendaRequest::mensagensFuncionario(),
         ];
     }
 }
