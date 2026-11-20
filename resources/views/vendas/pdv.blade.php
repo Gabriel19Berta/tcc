@@ -1,3 +1,4 @@
+@use('App\Support\Formatador')
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
@@ -85,7 +86,7 @@
                             @foreach ($vendasAbertas as $vendaAberta)
                                 <option value="{{ route('vendas.edit', $vendaAberta->id) }}">
                                     Venda #{{ $vendaAberta->id }}
-                                    - R$ {{ number_format($vendaAberta->valor_total, 2, ',', '.') }}
+                                    - {{ Formatador::reais($vendaAberta->valor_total) }}
                                 </option>
                             @endforeach
                         </select>
@@ -157,7 +158,7 @@
                                     @foreach ($produtos as $produto)
                                         <option value="{{ $produto->id }}" data-preco="{{ $produto->preco_venda }}"
                                             {{ old('produto_id') == $produto->id ? 'selected' : '' }}>
-                                            {{ $produto->nome }} - R$ {{ number_format($produto->preco_venda, 2, ',', '.') }}
+                                            {{ $produto->nome }} - {{ Formatador::reais($produto->preco_venda) }}
                                         </option>
                                     @endforeach
                                 </select>
@@ -258,9 +259,9 @@
 
                                             <p class="text-sm text-text break-words">
                                                 @if($pessoa->tipo == 'f')
-                                                    {{ $pessoa->cpf ?? 'Não informado' }}
+                                                    {{ Formatador::cpf($pessoa->cpf) ?: 'Não informado' }}
                                                 @elseif($pessoa->tipo == 'j')
-                                                    {{ $pessoa->cnpj ?? 'Não informado' }}
+                                                    {{ Formatador::cnpj($pessoa->cnpj) ?: 'Não informado' }}
                                                 @else
                                                     Não informado
                                                 @endif
@@ -271,7 +272,7 @@
                                         <div class="min-w-0">
                                             <span class="text-xs text-text-light">Telefone</span>
                                             <p class="text-sm text-text break-words">
-                                                {{ $pessoa->telefone ?? 'Não informado' }}
+                                                {{ Formatador::telefone($pessoa->telefone) ?: 'Não informado' }}
                                             </p>
                                         </div>
 
@@ -279,7 +280,7 @@
                                         <div class="min-w-0">
                                             <span class="text-xs text-text-light">Celular</span>
                                             <p class="text-sm text-text break-words">
-                                                {{ $pessoa->celular ?? 'Não informado' }}
+                                                {{ Formatador::celular($pessoa->celular) ?: 'Não informado' }}
                                             </p>
                                         </div>
 
@@ -353,7 +354,7 @@
                                         </span>
 
                                         <p id="resumo-produtos" class="font-medium text-text">
-                                            R$ {{ number_format($venda->valor_produtos, 2, ',', '.') }}
+                                            {{ Formatador::reais($venda->valor_produtos) }}
                                         </p>
                                     </div>
 
@@ -363,7 +364,7 @@
                                         </span>
 
                                         <p id="resumo-desconto" class="font-medium text-danger-500">
-                                            - R$ {{ number_format($venda->descontos, 2, ',', '.') }}
+                                            - {{ Formatador::reais($venda->descontos) }}
                                         </p>
                                     </div>
 
@@ -373,7 +374,7 @@
                                         </span>
 
                                         <p id="resumo-acrescimo" class="font-medium text-text">
-                                            R$ {{ number_format($venda->outros_custos, 2, ',', '.') }}
+                                            {{ Formatador::reais($venda->outros_custos) }}
                                         </p>
                                     </div>
 
@@ -383,7 +384,7 @@
                                         </span>
 
                                         <p id="resumo-total" class="font-bold text-primary">
-                                            R$ {{ number_format($venda->valor_total, 2, ',', '.') }}
+                                            {{ Formatador::reais($venda->valor_total) }}
                                         </p>
                                     </div>
                                 </div>
@@ -416,7 +417,7 @@
 
                                         <x-input id="desconto" name="desconto" type="text" inputmode="decimal" class="w-full mask-valor"
                                              data-mask-prefix="{{ old('tipo_desconto') === 'percentual' ? '' : 'R$ ' }}" placeholder="R$ 0,00"
-                                            :value="old('desconto', number_format($venda->descontos, 2, ',', '.'))"
+                                            :value="old('desconto', Formatador::moeda($venda->descontos))"
                                         />
 
                                         <div id="erro-desconto" class="mt-1 text-sm text-danger-500"></div>
@@ -428,7 +429,7 @@
 
                                         <x-input id="outros_custos" name="outros_custos" type="text" inputmode="decimal"
                                             class="w-full mask-valor" data-mask-prefix="R$ " placeholder="R$ 0,00"
-                                            :value="old('outros_custos', number_format($venda->outros_custos, 2, ',', '.'))"
+                                            :value="old('outros_custos', Formatador::moeda($venda->outros_custos))"
                                         />
 
                                         <div id="erro-outros-custos" class="mt-1 text-sm text-danger-500"></div>
@@ -560,10 +561,10 @@
                                                     <p class="mt-1 text-xs text-text-light">
                                                         @if ($recebimento->status === 'pago')
                                                             Pago em
-                                                            {{ \Carbon\Carbon::parse($recebimento->data_pagamento)->format('d/m/Y') }}
+                                                            {{ Formatador::data($recebimento->data_pagamento, 'd/m/Y') }}
                                                         @elseif ($recebimento->status === 'pendente')
                                                             Vencimento:
-                                                            {{ \Carbon\Carbon::parse($recebimento->data_vencimento)->format('d/m/Y') }}
+                                                            {{ Formatador::data($recebimento->data_vencimento, 'd/m/Y') }}
                                                         @else
                                                             Cancelado
                                                         @endif
@@ -572,7 +573,7 @@
 
                                                 <div class="shrink-0 text-right">
                                                     <p class="font-semibold text-text">
-                                                        R$ {{ number_format($recebimento->valor, 2, ',', '.') }}
+                                                        {{ Formatador::reais($recebimento->valor) }}
                                                     </p>
 
                                                     @if ($recebimento->status === 'pago')
@@ -663,15 +664,14 @@
                                                     @enderror
 
                                                     <span class="text-sm text-text-light">
-                                                        x R$ {{ number_format($item->preco_unitario, 2, ',', '.') }}
+                                                        x {{ Formatador::reais($item->preco_unitario) }}
                                                     </span>
                                                 </form>
                                             </div>
 
                                             <div class="text-right shrink-0">
                                                 <p class="font-semibold text-text">
-                                                    R$
-                                                    {{ number_format($item->quantidade * $item->preco_unitario, 2, ',', '.') }}
+                                                    {{ Formatador::reais($item->quantidade * $item->preco_unitario) }}
                                                 </p>
                                                 <form action="{{ route('vendas.itens.destroy', ['venda' => $venda->id, 'item' => $item->id]) }}"
                                                     method="POST"
@@ -728,7 +728,7 @@
                     <span class="mr-3 font-semibold">Total</span>
 
                     <span id="total-venda" class="text-2xl font-bold">
-                        R$ {{ number_format($venda->valor_total ?? 0, 2, ',', '.') }}
+                        {{ Formatador::reais($venda->valor_total ?? 0) }}
                     </span>
                 </div>
             </footer>

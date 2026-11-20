@@ -1,3 +1,5 @@
+@use('App\Support\Formatador')
+
 <x-app-layout>
     <x-slot name="header">
         <div class="flex justify-between">
@@ -67,12 +69,12 @@
                         <div class="md:col-span-1">
                             <x-input-label for="preco_custo" :value="__('Preço de custo')" />
                             <x-input id="preco_custo" name="preco_custo" type="text" class="w-full mask-valor" placeholder="R$ 0,00"
-                                min="0" :value="old('preco_custo', number_format($produto->preco_custo, 2, ',', '.'))" />
+                                min="0" :value="old('preco_custo', Formatador::moeda($produto->preco_custo))" />
                         </div>
                         <div class="md:col-span-1">
                             <x-input-label for="preco_venda" :value="__('Preço de venda')" />
                             <x-input id="preco_venda" name="preco_venda" type="text" class="w-full mask-valor" placeholder="R$ 0,00"
-                                min="0" :value="old('preco_venda', number_format($produto->preco_venda, 2, ',', '.'))" />
+                                min="0" :value="old('preco_venda', Formatador::moeda($produto->preco_venda))" />
                         </div>
                         <h2 class="md:col-span-5">
                             {{ __('Estoque') }}

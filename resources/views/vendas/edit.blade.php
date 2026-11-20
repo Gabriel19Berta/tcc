@@ -1,3 +1,5 @@
+@use('App\Support\Formatador')
+
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
@@ -21,7 +23,7 @@
                 </p>
 
                 <p>
-                    Total: R$ {{ number_format($venda->valor_total, 2, ',', '.') }}
+                    Total: {{ Formatador::reais($venda->valor_total) }}
                 </p>
             </div>
         </div>

@@ -1,3 +1,5 @@
+@use('App\Support\Formatador')
+
 <x-app-layout>
     <x-slot name="header">
         <div class="flex justify-between items-center">
@@ -80,7 +82,7 @@
                 </td>
 
                 <td>
-                    {{ $venda->data?->format('d/m/Y H:i') }}
+                    {{ Formatador::data($venda->data, 'd/m/Y H:i') }}
                 </td>
 
                 <td>
@@ -96,7 +98,7 @@
                 </td>
 
                 <td class="text-right">
-                    R$ {{ number_format($venda->valor_total, 2, ',', '.') }}
+                    {{ Formatador::reais($venda->valor_total) }}
                 </td>
 
                 <td class="w-24">

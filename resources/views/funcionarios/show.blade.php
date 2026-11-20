@@ -1,3 +1,5 @@
+@use('App\Support\Formatador')
+
 <x-app-layout>
     <x-slot name="header">
         <div class="flex justify-between">
@@ -25,7 +27,7 @@
                 </tr>
                 <tr>
                     <th>Status</th>
-                    <td>{{ $funcionario->status_formatada }}</td>
+                    <td>{{ Formatador::status($funcionario->status) }}</td>
                 </tr>
                 <tr>
                     <th>Nome</th>
@@ -39,7 +41,7 @@
                     </tr>
                     <tr>
                         <th>CPF</th>
-                        <td>{{ $funcionario->cpf }}</td>
+                        <td>{{ Formatador::cpf($funcionario->cpf) }}</td>
                     </tr>
 
                     <tr>
@@ -49,7 +51,7 @@
 
                     <tr>
                         <th>Data Nascimento</th>
-                        <td>{{ $funcionario->data_nascimento_formatada }}</td>
+                        <td>{{ Formatador::data($funcionario->data_nascimento, 'd/m/Y') }}</td>
                     </tr>
                 @elseif ($funcionario->tipo == 'j')
                     <tr>
@@ -58,7 +60,7 @@
                     </tr>
                     <tr>
                         <th>CNPJ</th>
-                        <td>{{ $funcionario->cnpj }}</td>
+                        <td>{{ Formatador::cnpj($funcionario->cnpj) }}</td>
                     </tr>
 
                     <tr>
@@ -72,7 +74,7 @@
                     </tr>
                     <tr>
                         <th>CPF</th>
-                        <td>{{ $funcionario->cpf }}</td>
+                        <td>{{ Formatador::cpf($funcionario->cpf) }}</td>
                     </tr>
 
                     <tr>
@@ -82,20 +84,20 @@
 
                     <tr>
                         <th>Data Nascimento</th>
-                        <td>{{ $funcionario->data_nascimento_formatada }}</td>
+                        <td>{{ Formatador::data($funcionario->data_nascimento, 'd/m/Y') }}</td>
                     </tr>
                 @endif
                 <tr>
                     <th>Data Admissão</th>
-                    <td>{{ $funcionario->funcionario->data_admissao_formatada }}</td>
+                    <td>{{ Formatador::data($funcionario->funcionario->data_admissao, 'd/m/Y') }}</td>
                 </tr>
                 <tr>
                     <th>Criado em</th>
-                    <td>{{ $funcionario->created_at->format('d/m/Y H:i:s') }}</td>
+                    <td>{{ Formatador::data($funcionario->created_at) }}</td>
                 </tr>
                 <tr>
                     <th>Modificado em</th>
-                    <td>{{ $funcionario->updated_at->format('d/m/Y H:i:s') }}</td>
+                    <td>{{ Formatador::data($funcionario->updated_at) }}</td>
                 </tr>
                 <tr class="bg-gray-50">
                     <th colspan="2" scope="colgroup" class="text-base text-primary">
@@ -104,11 +106,11 @@
                 </tr>
                 <tr>
                     <th>Celular</th>
-                    <td>{{ $funcionario->celular }}</td>
+                    <td>{{ Formatador::celular($funcionario->celular) }}</td>
                 </tr>
                 <tr>
                     <th>Telefone</th>
-                    <td>{{ $funcionario->telefone }}</td>
+                    <td>{{ Formatador::telefone($funcionario->telefone) }}</td>
                 </tr>
                 <tr>
                     <th>Email</th>
@@ -121,7 +123,7 @@
                 </tr>
                 <tr>
                     <th>CEP</th>
-                    <td>{{ $funcionario->cep }}</td>
+                    <td>{{ Formatador::cep($funcionario->cep) }}</td>
                 </tr>
                 <tr>
                     <th>Logradouro</th>

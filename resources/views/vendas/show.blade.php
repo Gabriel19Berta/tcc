@@ -47,7 +47,7 @@
                     </tr>
                     <tr>
                         <th>Data</th>
-                        <td>{{ $venda->data?->format('d/m/Y H:i') }}</td>
+                        <td>{{ Formatador::data($venda->data, 'd/m/Y H:i') }}</td>
                     </tr>
                     <tr>
                         <th>Status</th>
@@ -65,7 +65,7 @@
                     </tr>
                     <tr>
                         <th>Última alteração</th>
-                        <td>{{ $venda->updated_at?->format('d/m/Y H:i') }}</td>
+                        <td>{{ Formatador::data($venda->updated_at, 'd/m/Y H:i') }}</td>
                     </tr>
                     @if ($venda->status === \App\Models\Venda::STATUS_CANCELADA || $venda->justificativa_cancelamento)
                         <tr>
@@ -169,11 +169,11 @@
                             @forelse ($registros as $recebimento)
                                 <tr>
                                     <td class="text-center">{{ $recebimento->id }}</td>
-                                    <td>{{ $recebimento->created_at?->format('d/m/Y H:i') }}</td>
+                                    <td>{{ Formatador::data($recebimento->created_at, 'd/m/Y H:i') }}</td>
                                     <td>{{ $recebimento->formaPagamento?->nome ?? 'Não informada' }}</td>
                                     <td>{{ $recebimento->descricao ?: '—' }}</td>
-                                    <td>{{ $recebimento->data_vencimento?->format('d/m/Y') }}</td>
-                                    <td>{{ $recebimento->data_pagamento?->format('d/m/Y') ?? '—' }}</td>
+                                    <td>{{ Formatador::data($recebimento->data_vencimento, 'd/m/Y') }}</td>
+                                    <td>{{ Formatador::data($recebimento->data_pagamento, 'd/m/Y') ?: '—' }}</td>
                                     <td class="text-center">
                                         <x-status-badge :status="$recebimento->status" type="recebimento" />
                                     </td>

@@ -43,7 +43,7 @@ class ProdutosRelatorio implements RelatorioInterface
             $produto->controla_estoque ? 'Sim' : 'Não',
             $produto->quantidade,
             Formatador::data($produto->created_at),
-            Formatador::data($produto->update_at)
+            Formatador::data($produto->updated_at)
         ];
     }
 

@@ -1,3 +1,5 @@
+@use('App\Support\Formatador')
+
 <x-app-layout>
     <x-slot name="header">
         <div class="flex justify-between">
@@ -25,7 +27,7 @@
                 </tr>
                 <tr>
                     <th>Status</th>
-                    <td>{{ $tipoProduto->status_formatada }}</td>
+                    <td>{{ Formatador::status($tipoProduto->status) }}</td>
                 </tr>
                 <tr>
                     <th>Nome</th>
@@ -33,11 +35,11 @@
                 </tr>
                 <tr>
                     <th>Criado em</th>
-                    <td>{{ $tipoProduto->created_at->format('d/m/Y H:i:s') }}</td>
+                    <td>{{ Formatador::data($tipoProduto->created_at) }}</td>
                 </tr>
                 <tr>
                     <th>Modificado em</th>
-                    <td>{{ $tipoProduto->updated_at->format('d/m/Y H:i:s') }}</td>
+                    <td>{{ Formatador::data($tipoProduto->updated_at) }}</td>
             </x-show-table>
         </div>
     </div>

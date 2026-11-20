@@ -1,3 +1,5 @@
+@use('App\Support\Formatador')
+
 <x-app-layout>
     <x-slot name="header">
         <div class="flex justify-between">
@@ -25,7 +27,7 @@
                 </tr>
                 <tr>
                     <th>Status</th>
-                    <td>{{ $produto->status_formatada }}</td>
+                    <td>{{ Formatador::status($produto->status) }}</td>
                 </tr>
                 <tr>
                     <th>Nome</th>
@@ -45,19 +47,19 @@
                 </tr>
                 <tr>
                     <th>Preço de custo</th>
-                    <td>{{ $produto->preco_custo }}</td>
+                    <td>{{ Formatador::reais($produto->preco_custo) }}</td>
                 </tr>
                 <tr>
                     <th>Preço de venda</th>
-                    <td>{{ $produto->preco_venda }}</td>
+                    <td>{{ Formatador::reais($produto->preco_venda) }}</td>
                 </tr>
                 <tr>
                     <th>Criado em</th>
-                    <td>{{ $produto->created_at->format('d/m/Y H:i:s') }}</td>
+                    <td>{{ Formatador::data($produto->created_at) }}</td>
                 </tr>
                 <tr>
                     <th>Modificado em</th>
-                    <td>{{ $produto->updated_at->format('d/m/Y H:i:s') }}</td>
+                    <td>{{ Formatador::data($produto->updated_at) }}</td>
                 </tr>
                 <tr class="bg-gray-50">
                     <th colspan="2" scope="colgroup" class="text-base text-primary">

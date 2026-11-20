@@ -29,7 +29,7 @@ class MarcasRelatorio implements RelatorioInterface
             Formatador::status($marca->status),
             $marca->nome,
             Formatador::data($marca->created_at),
-            Formatador::data($marca->update_at)
+            Formatador::data($marca->updated_at)
         ];
     }
 

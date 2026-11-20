@@ -22,6 +22,7 @@ use App\Http\Requests\Vendas\AtualizarValoresVendaRequest;
 use App\Http\Requests\Vendas\AdicionarRecebimentoRequest;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Carbon;
+use App\Support\Formatador;
 
 class VendaPdvController extends Controller
 {
@@ -437,10 +438,10 @@ class VendaPdvController extends Controller
         if ($request->expectsJson()) {
             return response()->json([
                 'success' => true,
-                'valor_produtos' => number_format($venda->valor_produtos, 2, ',', '.'),
-                'descontos' => number_format($venda->descontos, 2, ',', '.'),
-                'outros_custos' => number_format($venda->outros_custos, 2, ',', '.'),
-                'valor_total' => number_format($venda->valor_total, 2, ',', '.'),
+                'valor_produtos' => Formatador::moeda($venda->valor_produtos),
+                'descontos' => Formatador::moeda($venda->descontos),
+                'outros_custos' => Formatador::moeda($venda->outros_custos),
+                'valor_total' => Formatador::moeda($venda->valor_total),
             ]);
         }
 

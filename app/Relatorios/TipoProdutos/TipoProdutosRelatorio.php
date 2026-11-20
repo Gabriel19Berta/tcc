@@ -29,7 +29,7 @@ class TipoProdutosRelatorio implements RelatorioInterface
             Formatador::status($tipoProduto->status),
             $tipoProduto->nome,
             Formatador::data($tipoProduto->created_at),
-            Formatador::data($tipoProduto->update_at)
+            Formatador::data($tipoProduto->updated_at)
         ];
     }
 

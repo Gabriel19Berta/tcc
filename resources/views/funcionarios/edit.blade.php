@@ -1,3 +1,5 @@
+@use('App\Support\Formatador')
+
 <x-app-layout>
     <x-slot name="header">
         <div class="flex justify-between">
@@ -49,12 +51,12 @@
                         <div id="cpf-field">
                             <x-input-label for="cpf" :value="__('CPF')" />
                             <x-input id="cpf" name="cpf" type="text"
-                                class="w-full mask-cpf" :value="old('cpf', $funcionario->cpf)" />
+                                class="w-full mask-cpf" :value="old('cpf', Formatador::cpf($funcionario->cpf))" />
                         </div>
                         <div id="cnpj-field" class="hidden">
                             <x-input-label for="cnpj" :value="__('CNPJ')" />
                             <x-input id="cnpj" name="cnpj" type="text"
-                                class="w-full mask-cnpj" :value="old('cnpj', $funcionario->cnpj)" />
+                                class="w-full mask-cnpj" :value="old('cnpj', Formatador::cnpj($funcionario->cnpj))" />
                         </div>
                         <div id="rg-field">
                             <x-input-label for="rg" :value="__('RG')" />
@@ -85,12 +87,12 @@
                         <div>
                             <x-input-label for="celular" :value="__('Celular')" />
                             <x-input id="celular" name="celular" type="text"
-                                class="w-full mask-celular" :value="old('celular', $funcionario->celular)" />
+                                class="w-full mask-celular" :value="old('celular', Formatador::celular($funcionario->celular))" />
                         </div>
                         <div>
                             <x-input-label for="telefone" :value="__('Telefone')" />
                             <x-input id="telefone" name="telefone" type="text"
-                                class="w-full mask-telefone" :value="old('telefone', $funcionario->telefone)" />
+                                class="w-full mask-telefone" :value="old('telefone', Formatador::telefone($funcionario->telefone))" />
                         </div>
 
                         <div class="md:col-span-2">
@@ -106,7 +108,7 @@
                         <div>
                             <x-input-label for="cep" :value="__('CEP')" />
                             <x-input id="cep" name="cep" type="text"
-                                class="w-full mask-cep" :value="old('cep', $funcionario->cep)" />
+                                class="w-full mask-cep" :value="old('cep', Formatador::cep($funcionario->cep))" />
                         </div>
                         <div class="md:col-span-2">
                             <x-input-label for="logradouro" :value="__('Logradouro')" />

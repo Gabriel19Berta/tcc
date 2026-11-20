@@ -1,3 +1,5 @@
+@use('App\Support\Formatador')
+
 <x-app-layout>
     <x-slot name="header">
         <div class="flex justify-between">
@@ -68,21 +70,21 @@
                             Física
                         </td>
                         <td>
-                            {{ $funcionario->cpf }}
+                            {{ Formatador::cpf($funcionario->cpf) }}
                         </td>
                     @elseif ($funcionario->cnpj)
                         <td>
                             Jurídica
                         </td>
                         <td>
-                            {{ $funcionario->cnpj }}
+                            {{ Formatador::cnpj($funcionario->cnpj) }}
                         </td>
                     @else
                         <td></td>
                         <td></td>
                     @endif
                     <td>
-                        {{ $funcionario->celular }}
+                        {{ Formatador::celular($funcionario->celular) }}
                     </td>
                     <td class="w-24">
                         <div class="flex gap-2 justify-center">

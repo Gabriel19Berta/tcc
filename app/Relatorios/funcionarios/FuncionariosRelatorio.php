@@ -41,13 +41,13 @@ class FuncionariosRelatorio implements RelatorioInterface
             $funcionario->id,
             Formatador::status($funcionario->status),
             $funcionario->nome,
-            $funcionario->cpf,
-            $funcionario->cnpj,
+            Formatador::cpf($funcionario->cpf),
+            Formatador::cnpj($funcionario->cnpj),
             $funcionario->data_nascimento,
-            $funcionario->celular,
-            $funcionario->telefone,
+            Formatador::celular($funcionario->celular),
+            Formatador::telefone($funcionario->telefone),
             $funcionario->email,
-            $funcionario->cep,
+            Formatador::cep($funcionario->cep),
             $funcionario->logradouro,
             $funcionario->bairro,
             $funcionario->numero,
@@ -55,7 +55,7 @@ class FuncionariosRelatorio implements RelatorioInterface
             $funcionario->cidade,
             $funcionario->uf,
             Formatador::data($funcionario->created_at),
-            Formatador::data($funcionario->update_at)
+            Formatador::data($funcionario->updated_at)
         ];
     }
 

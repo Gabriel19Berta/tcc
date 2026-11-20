@@ -1,3 +1,5 @@
+@use('App\Support\Formatador')
+
 <x-app-layout>
     <x-slot name="header">
         <div class="flex justify-between">
@@ -91,10 +93,10 @@
                         {{ $produto->quantidade }}
                     </td>
                     <td>
-                        {{ number_format($produto->preco_custo, 2, ',', '.') }}
+                        {{ Formatador::reais($produto->preco_custo) }}
                     </td>
                     <td>
-                        {{ number_format($produto->preco_venda, 2, ',', '.') }}
+                        {{ Formatador::reais($produto->preco_venda) }}
                     </td>
                     <td class="w-24">
                         <div class="flex gap-2 justify-center">

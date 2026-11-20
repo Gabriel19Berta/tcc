@@ -40,13 +40,13 @@ class ClientesRelatorio implements RelatorioInterface
             $cliente->id,
             Formatador::status($cliente->status),
             $cliente->nome,
-            $cliente->cpf,
-            $cliente->cnpj,
+            Formatador::cpf($cliente->cpf),
+            Formatador::cnpj($cliente->cnpj),
             $cliente->data_nascimento,
-            $cliente->celular,
-            $cliente->telefone,
+            Formatador::celular($cliente->celular),
+            Formatador::telefone($cliente->telefone),
             $cliente->email,
-            $cliente->cep,
+            Formatador::cep($cliente->cep),
             $cliente->logradouro,
             $cliente->bairro,
             $cliente->numero,
@@ -54,7 +54,7 @@ class ClientesRelatorio implements RelatorioInterface
             $cliente->cidade,
             $cliente->uf,
             Formatador::data($cliente->created_at),
-            Formatador::data($cliente->update_at)
+            Formatador::data($cliente->updated_at)
         ];
     }
 
