@@ -103,6 +103,10 @@
                         </x-dropdown>
                     </div>
 
+                    <x-nav-link :href="route('recebimentos.index')" :active="request()->routeIs('recebimentos.*')">
+                        {{ __('Recebimentos') }}
+                    </x-nav-link>
+
                     <x-nav-link :href="route('relatorios.index')" :active="request()->routeIs('relatorios.*')">
                         {{ __('Relatórios') }}
                     </x-nav-link>

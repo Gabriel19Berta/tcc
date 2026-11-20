@@ -81,7 +81,7 @@ class Pessoa extends Model
         $documento = Formatador::cpf($this->cpf) ?: Formatador::cnpj($this->cnpj);
 
         return $this->nome
-            . ($documento ? " — {$documento}" : '')
+            . ($documento ? " - {$documento}" : '')
             . ($this->status ? '' : ' (Inativo)');
     }
 

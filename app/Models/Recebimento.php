@@ -11,6 +11,13 @@ class Recebimento extends Model
     public const STATUS_PAGO = 'pago';
     public const STATUS_CANCELADO = 'cancelado';
 
+    /** Todos os status existentes (usados no filtro da listagem). */
+    public const STATUS = [
+        self::STATUS_PENDENTE,
+        self::STATUS_PAGO,
+        self::STATUS_CANCELADO,
+    ];
+
     protected $fillable = [
         'venda_id',
         'forma_pagamento_id',

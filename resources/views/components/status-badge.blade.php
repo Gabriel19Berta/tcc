@@ -23,12 +23,12 @@
             ],
         ],
         'recebimento' => [
-            'base' => 'text-xs font-semibold',
-            'neutro' => 'text-gray-700',
+            'base' => 'btn',
+            'neutro' => 'bg-gray-500',
             'status' => [
-                'pago' => ['Pago', 'text-primary'],
-                'pendente' => ['Pendente', 'text-beige-700'],
-                'cancelado' => ['Cancelado', 'text-danger-500'],
+                'pago' => ['Pago', 'bg-primary'],
+                'pendente' => ['Pendente', 'btn-warning'],
+                'cancelado' => ['Cancelado', 'btn-danger'],
             ],
         ],
     ];

@@ -7,6 +7,7 @@ use App\Http\Controllers\PessoaController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProdutoController;
+use App\Http\Controllers\RecebimentoController;
 use App\Http\Controllers\RelatorioController;
 use App\Http\Controllers\TipoProdutoController;
 use App\Http\Controllers\StatusController;
@@ -105,6 +106,9 @@ Route::patch('/vendas/{venda}/valores', [vendaPdvController::class, 'atualizarVa
 Route::post('/vendas/{venda}/recebimentos', [VendaPdvController::class, 'store'])->name('vendas.recebimentos.store');
 Route::post('/vendas/{venda}/finalizar', [VendaPdvController::class, 'finalizar'])->name('vendas.finalizar');
 Route::delete('/vendas/{venda}/recebimentos/{recebimento}', [VendaPdvController::class, 'destroyRecebimento'])->name('vendas.recebimentos.destroy');
+
+/* RECEBIMENTOS */
+Route::get('/recebimentos', [RecebimentoController::class, 'index'])->name('recebimentos.index');
 
 /* RELATÓRIOS */
 Route::get('/relatorios', [RelatorioController::class, 'index'])->name('relatorios.index');
