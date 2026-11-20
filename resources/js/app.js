@@ -12,6 +12,7 @@ import Alpine from 'alpinejs';
 import { iniMascaras } from './mascaras';
 import { consultaCep } from './consultaCep';
 import { iniciarPdv } from './pdv';
+import { iniIntervaloDatas } from './intervaloDatas';
 
 window.Alpine = Alpine;
 
@@ -21,6 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
     iniMascaras();
     consultaCep();
     iniciarPdv();
+    iniIntervaloDatas();
 
     const idiomaSelect2 = {
         noResults: function () {

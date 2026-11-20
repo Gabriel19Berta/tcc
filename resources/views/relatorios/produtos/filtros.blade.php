@@ -17,11 +17,11 @@
                 </div>
                 <div>
                     <x-input-label for="data-inicio" value="Data de inicio"/>
-                    <x-input id="data-inicio" type="date" name="data-inicio" :value="request('data-inicio')" />
+                    <x-input id="data-inicio" type="date" name="data-inicio" :value="old('data-inicio')" />
                 </div>
                 <div>
                     <x-input-label for="data-fim" value="Data de fim"/>
-                    <x-input id="data-fim" type="date" name="data-fim" :value="request('data-fim')" />
+                    <x-input id="data-fim" type="date" name="data-fim" data-data-inicial="data-inicio" :value="old('data-fim')" />
                 </div>
             </div>
 

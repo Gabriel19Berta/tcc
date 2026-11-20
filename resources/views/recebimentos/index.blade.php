@@ -59,7 +59,7 @@
 
         <div>
             <x-input-label for="data_fim" :value="__('Vencimento final')" />
-            <x-input id="data_fim" name="data_fim" type="date" :value="old('data_fim', request('data_fim'))" />
+            <x-input id="data_fim" name="data_fim" type="date" data-data-inicial="data_inicio" :value="old('data_fim', request('data_fim'))" />
         </div>
     </x-filter-form>
 

@@ -95,12 +95,11 @@ class MovimentacoesRecebimentosRelatorio implements RelatorioInterface
     {
         $filtros = Validator::make($filtros, [
             'data-inicio' => ['nullable', 'date'],
-            'data-fim' => ['nullable', 'date', 'after_or_equal:data-inicio'],
+            'data-fim' => ['nullable', 'date'],
             'cliente' => ['nullable', 'string', 'max:100'],
             'forma_pagamento_id' => ['nullable', 'integer'],
             'tipo' => ['nullable', 'in:' . self::TIPO_PAGAMENTO . ',' . self::TIPO_ESTORNO],
         ], [
-            'data-fim.after_or_equal' => 'A data final deve ser igual ou posterior à data inicial.',
             'tipo.in' => 'O tipo de movimentação selecionado é inválido.',
         ])->validate();
 

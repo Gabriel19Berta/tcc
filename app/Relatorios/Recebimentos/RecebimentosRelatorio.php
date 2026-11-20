@@ -90,12 +90,11 @@ class RecebimentosRelatorio implements RelatorioInterface
     {
         $filtros = Validator::make($filtros, [
             'data-inicio' => ['nullable', 'date'],
-            'data-fim' => ['nullable', 'date', 'after_or_equal:data-inicio'],
+            'data-fim' => ['nullable', 'date'],
             'cliente' => ['nullable', 'string', 'max:100'],
             'forma_pagamento_id' => ['nullable', 'integer'],
             'status' => ['nullable', 'in:' . implode(',', Recebimento::STATUS)],
         ], [
-            'data-fim.after_or_equal' => 'A data final deve ser igual ou posterior à data inicial.',
             'status.in' => 'O status selecionado é inválido.',
         ])->validate();
 

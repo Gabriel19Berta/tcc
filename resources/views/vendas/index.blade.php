@@ -52,12 +52,12 @@
 
         <div>
             <x-input-label for="data_inicio" :value="__('Data inicial')" />
-            <x-input id="data_inicio" name="data_inicio" type="date" :value="request('data_inicio')" />
+            <x-input id="data_inicio" name="data_inicio" type="date" :value="old('data_inicio', request('data_inicio'))" />
         </div>
 
         <div>
             <x-input-label for="data_fim" :value="__('Data final')" />
-            <x-input id="data_fim" name="data_fim" type="date" :value="request('data_fim')" />
+            <x-input id="data_fim" name="data_fim" type="date" data-data-inicial="data_inicio" :value="old('data_fim', request('data_fim'))" />
         </div>
 
         <div class="w-full sm:w-56">

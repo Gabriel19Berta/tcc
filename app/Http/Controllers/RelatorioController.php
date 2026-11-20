@@ -35,6 +35,14 @@ class RelatorioController extends Controller
 
     public function gerar(Request $request, RelatorioManager $relatorios, ExportadorManager $exportadores) 
     {
+        //datas opcionais, mas a final não pode ser anterior à inicial.
+        $request->validate([
+            'data-inicio' => ['nullable', 'date'],
+            'data-fim' => ['nullable', 'date', 'after_or_equal:data-inicio'],
+        ], [
+            'data-fim.after_or_equal' => 'A data final deve ser igual ou posterior à data inicial.',
+        ]);
+
         $relatorio = $relatorios->buscar($request->relatorio);
 
         $exportador = $exportadores->obter($request->formato);

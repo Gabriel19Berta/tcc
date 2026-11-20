@@ -14,6 +14,14 @@ class VendaController extends Controller
 {
     public function index(Request $request)
     {
+        // Datas opcionais; quando ambas forem informadas, a final não pode ser anterior à inicial.
+        $request->validate([
+            'data_inicio' => ['nullable', 'date'],
+            'data_fim' => ['nullable', 'date', 'after_or_equal:data_inicio'],
+        ], [
+            'data_fim.after_or_equal' => 'A data final deve ser igual ou posterior à data inicial.',
+        ]);
+
         $vendas = Venda::query()
             ->with(['cliente.pessoa', 'funcionario.pessoa'])
             ->when($request->filled('codigo'), function ($query) use ($request) {

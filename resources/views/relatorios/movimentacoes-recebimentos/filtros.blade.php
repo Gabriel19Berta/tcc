@@ -12,12 +12,10 @@
                 <div>
                     <x-input-label for="data-inicio" value="Data inicial da movimentação"/>
                     <x-input id="data-inicio" type="date" name="data-inicio" :value="old('data-inicio')" />
-                    <x-input-error :messages="$errors->get('data-inicio')" />
                 </div>
                 <div>
                     <x-input-label for="data-fim" value="Data final da movimentação"/>
-                    <x-input id="data-fim" type="date" name="data-fim" :value="old('data-fim')" />
-                    <x-input-error :messages="$errors->get('data-fim')" />
+                    <x-input id="data-fim" type="date" name="data-fim" data-data-inicial="data-inicio" :value="old('data-fim')" />
                 </div>
                 <div class="w-full sm:w-56">
                     <x-input-label for="cliente" value="Cliente" />
