@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\Vendas;
 
 use App\Http\Controllers\Controller;
+use App\Models\Produto;
 use App\Models\Recebimento;
 use App\Models\Venda;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class VendaController extends Controller
 {
@@ -57,5 +60,81 @@ class VendaController extends Controller
         ];
 
         return view('vendas.show', compact('venda', 'recebimentos', 'totalPendentes'));
+    }
+
+    /**
+     * Cancela a venda
+     *
+     * - Bloqueado se houver qualquer recebimento pago (devem ser estornados antes).
+     * - Recebimentos pendentes passam para "cancelado".
+     * - Se o estoque já foi baixado na finalização, as quantidades são devolvidas.
+     */
+    public function cancelar(Venda $venda): RedirectResponse
+    {
+        $erro = DB::transaction(function () use ($venda) {
+            // Bloqueia a venda e revalida o status dentro da transação.
+            $venda = Venda::query()->lockForUpdate()->findOrFail($venda->id);
+
+            if ($venda->status === Venda::STATUS_CANCELADA) {
+                return 'Esta venda já está cancelada.';
+            }
+
+            if (!$venda->podeSerCancelada()) {
+                return 'Esta venda não pode ser cancelada.';
+            }
+
+            // Verifica os recebimentos diretamente nos registros (não pelo status da venda).
+            $recebimentos = $venda->recebimentos()->lockForUpdate()->get();
+
+            if ($recebimentos->contains('status', Recebimento::STATUS_PAGO)) {
+                return 'Não é possível cancelar esta venda porque existem recebimentos pagos. '
+                    . 'Realize o estorno dos recebimentos antes de cancelar a venda.';
+            }
+
+            // Devolve ao estoque o que foi baixado na finalização.
+            if ($venda->estoqueFoiBaixado()) {
+                $this->devolverEstoque($venda);
+            }
+
+            // Cancela os pendentes, mantendo valores e datas.
+            $venda->recebimentos()
+                ->where('status', Recebimento::STATUS_PENDENTE)
+                ->update(['status' => Recebimento::STATUS_CANCELADO]);
+
+            $venda->update(['status' => Venda::STATUS_CANCELADA]);
+
+            return null;
+        });
+
+        // Volta para a tela de origem (detalhes ou listagem com seus filtros).
+        return redirect()
+            ->back(fallback: route('vendas.show', $venda->id))
+            ->with($erro ? 'error' : 'success', $erro ?? 'Venda cancelada com sucesso.');
+    }
+
+    /**
+     * Soma as quantidades vendidas de cada produto (pelos itens da venda)
+     * e devolve ao estoque dos produtos que controlam estoque — o mesmo
+     * critério usado na baixa feita em VendaPdvController::finalizar().
+     */
+    private function devolverEstoque(Venda $venda): void
+    {
+        $itensPorProduto = $venda->itens()->get()->groupBy('produto_id');
+
+        foreach ($itensPorProduto as $produtoId => $itens) {
+            $produto = Produto::query()->lockForUpdate()->findOrFail($produtoId);
+
+            if (!$produto->controla_estoque) {
+                continue;
+            }
+
+            // Soma em centésimos, como na finalização, para evitar imprecisão.
+            $estoqueEmCentesimos = (int) round((float) $produto->quantidade * 100);
+            $vendidoEmCentesimos = (int) round((float) $itens->sum('quantidade') * 100);
+
+            $produto->update([
+                'quantidade' => ($estoqueEmCentesimos + $vendidoEmCentesimos) / 100,
+            ]);
+        }
     }
 }

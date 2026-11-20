@@ -85,6 +85,7 @@ Route::delete('/produtos/{id}', [ProdutoController::class, 'destroy'])->name('pr
 /* VENDAS */
 Route::get('/vendas', [VendaController::class, 'index'])->name('vendas.index');
 Route::get('/vendas/{venda}', [VendaController::class, 'show'])->whereNumber('venda')->name('vendas.show');
+Route::post('/vendas/{venda}/cancelar', [VendaController::class, 'cancelar'])->whereNumber('venda')->name('vendas.cancelar');
 
 /* PDV */
 Route::get('/vendas/create', [VendaPdvController::class, 'create'])->name('vendas.create');

@@ -107,8 +107,29 @@
                             <i class="fa-solid fa-magnifying-glass"></i>
                         </a>
                         <a href="{{ route('vendas.edit', $venda->id) }}" class="btn btn-warning" title="Abrir venda no PDV">
-                            <i class="fa-solid fa-pen-to-square"></i> 
+                            <i class="fa-solid fa-pen-to-square"></i>
                         </a>
+
+                        {{-- MAIS AÇÕES --}}
+                        <x-dropdown align="right" width="48" direction="up">
+                            <x-slot name="trigger">
+                                <button type="button" class="btn bg-gray-500 hover:bg-gray-600 active:bg-gray-600" title="Mais ações">
+                                    <i class="fa-solid fa-ellipsis-vertical"></i>
+                                </button>
+                            </x-slot>
+
+                            <x-slot name="content">
+                                <form method="POST" action="{{ route('vendas.cancelar', $venda->id) }}"
+                                    data-confirm="Tem certeza de que deseja cancelar a venda #{{ $venda->id }}? Os recebimentos pendentes serão cancelados e o estoque será ajustado. Esta operação não poderá ser desfeita.">
+                                    @csrf
+
+                                    <x-dropdown-link :href="route('vendas.cancelar', $venda->id)"
+                                        onclick="event.preventDefault(); this.closest('form').requestSubmit();">
+                                        <i class="fa-solid fa-ban me-1 text-danger-500"></i> Cancelar venda
+                                    </x-dropdown-link>
+                                </form>
+                            </x-slot>
+                        </x-dropdown>
                     </div>
                 </td>
             </tr>

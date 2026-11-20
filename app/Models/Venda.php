@@ -55,4 +55,30 @@ class Venda extends Model
     {
         return $this->hasMany(Recebimento::class);
     }
+
+    /**
+     * Status que permitem tentar o cancelamento.
+     * (A existência de recebimentos pagos é verificada à parte, no cancelamento.)
+     */
+    public function podeSerCancelada(): bool
+    {
+        return in_array($this->status, [
+            self::STATUS_ABERTA,
+            self::STATUS_FINALIZADA,
+            self::STATUS_QUITADA,
+        ], true);
+    }
+
+    /**
+     * O estoque é baixado somente na finalização, na mesma transação que
+     * muda a venda para "finalizada" ou "quitada". Portanto, esses status
+     * indicam que a baixa já ocorreu; venda aberta nunca movimentou estoque.
+     */
+    public function estoqueFoiBaixado(): bool
+    {
+        return in_array($this->status, [
+            self::STATUS_FINALIZADA,
+            self::STATUS_QUITADA,
+        ], true);
+    }
 }
