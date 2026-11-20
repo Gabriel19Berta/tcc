@@ -7,6 +7,9 @@ use App\Relatorios\Funcionarios\FuncionariosRelatorio;
 use App\Relatorios\Marcas\MarcasRelatorio;
 use App\Relatorios\TipoProdutos\TipoProdutosRelatorio;
 use App\Relatorios\Produtos\ProdutosRelatorio;
+use App\Relatorios\Recebimentos\MovimentacoesRecebimentosRelatorio;
+use App\Relatorios\Recebimentos\RecebimentosRelatorio;
+use App\Relatorios\Vendas\VendasRelatorio;
 
 class RelatorioManager
 {
@@ -16,6 +19,9 @@ class RelatorioManager
         ProdutosRelatorio::class,
         MarcasRelatorio::class,
         TipoProdutosRelatorio::class,
+        VendasRelatorio::class,
+        RecebimentosRelatorio::class,
+        MovimentacoesRecebimentosRelatorio::class,
     ];
 
     public function todos()
