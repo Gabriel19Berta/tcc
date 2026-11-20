@@ -70,6 +70,35 @@ class Venda extends Model
     }
 
     /**
+     * Situação financeira de uma venda concluída, conforme os recebimentos pagos:
+     * total pago ≥ valor total → quitada; caso contrário → finalizada.
+     * (Regra usada na finalização do PDV e no lançamento de recebimentos.)
+     */
+    public function situacaoPorPagamentos(): string
+    {
+        $totalPago = $this->recebimentos()
+            ->where('status', Recebimento::STATUS_PAGO)
+            ->sum('valor');
+
+        // Compara em centavos para evitar imprecisão de ponto flutuante.
+        $pagoCentavos = (int) round((float) $totalPago * 100);
+        $totalCentavos = (int) round((float) $this->valor_total * 100);
+
+        return $pagoCentavos >= $totalCentavos
+            ? self::STATUS_QUITADA
+            : self::STATUS_FINALIZADA;
+    }
+
+    /**
+     * Lançamento de recebimentos fora do PDV: somente vendas finalizadas.
+     * (Aberta: lançamentos pelo PDV. Quitada: já não há saldo. Cancelada: não recebe.)
+     */
+    public function permiteLancarRecebimento(): bool
+    {
+        return $this->status === self::STATUS_FINALIZADA;
+    }
+
+    /**
      * Somente vendas canceladas podem ser excluídas.
      * (O cancelamento já cancelou os recebimentos pendentes e devolveu o estoque.)
      */

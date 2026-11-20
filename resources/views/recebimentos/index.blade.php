@@ -110,8 +110,28 @@
                     {{ Formatador::reais($recebimento->valor) }}
                 </td>
 
-                {{-- Ações: serão adicionadas nas próximas etapas do CRUD de recebimentos. --}}
-                <td class="w-24"></td>
+                <td class="w-24">
+                    <div class="flex gap-2 justify-center">
+                        @if ($recebimento->status === \App\Models\Recebimento::STATUS_PENDENTE)
+                            <a href="{{ route('recebimentos.receber', $recebimento->id) }}"
+                                class="btn bg-primary hover:bg-primary-600 active:bg-primary-600" title="Receber pagamento">
+                                <i class="fa-solid fa-hand-holding-dollar"></i>
+                            </a>
+                        @else
+                            {{-- Mantém o alinhamento das demais ações. --}}
+                            <span class="btn invisible" aria-hidden="true">
+                                <i class="fa-solid fa-hand-holding-dollar"></i>
+                            </span>
+                        @endif
+
+                        <a href="{{ route('recebimentos.show', $recebimento->id) }}" class="btn btn-info" title="Visualizar recebimento">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </a>
+                        <a href="{{ route('recebimentos.edit', $recebimento->id) }}" class="btn btn-warning" title="Editar recebimento">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </a>
+                    </div>
+                </td>
             </tr>
         @empty
             <tr>

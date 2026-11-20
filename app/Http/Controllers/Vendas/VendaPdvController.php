@@ -496,7 +496,7 @@ class VendaPdvController extends Controller
 
             $pago = $dados['status'] === 'pago';
 
-            $venda->recebimentos()->create([
+            $recebimento = $venda->recebimentos()->create([
                 'forma_pagamento_id' => $dados['forma_pagamento_id'],
                 'valor' => $dados['valor'],
                 'descricao' => $dados['descricao'] ?? '',
@@ -504,6 +504,11 @@ class VendaPdvController extends Controller
                 'data_pagamento' => $pago ? Carbon::now() : null,
                 'status' => $dados['status'],
             ]);
+
+            // Recebimento pago: registra a movimentação integral no histórico de pagamentos.
+            if ($pago) {
+                $recebimento->registrarPagamentoIntegral();
+            }
         });
 
         return redirect()
@@ -530,6 +535,15 @@ class VendaPdvController extends Controller
                 ->lockForUpdate()
                 ->firstOrFail();
 
+            // Pagamentos registrados (parciais) são movimentações financeiras: não podem ser apagados.
+            // Recebimento pago no PDV pode ser removido junto com sua movimentação integral.
+            if ($recebimento->status !== Recebimento::STATUS_PAGO && $recebimento->pagamentos()->exists()) {
+                throw ValidationException::withMessages([
+                    'recebimento' => 'Não é possível remover este recebimento porque ele possui pagamentos registrados.',
+                ]);
+            }
+
+            $recebimento->pagamentos()->delete();
             $recebimento->delete();
         });
 
@@ -634,11 +648,6 @@ class VendaPdvController extends Controller
                 ]);
             }
 
-            // Calcula os valores efetivamente pagos.
-            $totalPago = $venda->recebimentos()
-                ->where('status', Recebimento::STATUS_PAGO)
-                ->sum('valor');
-
             // Soma os recebimentos pagos e pendentes.
             $totalRecebimentos = $venda->recebimentos()
                 ->whereIn('status', [
@@ -655,10 +664,6 @@ class VendaPdvController extends Controller
                 (float) $totalRecebimentos * 100
             );
 
-            $totalPagoEmCentésimos = (int) round(
-                (float) $totalPago * 100
-            );
-
             // Impede finalizar uma venda com recebimentos acima do total.
             if ($recebimentosEmCentésimos > $totalEmCentésimos) {
                 throw ValidationException::withMessages([
@@ -666,13 +671,9 @@ class VendaPdvController extends Controller
                 ]);
             }
 
-            // Define se a venda está quitada ou apenas finalizada.
-            $status = $totalPagoEmCentésimos >= $totalEmCentésimos
-                ? Venda::STATUS_QUITADA
-                : Venda::STATUS_FINALIZADA;
-
+            // Define se a venda está quitada ou apenas finalizada (regra do Model Venda).
             $venda->update([
-                'status' => $status,
+                'status' => $venda->situacaoPorPagamentos(),
             ]);
         });
 

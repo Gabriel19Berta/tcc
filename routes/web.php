@@ -109,6 +109,13 @@ Route::delete('/vendas/{venda}/recebimentos/{recebimento}', [VendaPdvController:
 
 /* RECEBIMENTOS */
 Route::get('/recebimentos', [RecebimentoController::class, 'index'])->name('recebimentos.index');
+Route::get('/vendas/{venda}/recebimentos/lancar', [RecebimentoController::class, 'create'])->whereNumber('venda')->name('recebimentos.create');
+Route::post('/vendas/{venda}/recebimentos/lancar', [RecebimentoController::class, 'store'])->whereNumber('venda')->name('recebimentos.store');
+Route::get('/recebimentos/{recebimento}', [RecebimentoController::class, 'show'])->whereNumber('recebimento')->name('recebimentos.show');
+Route::get('/recebimentos/{recebimento}/edit', [RecebimentoController::class, 'edit'])->whereNumber('recebimento')->name('recebimentos.edit');
+Route::put('/recebimentos/{recebimento}', [RecebimentoController::class, 'update'])->whereNumber('recebimento')->name('recebimentos.update');
+Route::get('/recebimentos/{recebimento}/receber', [RecebimentoController::class, 'receber'])->whereNumber('recebimento')->name('recebimentos.receber');
+Route::post('/recebimentos/{recebimento}/receber', [RecebimentoController::class, 'registrarPagamento'])->whereNumber('recebimento')->name('recebimentos.pagamento.store');
 
 /* RELATÓRIOS */
 Route::get('/relatorios', [RelatorioController::class, 'index'])->name('relatorios.index');

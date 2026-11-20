@@ -129,6 +129,14 @@
                             </x-slot>
 
                             <x-slot name="content">
+                                <x-dropdown-link :href="route('recebimentos.index', ['venda' => $venda->id])">
+                                    <i class="fa-solid fa-hand-holding-dollar me-1 text-primary"></i> Visualizar recebimentos
+                                </x-dropdown-link>
+
+                                <x-dropdown-link :href="route('recebimentos.create', $venda->id)">
+                                    <i class="fa-solid fa-plus me-1 text-primary"></i> Lançar recebimentos
+                                </x-dropdown-link>
+
                                 <form method="POST" action="{{ route('vendas.cancelar', $venda->id) }}"
                                     data-confirm="Tem certeza de que deseja cancelar a venda #{{ $venda->id }}? Os recebimentos pendentes serão cancelados e o estoque será ajustado. Esta operação não poderá ser desfeita.">
                                     @csrf
