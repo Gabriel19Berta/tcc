@@ -3,6 +3,7 @@
         <form action="{{ route('relatorios.gerar') }}" method="GET">
         @csrf
             <input type="hidden" name="relatorio" value="{{ $relatorio->slug() }}">
+            <input type="hidden" name="formato" value="excel">
 
             <div class="flex gap-3">
                 <div>
@@ -20,14 +21,6 @@
                 <div>
                     <x-input-label for="data-fim" value="Data de fim"/>
                     <x-input id="data-fim" type="date" name="data-fim" :value="request('data-fim')" />
-                </div>
-                <div>
-                    <x-input-label for="formato" value="Formato" />
-
-                    <select id="formato" name="formato">
-                        <option value="excel">Excel</option>
-                        <option value="pdf">PDF</option>
-                    </select>
                 </div>
             </div>
 

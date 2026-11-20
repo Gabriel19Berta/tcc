@@ -4,6 +4,7 @@
             @csrf
 
             <input type="hidden" name="relatorio" value="{{ $relatorio->slug() }}">
+            <input type="hidden" name="formato" value="excel">
 
             <div class="flex gap-3">
                 <div>
@@ -22,18 +23,10 @@
                     <x-input-label for="data-fim" value="Data de fim"/>
                     <x-input id="data-fim" type="date" name="data-fim" :value="request('data-fim')" />
                 </div>
-                <div>
-                    <x-input-label for="formato" value="Formato" />
-
-                    <select id="formato" name="formato">
-                        <option value="excel">Excel</option>
-                        <option value="pdf">PDF</option>
-                    </select>
-                </div>
             </div>
 
             <div class="float-right py-2">
-                <x-primary-button>
+                <x-primary-button data-download>
                     {{ __('Gerar') }}
                 </x-primary-button>
             </div>
