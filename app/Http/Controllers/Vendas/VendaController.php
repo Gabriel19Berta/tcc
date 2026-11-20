@@ -113,6 +113,43 @@ class VendaController extends Controller
     }
 
     /**
+     * Exclui definitivamente uma venda cancelada.
+     */
+    public function destroy(Venda $venda): RedirectResponse
+    {
+        $erro = DB::transaction(function () use ($venda) {
+            // Bloqueia a venda e revalida o status dentro da transação.
+            $venda = Venda::query()->lockForUpdate()->findOrFail($venda->id);
+
+            if (!$venda->podeSerExcluida()) {
+                return 'Somente vendas canceladas podem ser excluídas. Cancele a venda antes de excluí-la.';
+            }
+
+            $recebimentos = $venda->recebimentos()->lockForUpdate()->get();
+
+            $temMovimentacao = $recebimentos->contains(
+                fn (Recebimento $recebimento) => $recebimento->status === Recebimento::STATUS_PAGO
+                    || $recebimento->data_pagamento !== null
+            );
+
+            if ($temMovimentacao) {
+                return 'Não é possível excluir esta venda porque existem recebimentos vinculados com '
+                    . 'movimentação financeira. Trate esses recebimentos antes de excluir a venda.';
+            }
+
+            $venda->recebimentos()->delete();
+            $venda->itens()->delete();
+            $venda->delete();
+
+            return null;
+        });
+
+        return redirect()
+            ->back(fallback: route('vendas.index'))
+            ->with($erro ? 'error' : 'success', $erro ?? 'Venda excluída com sucesso.');
+    }
+
+    /**
      * Soma as quantidades vendidas de cada produto (pelos itens da venda)
      * e devolve ao estoque dos produtos que controlam estoque — o mesmo
      * critério usado na baixa feita em VendaPdvController::finalizar().

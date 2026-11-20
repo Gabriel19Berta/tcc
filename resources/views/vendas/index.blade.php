@@ -128,6 +128,16 @@
                                         <i class="fa-solid fa-ban me-1 text-danger-500"></i> Cancelar venda
                                     </x-dropdown-link>
                                 </form>
+                                <form method="POST" action="{{ route('vendas.destroy', $venda->id) }}"
+                                    data-confirm="Tem certeza de que deseja excluir a venda #{{ $venda->id }}? Essa ação é definitiva e não poderá ser desfeita. A venda será removida do sistema, incluindo recebimentos.">
+                                    @csrf
+                                    @method('DELETE')
+
+                                    <x-dropdown-link :href="route('vendas.destroy', $venda->id)"
+                                        onclick="event.preventDefault(); this.closest('form').requestSubmit();">
+                                        <i class="fa-solid fa-trash me-1 text-danger-500"></i> Excluir venda
+                                    </x-dropdown-link>
+                                </form>
                             </x-slot>
                         </x-dropdown>
                     </div>

@@ -70,6 +70,15 @@ class Venda extends Model
     }
 
     /**
+     * Somente vendas canceladas podem ser excluídas.
+     * (O cancelamento já cancelou os recebimentos pendentes e devolveu o estoque.)
+     */
+    public function podeSerExcluida(): bool
+    {
+        return $this->status === self::STATUS_CANCELADA;
+    }
+
+    /**
      * O estoque é baixado somente na finalização, na mesma transação que
      * muda a venda para "finalizada" ou "quitada". Portanto, esses status
      * indicam que a baixa já ocorreu; venda aberta nunca movimentou estoque.
