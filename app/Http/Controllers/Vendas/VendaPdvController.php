@@ -537,7 +537,11 @@ class VendaPdvController extends Controller
 
             // Pagamentos registrados (parciais) são movimentações financeiras: não podem ser apagados.
             // Recebimento pago no PDV pode ser removido junto com sua movimentação integral.
-            if ($recebimento->status !== Recebimento::STATUS_PAGO && $recebimento->pagamentos()->exists()) {
+            // Estornos também são histórico financeiro e impedem a remoção.
+            if (
+                $recebimento->estornos()->exists()
+                || ($recebimento->status !== Recebimento::STATUS_PAGO && $recebimento->pagamentos()->exists())
+            ) {
                 throw ValidationException::withMessages([
                     'recebimento' => 'Não é possível remover este recebimento porque ele possui pagamentos registrados.',
                 ]);

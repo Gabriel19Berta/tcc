@@ -90,11 +90,14 @@ class VendaController extends Controller
             }
 
             // Verifica os recebimentos diretamente nos registros (não pelo status da venda).
-            $recebimentos = $venda->recebimentos()->lockForUpdate()->get();
+            $recebimentos = $venda->recebimentos()->with('pagamentos')->lockForUpdate()->get();
 
-            // Pagos ou pendentes com pagamento parcial já registrado: dinheiro recebido.
-            $temPagamento = $recebimentos->contains('status', Recebimento::STATUS_PAGO)
-                || $venda->recebimentos()->whereHas('pagamentos')->exists();
+            // Pagos ou com valor ainda recebido (pagamentos − estorno): dinheiro em poder da loja.
+            // Recebimentos estornados (valor devolvido) não impedem o cancelamento.
+            $temPagamento = $recebimentos->contains(
+                fn (Recebimento $recebimento) => $recebimento->status === Recebimento::STATUS_PAGO
+                    || $recebimento->totalRecebidoEmCentavos() > 0
+            );
 
             if ($temPagamento) {
                 return 'Não é possível cancelar esta venda porque existem recebimentos pagos ou com pagamentos registrados. '

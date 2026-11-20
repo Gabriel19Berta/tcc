@@ -7,6 +7,7 @@ use App\Http\Requests\Vendas\LancarRecebimentoRequest;
 use App\Http\Requests\Vendas\ReceberRecebimentoRequest;
 use Illuminate\Support\Carbon;
 use App\Models\FormaPagamento;
+use App\Models\Pagamento;
 use App\Models\Recebimento;
 use App\Models\Venda;
 use App\Support\Formatador;
@@ -41,6 +42,8 @@ class RecebimentoController extends Controller
 
         $recebimentos = Recebimento::query()
             ->with(['venda.cliente.pessoa', 'formaPagamento'])
+            // Valor recebido ainda não estornado (informado na confirmação do estorno), sem consulta por linha.
+            ->withSum(['pagamentos as valor_recebido' => fn ($query) => $query->whereNull('estorno_id')], 'valor')
             ->when($filtros['codigo'] ?? null, function ($query, $codigo) {
                 $query->whereKey($codigo);
             })
@@ -75,9 +78,112 @@ class RecebimentoController extends Controller
      */
     public function show(Recebimento $recebimento)
     {
-        $recebimento->load(['venda.cliente.pessoa', 'formaPagamento', 'pagamentos.formaPagamento']);
+        $recebimento->load(['venda.cliente.pessoa', 'formaPagamento', 'pagamentos.formaPagamento', 'pagamentos.estorno', 'estornos.user']);
 
         return view('recebimentos.show', compact('recebimento'));
+    }
+
+    /**
+     * Estorna o recebimento como um todo: registra o estorno da soma de todos
+     * os pagamentos
+     * */
+    public function estornar(Recebimento $recebimento)
+    {
+        $resultado = DB::transaction(function () use ($recebimento) {
+            // Mesma ordem de bloqueio das demais operações: venda e depois recebimento.
+            $venda = Venda::query()->lockForUpdate()->findOrFail($recebimento->venda_id);
+            $recebimento = Recebimento::query()->lockForUpdate()->findOrFail($recebimento->id);
+
+            if (!in_array($recebimento->status, [Recebimento::STATUS_PENDENTE, Recebimento::STATUS_PAGO], true)) {
+                return 'Somente recebimentos pendentes ou pagos podem ser estornados.';
+            }
+
+            // Valor do estorno = pagamentos ainda não estornados (recalculado com os registros bloqueados).
+            // Depois de estornados, eles deixam de contar: um segundo estorno não encontra o que estornar.
+            $pagamentos = $recebimento->pagamentos()->whereNull('estorno_id')->lockForUpdate()->get();
+            $estornoCentavos = $pagamentos->sum(fn ($pagamento) => (int) round((float) $pagamento->valor * 100));
+
+            if ($estornoCentavos <= 0) {
+                return 'Este recebimento não possui valores recebidos para estornar.';
+            }
+
+            // Registro próprio do estorno, ligado aos pagamentos que ele desfaz
+            // (valores, datas e formas dos pagamentos permanecem inalterados).
+            $estorno = $recebimento->estornos()->create([
+                'user_id' => auth()->id(),
+                'valor' => $estornoCentavos / 100,
+                'data_estorno' => now(),
+            ]);
+
+            Pagamento::query()->whereKey($pagamentos->modelKeys())->update(['estorno_id' => $estorno->id]);
+
+            // Reabre o recebimento: volta a pendente, com saldo igual ao valor original,
+            // e pode receber novos pagamentos normalmente.
+            $recebimento->update([
+                'status' => Recebimento::STATUS_PENDENTE,
+                'data_pagamento' => null,
+            ]);
+
+            // Mesma regra da finalização: sem o valor estornado, uma venda quitada volta a finalizada.
+            if (in_array($venda->status, [Venda::STATUS_FINALIZADA, Venda::STATUS_QUITADA], true)) {
+                $venda->update(['status' => $venda->situacaoPorPagamentos()]);
+            }
+
+            return ['success', "Recebimento #{$recebimento->id} estornado. Valor estornado: "
+                . Formatador::reais($estornoCentavos / 100) . '. O recebimento voltou a ficar pendente.'];
+        });
+
+        if (is_string($resultado)) {
+            return $this->voltarParaListagem('recebimentos.index', $resultado);
+        }
+
+        [$tipo, $mensagem] = $resultado;
+
+        // Volta para a listagem (com os filtros, quando o estorno foi feito por ela).
+        return $this->voltarParaListagem('recebimentos.index', $mensagem, $tipo);
+    }
+
+    /**
+     * Cancela (encerra) um recebimento pendente sem valor recebido. Com valores
+     * recebidos, é preciso estornar antes. Pagamentos e estornos são preservados.
+     */
+    public function cancelar(Recebimento $recebimento)
+    {
+        $resultado = DB::transaction(function () use ($recebimento) {
+            // Mesma ordem de bloqueio das demais operações: venda e depois recebimento.
+            $venda = Venda::query()->lockForUpdate()->findOrFail($recebimento->venda_id);
+            $recebimento = Recebimento::query()->lockForUpdate()->findOrFail($recebimento->id);
+
+            if ($recebimento->status === Recebimento::STATUS_CANCELADO) {
+                return 'Este recebimento já está cancelado.';
+            }
+
+            // Pago (ou pendente com valor recebido): precisa estornar antes de cancelar.
+            $recebidoCentavos = $recebimento->pagamentos()->whereNull('estorno_id')->lockForUpdate()->get()
+                ->sum(fn ($pagamento) => (int) round((float) $pagamento->valor * 100));
+
+            if ($recebimento->status !== Recebimento::STATUS_PENDENTE || $recebidoCentavos > 0) {
+                return 'Não é possível cancelar este recebimento porque ele possui valores recebidos ('
+                    . Formatador::reais($recebidoCentavos / 100) . '). Realize o estorno antes de cancelar.';
+            }
+
+            $recebimento->update(['status' => Recebimento::STATUS_CANCELADO]);
+
+            // Mesma regra das demais operações para a situação da venda.
+            if (in_array($venda->status, [Venda::STATUS_FINALIZADA, Venda::STATUS_QUITADA], true)) {
+                $venda->update(['status' => $venda->situacaoPorPagamentos()]);
+            }
+
+            return ['success', "Recebimento #{$recebimento->id} cancelado."];
+        });
+
+        if (is_string($resultado)) {
+            return $this->voltarParaListagem('recebimentos.index', $resultado);
+        }
+
+        [$tipo, $mensagem] = $resultado;
+
+        return $this->voltarParaListagem('recebimentos.index', $mensagem, $tipo);
     }
 
     /**
@@ -99,7 +205,7 @@ class RecebimentoController extends Controller
 
         // Valor máximo que este recebimento pode ter sem ultrapassar o total da venda.
         $limiteCentavos = (int) round((float) $recebimento->venda->valor_total * 100)
-            - $this->recebimentosNaoCanceladosEmCentavos($recebimento->venda_id, ignorarId: $recebimento->id);
+            - $this->recebimentosComprometidosEmCentavos($recebimento->venda_id, ignorarId: $recebimento->id);
         $valorMaximo = max(0, $limiteCentavos) / 100;
 
         return view('recebimentos.edit', compact('recebimento', 'formasPagamento', 'valorMaximo'));
@@ -127,7 +233,7 @@ class RecebimentoController extends Controller
 
             // Compara em centavos, com os valores atuais do banco.
             $totalVendaCentavos = (int) round((float) $venda->valor_total * 100);
-            $outrosCentavos = $this->recebimentosNaoCanceladosEmCentavos($venda->id, ignorarId: $recebimento->id, bloquear: true);
+            $outrosCentavos = $this->recebimentosComprometidosEmCentavos($venda->id, ignorarId: $recebimento->id, bloquear: true);
             $novoValorCentavos = (int) round((float) $dados['valor'] * 100);
 
             if ($outrosCentavos + $novoValorCentavos > $totalVendaCentavos) {
@@ -239,7 +345,7 @@ class RecebimentoController extends Controller
             if ($restanteCentavos === 0) {
                 // Data da quitação: o pagamento mais recente informado (podem ser registrados fora de ordem).
                 $recebimento->update([
-                    'data_pagamento' => $recebimento->pagamentos()->max('data_pagamento'),
+                    'data_pagamento' => $recebimento->pagamentos()->whereNull('estorno_id')->max('data_pagamento'),
                     'status' => Recebimento::STATUS_PAGO,
                 ]);
 
@@ -278,7 +384,7 @@ class RecebimentoController extends Controller
 
         // Saldo disponível = total da venda − recebimentos não cancelados (mesma regra do store).
         $totalCentavos = (int) round((float) $venda->valor_total * 100);
-        $lancadoCentavos = $this->recebimentosNaoCanceladosEmCentavos($venda->id);
+        $lancadoCentavos = $this->recebimentosComprometidosEmCentavos($venda->id);
 
         // Sem saldo, nem apresenta a tela (mesmo comportamento da venda quitada).
         if ($totalCentavos - $lancadoCentavos <= 0) {
@@ -318,7 +424,7 @@ class RecebimentoController extends Controller
 
             // Compara em centavos, com os valores atuais do banco.
             $totalCentavos = (int) round((float) $venda->valor_total * 100);
-            $saldoCentavos = $totalCentavos - $this->recebimentosNaoCanceladosEmCentavos($venda->id, bloquear: true);
+            $saldoCentavos = $totalCentavos - $this->recebimentosComprometidosEmCentavos($venda->id, bloquear: true);
 
             if ($saldoCentavos <= 0) {
                 return self::MSG_SEM_SALDO;
@@ -372,12 +478,12 @@ class RecebimentoController extends Controller
      * filtros quando o usuário veio dela. Nunca volta para a tela que bloqueou
      * a operação (o que poderia causar redirecionamento em laço).
      */
-    private function voltarParaListagem(string $rota, string $mensagem): RedirectResponse
+    private function voltarParaListagem(string $rota, string $mensagem, string $tipo = 'error'): RedirectResponse
     {
         $anterior = url()->previous();
         $destino = strtok($anterior, '?') === route($rota) ? $anterior : route($rota);
 
-        return redirect()->to($destino)->with('error', $mensagem);
+        return redirect()->to($destino)->with($tipo, $mensagem);
     }
 
     /**
@@ -394,10 +500,11 @@ class RecebimentoController extends Controller
     }
 
     /**
-     * Soma, em centavos, dos recebimentos não cancelados da venda (pagos e
-     * pendentes), opcionalmente sem contar um recebimento (usado na edição).
+     * Soma, em centavos, do valor original dos recebimentos que comprometem a
+     * venda (pagos e pendentes), opcionalmente sem contar um recebimento (edição).
+     * Cancelados e estornados ficam fora: o valor volta a ficar disponível.
      */
-    private function recebimentosNaoCanceladosEmCentavos(int $vendaId, ?int $ignorarId = null, bool $bloquear = false): int
+    private function recebimentosComprometidosEmCentavos(int $vendaId, ?int $ignorarId = null, bool $bloquear = false): int
     {
         return Recebimento::query()
             ->where('venda_id', $vendaId)

@@ -57,19 +57,68 @@ class Recebimento extends Model
     }
 
     /**
-     * Soma, em centavos, dos pagamentos registrados.
+     * Estornos do recebimento (um por ciclo de pagamentos estornados).
      */
-    public function totalRecebidoEmCentavos(): int
+    public function estornos(): HasMany
     {
-        $total = $this->relationLoaded('pagamentos')
-            ? $this->pagamentos->sum(fn (Pagamento $pagamento) => (int) round((float) $pagamento->valor * 100))
-            : (int) round((float) $this->pagamentos()->sum('valor') * 100);
-
-        return (int) $total;
+        return $this->hasMany(Estorno::class)->orderBy('data_estorno')->orderBy('id');
     }
 
     /**
-     * Saldo restante em centavos: valor original − pagamentos registrados.
+     * Soma, em centavos, de todos os pagamentos já registrados (inclui os estornados).
+     */
+    public function totalPagamentosEmCentavos(): int
+    {
+        return $this->somarCentavos($this->relationLoaded('pagamentos')
+            ? $this->pagamentos
+            : $this->pagamentos()->get());
+    }
+
+    /**
+     * Soma, em centavos, de todos os estornos realizados.
+     */
+    public function valorEstornadoEmCentavos(): int
+    {
+        return $this->somarCentavos($this->relationLoaded('estornos')
+            ? $this->estornos
+            : $this->estornos()->get());
+    }
+
+    /**
+     * Total efetivamente recebido hoje, em centavos: pagamentos ainda não estornados.
+     */
+    public function totalRecebidoEmCentavos(): int
+    {
+        return $this->somarCentavos($this->relationLoaded('pagamentos')
+            ? $this->pagamentos->whereNull('estorno_id')
+            : $this->pagamentos()->whereNull('estorno_id')->get());
+    }
+
+    /**
+     * Pode ser estornado: pendente ou pago, com valor recebido ainda não estornado.
+     */
+    public function podeSerEstornado(): bool
+    {
+        return in_array($this->status, [self::STATUS_PENDENTE, self::STATUS_PAGO], true)
+            && $this->totalRecebidoEmCentavos() > 0;
+    }
+
+    /**
+     * Pode ser cancelado: pendente e sem valor recebido (ou com tudo já estornado).
+     */
+    public function podeSerCancelado(): bool
+    {
+        return $this->status === self::STATUS_PENDENTE
+            && $this->totalRecebidoEmCentavos() === 0;
+    }
+
+    private function somarCentavos($registros): int
+    {
+        return (int) $registros->sum(fn ($registro) => (int) round((float) $registro->valor * 100));
+    }
+
+    /**
+     * Saldo restante em centavos: valor original − total efetivamente recebido.
      */
     public function saldoEmCentavos(): int
     {

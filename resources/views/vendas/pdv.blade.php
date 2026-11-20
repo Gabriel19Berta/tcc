@@ -566,7 +566,7 @@
                                                             Vencimento:
                                                             {{ Formatador::data($recebimento->data_vencimento, 'd/m/Y') }}
                                                         @else
-                                                            Cancelado
+                                                            {{ ucfirst($recebimento->status) }}
                                                         @endif
                                                     </p>
                                                 </div>
@@ -586,7 +586,7 @@
                                                         </span>
                                                     @else
                                                         <span class="text-xs font-semibold text-danger-500">
-                                                            Cancelado
+                                                            {{ ucfirst($recebimento->status) }}
                                                         </span>
                                                     @endif
                                                 </div>

@@ -135,13 +135,25 @@
                     <td>{{ Formatador::reais($recebimento->valor) }}</td>
                 </tr>
                 <tr>
-                    <th>Total recebido</th>
-                    <td>{{ Formatador::reais($recebimento->totalRecebidoEmCentavos() / 100) }}</td>
+                    <th>Total pago</th>
+                    <td>{{ Formatador::reais($recebimento->totalPagamentosEmCentavos() / 100) }}</td>
+                </tr>
+                @if ($recebimento->estornos->isNotEmpty())
+                    <tr>
+                        <th>Total estornado</th>
+                        <td class="text-danger-500">- {{ Formatador::reais($recebimento->valorEstornadoEmCentavos() / 100) }}</td>
+                    </tr>
+                @endif
+                <tr>
+                    <th>Recebido atualmente</th>
+                    <td class="font-semibold">{{ Formatador::reais($recebimento->totalRecebidoEmCentavos() / 100) }}</td>
                 </tr>
                 <tr>
-                    <th>Saldo restante</th>
-                    <td>{{ Formatador::reais(max(0, $recebimento->saldoEmCentavos()) / 100) }}</td>
+                    <th>Saldo pendente</th>
+                    <td class="font-semibold">{{ Formatador::reais(max(0, $recebimento->saldoEmCentavos()) / 100) }}</td>
                 </tr>
+
+                {{-- Pagamentos: os desfeitos por um estorno continuam listados, identificados. --}}
                 <tr>
                     <td colspan="2" class="p-0">
                         <table>
@@ -149,6 +161,7 @@
                                 <tr>
                                     <th>Data e horário</th>
                                     <th>Forma de pagamento</th>
+                                    <th>Situação</th>
                                     <th class="text-right">Valor</th>
                                 </tr>
                             </thead>
@@ -157,11 +170,20 @@
                                     <tr>
                                         <td>{{ Formatador::data($pagamento->data_pagamento, 'd/m/Y H:i') }}</td>
                                         <td>{{ $pagamento->formaPagamento?->nome ?? 'Não informada' }}</td>
+                                        <td>
+                                            @if ($pagamento->estorno)
+                                                <span class="text-danger-500">
+                                                    Estornado em {{ Formatador::data($pagamento->estorno->data_estorno, 'd/m/Y H:i') }}
+                                                </span>
+                                            @else
+                                                Válido
+                                            @endif
+                                        </td>
                                         <td class="text-right">{{ Formatador::reais($pagamento->valor) }}</td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="3" class="text-center text-gray-500">
+                                        <td colspan="4" class="text-center text-gray-500">
                                             Nenhum pagamento registrado para este recebimento.
                                         </td>
                                     </tr>
@@ -170,6 +192,39 @@
                         </table>
                     </td>
                 </tr>
+
+                {{-- Estornos: cada um desfaz os pagamentos válidos no momento em que foi feito. --}}
+                @if ($recebimento->estornos->isNotEmpty())
+                    <tr class="bg-gray-50">
+                        <th colspan="2" scope="colgroup" class="text-base text-primary">
+                            Histórico de estornos
+                        </th>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="p-0">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Data e horário</th>
+                                        <th>Responsável</th>
+                                        <th class="text-center">Pagamentos estornados</th>
+                                        <th class="text-right">Valor estornado</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($recebimento->estornos as $estorno)
+                                        <tr>
+                                            <td>{{ Formatador::data($estorno->data_estorno, 'd/m/Y H:i') }}</td>
+                                            <td>{{ $estorno->user?->name ?? 'Não informado' }}</td>
+                                            <td class="text-center">{{ $recebimento->pagamentos->where('estorno_id', $estorno->id)->count() }}</td>
+                                            <td class="text-right">{{ Formatador::reais($estorno->valor) }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                @endif
             </x-show-table>
         </div>
     </div>

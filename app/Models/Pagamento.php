@@ -14,6 +14,7 @@ class Pagamento extends Model
     protected $fillable = [
         'recebimento_id',
         'forma_pagamento_id',
+        'estorno_id',
         'valor',
         'data_pagamento',
     ];
@@ -34,5 +35,13 @@ class Pagamento extends Model
     public function formaPagamento(): BelongsTo
     {
         return $this->belongsTo(FormaPagamento::class);
+    }
+
+    /**
+     * Estorno que desfez este pagamento (null = pagamento ainda válido).
+     */
+    public function estorno(): BelongsTo
+    {
+        return $this->belongsTo(Estorno::class);
     }
 }

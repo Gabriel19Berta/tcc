@@ -130,6 +130,35 @@
                         <a href="{{ route('recebimentos.edit', $recebimento->id) }}" class="btn btn-warning" title="Editar recebimento">
                             <i class="fa-solid fa-pen-to-square"></i>
                         </a>
+                        <x-dropdown align="right" width="48" direction="up">
+                            <x-slot name="trigger">
+                                <button type="button" class="btn bg-gray-500 hover:bg-gray-600 active:bg-gray-600" title="Mais ações">
+                                    <i class="fa-solid fa-ellipsis-vertical"></i>
+                                </button>
+                            </x-slot>
+
+                            <x-slot name="content">
+                                <form method="POST" action="{{ route('recebimentos.estornar', $recebimento->id) }}"
+                                    data-confirm="Tem certeza de que deseja estornar o recebimento #{{ $recebimento->id }}? Todo o valor efetivamente recebido ({{ Formatador::reais($recebimento->valor_recebido ?? 0) }}) será estornado. O recebimento voltará a ficar pendente e poderá receber novos pagamentos. Os registros dos pagamentos anteriores serão preservados no histórico.">
+                                    @csrf
+
+                                    <x-dropdown-link :href="route('recebimentos.estornar', $recebimento->id)"
+                                        onclick="event.preventDefault(); this.closest('form').requestSubmit();">
+                                        <i class="fa-solid fa-rotate-left me-1 text-danger-500"></i> Estornar recebimento
+                                    </x-dropdown-link>
+                                </form>
+
+                                <form method="POST" action="{{ route('recebimentos.cancelar', $recebimento->id) }}"
+                                    data-confirm="Tem certeza de que deseja cancelar o recebimento #{{ $recebimento->id }}? Após o cancelamento, não será mais possível registrar novos pagamentos ou editar este recebimento. O histórico financeiro será preservado.">
+                                    @csrf
+
+                                    <x-dropdown-link :href="route('recebimentos.cancelar', $recebimento->id)"
+                                        onclick="event.preventDefault(); this.closest('form').requestSubmit();">
+                                        <i class="fa-solid fa-ban me-1 text-danger-500"></i> Cancelar recebimento
+                                    </x-dropdown-link>
+                                </form>
+                            </x-slot>
+                        </x-dropdown>
                     </div>
                 </td>
             </tr>

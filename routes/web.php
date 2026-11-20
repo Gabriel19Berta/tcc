@@ -116,6 +116,8 @@ Route::get('/recebimentos/{recebimento}/edit', [RecebimentoController::class, 'e
 Route::put('/recebimentos/{recebimento}', [RecebimentoController::class, 'update'])->whereNumber('recebimento')->name('recebimentos.update');
 Route::get('/recebimentos/{recebimento}/receber', [RecebimentoController::class, 'receber'])->whereNumber('recebimento')->name('recebimentos.receber');
 Route::post('/recebimentos/{recebimento}/receber', [RecebimentoController::class, 'registrarPagamento'])->whereNumber('recebimento')->name('recebimentos.pagamento.store');
+Route::post('/recebimentos/{recebimento}/estornar', [RecebimentoController::class, 'estornar'])->whereNumber('recebimento')->name('recebimentos.estornar');
+Route::post('/recebimentos/{recebimento}/cancelar', [RecebimentoController::class, 'cancelar'])->whereNumber('recebimento')->name('recebimentos.cancelar');
 
 /* RELATÓRIOS */
 Route::get('/relatorios', [RelatorioController::class, 'index'])->name('relatorios.index');
