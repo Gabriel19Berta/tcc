@@ -9,9 +9,9 @@ use App\Http\Controllers\ProdutoController;
 use App\Http\Controllers\RelatorioController;
 use App\Http\Controllers\TipoProdutoController;
 use App\Http\Controllers\StatusController;
+use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\Vendas\VendaController;
 use App\Http\Controllers\Vendas\VendaPdvController;
-
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -92,5 +92,18 @@ Route::post('/vendas/{venda}/recebimentos', [VendaPdvController::class, 'store']
 Route::post('/vendas/{venda}/finalizar', [VendaPdvController::class, 'finalizar'])->name('vendas.finalizar');
 Route::delete('/vendas/{venda}/recebimentos/{recebimento}', [VendaPdvController::class, 'destroyRecebimento'])->name('vendas.recebimentos.destroy');
 
+/* RELATÓRIOS */
 Route::get('/relatorios', [RelatorioController::class, 'index'])->name('relatorios.index');
 Route::get('relatorios/gerar', [RelatorioController::class, 'gerar'])->name('relatorios.gerar');
+
+/*
+|--------------------------------------------------------------------------
+| GERENCIAMENTO DE USUÁRIOS
+|--------------------------------------------------------------------------
+| Exclusivo para administradores.
+*/
+
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::resource('usuarios', UsuarioController::class)
+        ->except(['show']);
+});

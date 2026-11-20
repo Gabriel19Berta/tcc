@@ -12,6 +12,7 @@ class Funcionario extends Model
         'pessoa_id',
         'data_admissao',
         'observacoes',
+        'user_id',
     ];
 
     /**
@@ -21,6 +22,15 @@ class Funcionario extends Model
     public function pessoa()
     {
         return $this->belongsTo(Pessoa::class);
+    }
+
+    /**
+     * Relacionamento
+     * Um funcionário pode possuir uma conta de acesso.
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 
     protected static function booted()
