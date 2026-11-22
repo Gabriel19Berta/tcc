@@ -45,7 +45,7 @@
                         @endif
                     </td>
                     <td>
-                        {{ $usuario->funcionario?->pessoa?->nome ?? '—' }}
+                        {{ $usuario->funcionario?->pessoa?->nome }}
                     </td>
                     <td class="w-2">
                         <div class="flex gap-2 justify-center">

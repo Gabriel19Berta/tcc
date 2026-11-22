@@ -22,13 +22,13 @@
     </div>
     <div class="min-h-screen bg-gray-100">
         {{-- Comportamentos da tela: resources/js/pdv.js (aba inicial informada pelo backend). --}}
-        <div id="pdv" class="flex h-screen flex-col bg-white text-gray-700"
+        <div id="pdv" class="flex min-h-screen flex-col bg-white text-gray-700 lg:h-screen"
             data-aba-inicial="{{ session('aba_ativa', old('aba_ativa', 'produto')) }}">
 
             {{-- CABEÇALHO --}}
-            <header class="flex h-[68px] shrink-0 items-center justify-between bg-primary px-6 text-white">
-                <div class="flex items-baseline gap-6">
-                    <h1 class="text-2xl font-bold text-white">
+            <header class="flex shrink-0 flex-wrap items-center justify-between gap-x-6 gap-y-3 bg-primary px-4 py-3 text-white sm:px-6 lg:h-[68px] lg:flex-nowrap lg:py-0">
+                <div class="flex w-full min-w-0 flex-wrap items-center gap-x-6 gap-y-2 lg:w-auto">
+                    <h1 class="whitespace-nowrap text-2xl font-bold text-white">
                         PDV @isset($venda) {{ ' - ' . $venda->id }} @endisset
                     </h1>
 
@@ -39,18 +39,18 @@
                           e é enviado junto com o primeiro produto, quando a venda é criada.
                     --}}
                     @isset($venda)
-                        <form id="form-funcionario" action="{{ route('vendas.funcionario.update', $venda->id) }}" method="POST">
+                        <form id="form-funcionario" action="{{ route('vendas.funcionario.update', $venda->id) }}" method="POST" class="w-full sm:w-auto">
                             @csrf
                             @method('PATCH')
                     @endisset
 
-                    <div class="flex items-center gap-2">
+                    <div class="flex w-full flex-col gap-1 sm:w-auto sm:flex-row sm:items-center sm:gap-2">
                         <label for="funcionario_id" class="text-sm font-medium text-white whitespace-nowrap">
                             Funcionário responsável:
                         </label>
 
                         <select id="funcionario_id" name="funcionario_id"
-                            class="w-56 rounded-lg border-gray-300 text-sm text-gray-700"
+                            class="w-full rounded-lg border-gray-300 text-sm text-gray-700 sm:w-56"
                             @isset($venda)
                                 onchange="this.form.requestSubmit()"
                             @else
@@ -73,15 +73,15 @@
                     @endisset
                 </div>
 
-                <div class="flex items-center gap-4">
-                    <form method="GET" action="{{ route('vendas.index') }}">
-                        <button type="submit" class="text-sm font-semibold hover:underline">
+                <div class="flex w-full items-center justify-between gap-4 sm:w-auto">
+                    <form method="GET" action="{{ route('vendas.index') }}" class="shrink-0">
+                        <button type="submit" class="whitespace-nowrap py-2 text-sm font-semibold hover:underline">
                             Consultar vendas
                         </button>
                     </form>
 
-                    <div>
-                        <select id="venda_aberta" class="rounded-lg border-gray-300 text-sm"
+                    <div class="min-w-0">
+                        <select id="venda_aberta" class="w-full max-w-full rounded-lg border-gray-300 text-sm text-gray-700"
                             onchange="if (this.value) window.location.href = this.value">
                             <option value="">Continuar venda...</option>
 
@@ -97,10 +97,10 @@
             </header>
 
             {{-- CONTEÚDO PRINCIPAL --}}
-            <main class="flex min-h-0 flex-1 overflow-hidden">
+            <main class="flex flex-1 flex-col lg:min-h-0 lg:flex-row lg:overflow-hidden">
 
                 {{-- PAINEL ESQUERDO --}}
-                <section class="flex min-h-0 w-1/2 flex-col overflow-y-auto border-r border-gray-300 p-6">
+                <section class="flex w-full min-w-0 flex-col border-b border-gray-300 p-4 sm:p-6 lg:min-h-0 lg:w-1/2 lg:overflow-y-auto lg:border-b-0 lg:border-r">
 
                     {{-- MENSAGENS DE ERRO --}}
                     @if ($errors->has('venda'))
@@ -121,16 +121,16 @@
 
                     {{-- NAVEGAÇÃO --}}
                     <nav class="mb-2 flex shrink-0 overflow-hidden rounded-full border border-primary">
-                        <button type="button" data-aba="produto" class="flex-1 rounded-full bg-primary px-4 py-3 font-semibold text-white"
+                        <button type="button" data-aba="produto" class="flex-1 rounded-full bg-primary px-2 py-3 text-sm font-semibold text-white sm:px-4 sm:text-base"
                             aria-selected="true">
                             Produto
                         </button>
 
-                        <button type="button" data-aba="cliente" class="flex-1 px-4 py-3 font-semibold" aria-selected="false">
+                        <button type="button" data-aba="cliente" class="flex-1 px-2 py-3 text-sm font-semibold sm:px-4 sm:text-base" aria-selected="false">
                             Cliente
                         </button>
 
-                        <button type="button" data-aba="pagamento" class="flex-1 px-4 py-3 font-semibold" aria-selected="false">
+                        <button type="button" data-aba="pagamento" class="flex-1 px-2 py-3 text-sm font-semibold sm:px-4 sm:text-base" aria-selected="false">
                             Pagamento
                         </button>
                     </nav>
@@ -628,8 +628,8 @@
                 </section>
 
                 {{-- PAINEL DIREITO: ITENS DA VENDA --}}
-                <section class="flex flex-col w-1/2 min-h-0 overflow-y-auto p-6">
-                    <div class="flex min-h-0 flex-1 flex-col">
+                <section class="flex w-full min-w-0 flex-col p-4 sm:p-6 lg:min-h-0 lg:w-1/2 lg:overflow-y-auto">
+                    <div class="flex flex-1 flex-col lg:min-h-0">
                         <div class="flex items-center justify-between mb-4">
                             <h2 class="text-lg font-semibold text-text">
                                 Produtos da venda
@@ -642,57 +642,58 @@
                         </div>
 
                         @if(isset($venda) && $venda->itens->isNotEmpty())
-                            <div class="min-h-0 flex-1 space-y-3 overflow-y-auto">
+                            <div class="space-y-3 lg:min-h-0 lg:flex-1 lg:overflow-y-auto">
                                 @foreach($venda->itens as $item)
                                     <div class="border border-gray-300 rounded-lg p-3">
-                                        <div class="flex justify-between gap-3">
-                                            <div class="min-w-0">
-                                                <h3 class="font-medium text-text">
-                                                    {{ $item->produto->nome }}
-                                                </h3>
+                                        {{-- Nome e subtotal --}}
+                                        <div class="flex items-start justify-between gap-3">
+                                            <h3 class="min-w-0 break-words font-medium text-text">
+                                                {{ $item->produto->nome }}
+                                            </h3>
 
-                                                <form action="{{ route('vendas.itens.update', ['venda' => $venda->id, 'item' => $item->id]) }}"
-                                                    method="POST" class="flex items-center gap-2 mt-2"
-                                                >
-                                                    @csrf
-                                                    @method('PATCH')
-
-                                                    <x-input type="number" name="quantidade" min="0.01" step="0.01" value="{{ $item->quantidade }}" class="w-20 text-sm"
-                                                        data-quantidade-item data-valor-original="{{ $item->quantidade }}"/>
-                                                    @error('quantidade_item_' . $item->id)
-                                                        <p class="mt-1 text-sm text-danger-500">
-                                                            {{ $message }}
-                                                        </p>
-                                                    @enderror
-
-                                                    <span class="text-sm text-text-light">
-                                                        x {{ Formatador::reais($item->preco_unitario) }}
-                                                    </span>
-                                                </form>
-                                            </div>
-
-                                            <div class="text-right shrink-0">
-                                                <p class="font-semibold text-text">
-                                                    {{ Formatador::reais($item->quantidade * $item->preco_unitario) }}
-                                                </p>
-                                                <form action="{{ route('vendas.itens.destroy', ['venda' => $venda->id, 'item' => $item->id]) }}"
-                                                    method="POST"
-                                                    class="mt-2"
-                                                >
-                                                    @csrf
-                                                    @method('DELETE')
-
-                                                    <button type="submit" class="text-sm text-danger-500 hover:text-danger-600">
-                                                        Remover
-                                                    </button>
-                                                </form>
-                                            </div>
+                                            <p class="shrink-0 font-semibold text-text">
+                                                {{ Formatador::reais($item->quantidade * $item->preco_unitario) }}
+                                            </p>
                                         </div>
+
+                                        {{-- Quantidade × preço unitário e remoção --}}
+                                        <div class="mt-2 flex flex-wrap items-center justify-between gap-2">
+                                            <form action="{{ route('vendas.itens.update', ['venda' => $venda->id, 'item' => $item->id]) }}"
+                                                method="POST" class="flex min-w-0 items-center gap-2"
+                                            >
+                                                @csrf
+                                                @method('PATCH')
+
+                                                <x-input type="number" name="quantidade" min="0.01" step="0.01" value="{{ $item->quantidade }}" class="h-10 w-24 text-sm"
+                                                    data-quantidade-item data-valor-original="{{ $item->quantidade }}"/>
+
+                                                <span class="whitespace-nowrap text-sm text-text-light">
+                                                    x {{ Formatador::reais($item->preco_unitario) }}
+                                                </span>
+                                            </form>
+
+                                            <form action="{{ route('vendas.itens.destroy', ['venda' => $venda->id, 'item' => $item->id]) }}"
+                                                method="POST" class="ml-auto"
+                                            >
+                                                @csrf
+                                                @method('DELETE')
+
+                                                <button type="submit" class="inline-flex h-10 items-center rounded-lg px-3 text-sm text-danger-500 hover:bg-gray-100 hover:text-danger-600">
+                                                    Remover
+                                                </button>
+                                            </form>
+                                        </div>
+
+                                        @error('quantidade_item_' . $item->id)
+                                            <p class="mt-1 text-sm text-danger-500">
+                                                {{ $message }}
+                                            </p>
+                                        @enderror
                                     </div>
                                 @endforeach
                             </div>
                         @else
-                            <div class="flex-1 flex flex-col items-center justify-center text-center text-text-light">
+                            <div class="flex flex-1 flex-col items-center justify-center py-8 text-center text-text-light">
                                 <p class="text-sm">Nenhum produto adicionado</p>
                                 <p class="text-xs mt-1">Os produtos adicionados aparecerão aqui.</p>
                             </div>
@@ -703,22 +704,22 @@
             </main>
 
             {{-- BARRA INFERIOR --}}
-            <footer class="flex min-h-[68px] shrink-0 items-center justify-between border-t border-gray-300 px-6">
+            <footer class="sticky bottom-0 z-10 flex min-h-[68px] shrink-0 flex-col-reverse gap-3 border-t border-gray-300 bg-white px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:py-0">
                 <div class="flex gap-3">
                     <a href="{{ route('vendas.index') }}"
-                       class="rounded-lg border border-primary px-6 py-2 font-semibold text-primary hover:bg-primary hover:text-white">
+                       class="flex-1 whitespace-nowrap rounded-lg border border-primary px-4 py-2 text-center font-semibold text-primary hover:bg-primary hover:text-white sm:flex-none sm:px-6">
                         Sair do PDV
                     </a>
 
                     @isset($venda)
                         @if($venda->itens->isNotEmpty())
-                            <form action="{{ route('vendas.finalizar', $venda) }}" method="POST"
+                            <form action="{{ route('vendas.finalizar', $venda) }}" method="POST" class="flex-1 sm:flex-none"
                                   data-confirm="Deseja realmente finalizar esta venda?">
 
                                 @csrf
 
                                 <button type="submit"
-                                        class="rounded-lg border border-primary px-6 py-2 font-semibold text-white bg-primary hover:bg-primary-700">
+                                        class="w-full whitespace-nowrap rounded-lg border border-primary px-4 py-2 font-semibold text-white bg-primary hover:bg-primary-700 sm:px-6">
                                     Finalizar venda
                                 </button>
                             </form>
@@ -726,10 +727,10 @@
                     @endisset
                 </div>
 
-                <div class="text-right">
-                    <span class="mr-3 font-semibold">Total</span>
+                <div class="flex items-baseline justify-between gap-3 sm:block sm:text-right">
+                    <span class="font-semibold sm:mr-3">Total</span>
 
-                    <span id="total-venda" class="text-2xl font-bold">
+                    <span id="total-venda" class="whitespace-nowrap text-xl font-bold sm:text-2xl">
                         {{ Formatador::reais($venda->valor_total ?? 0) }}
                     </span>
                 </div>
