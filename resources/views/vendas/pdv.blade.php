@@ -707,7 +707,7 @@
             <footer class="sticky bottom-0 z-10 flex min-h-[68px] shrink-0 flex-col-reverse gap-3 border-t border-gray-300 bg-white px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:py-0">
                 <div class="flex gap-3">
                     <a href="{{ route('vendas.index') }}"
-                       class="flex-1 whitespace-nowrap rounded-lg border border-primary px-4 py-2 text-center font-semibold text-primary hover:bg-primary hover:text-white sm:flex-none sm:px-6">
+                       class="flex-1 whitespace-nowrap rounded-lg border border-danger-500 px-4 py-2 text-center font-semibold text-danger-500 hover:bg-danger-500 hover:text-white sm:flex-none sm:px-6">
                         Sair do PDV
                     </a>
 
