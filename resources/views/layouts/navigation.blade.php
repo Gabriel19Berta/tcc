@@ -191,6 +191,22 @@
                     {{ __('Tipo de produtos') }}
                 </x-responsive-nav-link>
 
+                <x-responsive-nav-link :href="route('vendas.index')">
+                    {{ __('Vendas') }}
+                </x-responsive-nav-link>
+
+                <x-responsive-nav-link :href="route('vendas.create')">
+                    {{ __('PDV') }}
+                </x-responsive-nav-link>
+
+                <x-responsive-nav-link :href="route('recebimentos.index')" :active="request()->routeIs('recebimentos.*')">
+                    {{ __('Recebimentos') }}
+                </x-responsive-nav-link>
+
+                <x-responsive-nav-link :href="route('relatorios.index')" :active="request()->routeIs('relatorios.*')">
+                    {{ __('Relatórios') }}
+                </x-responsive-nav-link>
+
                 <x-responsive-nav-link :href="route('profile.edit')">
                     {{ __('Perfil') }}
                 </x-responsive-nav-link>
