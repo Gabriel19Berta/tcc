@@ -106,8 +106,18 @@ class ClienteController extends Controller
      */
     public function destroy(string $id)
     {
+        $cliente = Cliente::findOrFail($id);
+
+        if ($cliente->vendas()->exists()) {
+            $vinculos = $cliente->vendas()->has('recebimentos')->exists()
+                ? 'vendas e recebimentos vinculados'
+                : 'vendas vinculadas';
+
+            return back()->with('error', "Não foi possível excluir este cliente, pois existem {$vinculos} a ele. "
+                . 'Verifique os registros relacionados antes de tentar novamente.');
+        }
+
         try {
-            $cliente = Cliente::findOrFail($id);
             $cliente->delete();
 
             return redirect()->route('clientes.index')

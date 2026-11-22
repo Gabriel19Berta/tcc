@@ -106,8 +106,14 @@ class FuncionarioController extends Controller
      */
     public function destroy(string $id)
     {
+        $funcionario = Funcionario::findOrFail($id);
+
+        if ($funcionario->vendas()->exists()) {
+            return back()->with('error', 'Não foi possível excluir este funcionário, pois existem vendas vinculadas a ele. '
+                . 'Verifique os registros relacionados antes de tentar novamente.');
+        }
+
         try {
-            $funcionario = Funcionario::findOrFail($id);
             $funcionario->delete();
 
             return redirect()->route('funcionarios.index')

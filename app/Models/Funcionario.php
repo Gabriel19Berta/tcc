@@ -31,6 +31,15 @@ class Funcionario extends Model
         return $this->belongsTo(User::class);
     }
 
+    /**
+     * Relacionamento
+     * Um funcionário pode ser o responsável por várias vendas
+     */
+    public function vendas()
+    {
+        return $this->hasMany(Venda::class);
+    }
+
     protected static function booted()
     {
         static::deleted(function ($funcionario) {

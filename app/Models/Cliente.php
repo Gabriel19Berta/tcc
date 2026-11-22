@@ -20,6 +20,15 @@ class Cliente extends Model
         return $this->belongsTo(Pessoa::class);
     }
 
+    /**
+     * Relacionamento
+     * Um cliente pode ter várias vendas (e, por meio delas, recebimentos)
+     */
+    public function vendas()
+    {
+        return $this->hasMany(Venda::class);
+    }
+
     protected static function booted()
     {
         static::deleted(function ($cliente) {
