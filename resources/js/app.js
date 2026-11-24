@@ -13,6 +13,7 @@ import { iniMascaras } from './mascaras';
 import { consultaCep } from './consultaCep';
 import { iniciarPdv } from './pdv';
 import { iniIntervaloDatas } from './intervaloDatas';
+import { iniAlternarSenha } from './senha';
 
 window.Alpine = Alpine;
 
@@ -23,6 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
     consultaCep();
     iniciarPdv();
     iniIntervaloDatas();
+    iniAlternarSenha();
 
     const idiomaSelect2 = {
         noResults: function () {
