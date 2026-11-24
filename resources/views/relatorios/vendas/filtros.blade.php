@@ -1,7 +1,9 @@
 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-    <div class="p-6">
+    <div class="px-6">
         <h2 class="font-semibold text-primary">{{ $relatorio->titulo() }}</h2>
+    </div>
 
+    <div class="p-6">
         <form action="{{ route('relatorios.gerar') }}" method="GET">
             <input type="hidden" name="relatorio" value="{{ $relatorio->slug() }}">
             <input type="hidden" name="formato" value="excel">
