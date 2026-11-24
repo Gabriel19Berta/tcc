@@ -1,4 +1,8 @@
 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+    <div class="px-6">
+        <h2 class="font-semibold text-primary">{{ $relatorio->titulo() }}</h2>
+    </div>
+
     <div class="p-6">
         <form action="{{ route('relatorios.gerar') }}" method="GET">
             @csrf

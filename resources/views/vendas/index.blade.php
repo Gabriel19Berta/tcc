@@ -24,6 +24,16 @@
             />
         </div>
 
+        <div class="w-full sm:w-56">
+            <x-input-label for="cliente" :value="__('Cliente')" />
+            <x-select-pessoa name="cliente" tipo="cliente" />
+        </div>
+
+        <div class="w-full sm:w-56">
+            <x-input-label for="funcionario" :value="__('Funcionário')" />
+            <x-select-pessoa name="funcionario" tipo="funcionario" />
+        </div>
+
         <div>
             <x-input-label for="status" :value="__('Status')" />
             <select id="status" name="status">
@@ -58,16 +68,6 @@
         <div>
             <x-input-label for="data_fim" :value="__('Data final')" />
             <x-input id="data_fim" name="data_fim" type="date" data-data-inicial="data_inicio" :value="old('data_fim', request('data_fim'))" />
-        </div>
-
-        <div class="w-full sm:w-56">
-            <x-input-label for="cliente" :value="__('Cliente')" />
-            <x-select-pessoa name="cliente" tipo="cliente" />
-        </div>
-
-        <div class="w-full sm:w-56">
-            <x-input-label for="funcionario" :value="__('Funcionário')" />
-            <x-select-pessoa name="funcionario" tipo="funcionario" />
         </div>
     </x-filter-form>
 
