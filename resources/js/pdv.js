@@ -168,18 +168,9 @@ function iniciarValores() {
         }
     }
 
-    // Exibe os valores (já formatados pelo backend) no resumo e no rodapé.
+    // Exibe os valores (já formatados pelo backend) no campo Total e no rodapé.
     function atualizarResumo(dados) {
-        document.getElementById('resumo-produtos').textContent =
-            'R$ ' + dados.valor_produtos;
-
-        document.getElementById('resumo-desconto').textContent =
-            '- R$ ' + dados.descontos;
-
-        document.getElementById('resumo-acrescimo').textContent =
-            'R$ ' + dados.outros_custos;
-
-        document.getElementById('resumo-total').textContent =
+        document.getElementById('resumo-total').value =
             'R$ ' + dados.valor_total;
 
         const totalRodape = document.getElementById('total-venda');

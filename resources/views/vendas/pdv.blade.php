@@ -348,58 +348,15 @@
 
                                 <input type="hidden" name="aba_ativa" value="pagamento">
 
-                                {{-- RESUMO --}}
-                                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 rounded-lg border border-gray-300 p-3">
-                                    <div class="min-w-0">
-                                        <span class="text-xs text-text-light">
-                                            Produtos
-                                        </span>
-
-                                        <p id="resumo-produtos" class="font-medium text-text">
-                                            {{ Formatador::reais($venda->valor_produtos) }}
-                                        </p>
-                                    </div>
-
-                                    <div class="min-w-0">
-                                        <span class="text-xs text-text-light">
-                                            Desconto
-                                        </span>
-
-                                        <p id="resumo-desconto" class="font-medium text-danger-500">
-                                            - {{ Formatador::reais($venda->descontos) }}
-                                        </p>
-                                    </div>
-
-                                    <div class="min-w-0">
-                                        <span class="text-xs text-text-light">
-                                            Acréscimo
-                                        </span>
-
-                                        <p id="resumo-acrescimo" class="font-medium text-text">
-                                            {{ Formatador::reais($venda->outros_custos) }}
-                                        </p>
-                                    </div>
-
-                                    <div class="min-w-0">
-                                        <span class="text-xs text-text-light">
-                                            Total
-                                        </span>
-
-                                        <p id="resumo-total" class="font-bold text-primary">
-                                            {{ Formatador::reais($venda->valor_total) }}
-                                        </p>
-                                    </div>
-                                </div>
-
-                                {{-- DESCONTO E ACRÉSCIMO --}}
-                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4">
+                                {{-- TIPO, DESCONTO, ACRÉSCIMO E TOTAL --}}
+                                <div class="grid grid-cols-2 gap-4 sm:grid-cols-[6rem_repeat(3,minmax(0,1fr))]">
 
                                     {{-- TIPO DE DESCONTO --}}
                                     <div>
                                         <x-input-label for="tipo_desconto" value="Tipo" />
 
                                         <select name="tipo_desconto" id="tipo_desconto"
-                                            class="mt-1 block w-full rounded-lg border-gray-300 focus:border-primary focus:ring-primary"
+                                            class="block w-full rounded-lg border-gray-300 focus:border-primary focus:ring-primary"
                                         >
                                             <option value="valor" {{ old('tipo_desconto', 'valor') === 'valor' ? 'selected' : '' }}>
                                                 R$
@@ -435,6 +392,15 @@
                                         />
 
                                         <div id="erro-outros-custos" class="mt-1 text-sm text-danger-500"></div>
+                                    </div>
+
+                                    <div>
+                                        <x-input-label for="resumo-total" value="Total" />
+
+                                        <x-input id="resumo-total" type="text" readonly tabindex="-1"
+                                            class="w-full cursor-default bg-gray-100 font-semibold text-primary"
+                                            :value="Formatador::reais($venda->valor_total)"
+                                        />
                                     </div>
 
                                 </div>
