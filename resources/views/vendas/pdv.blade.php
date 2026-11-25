@@ -456,30 +456,40 @@
 
                                     <input type="hidden" name="aba_ativa" value="pagamento">
 
-                                    {{-- FORMA DE PAGAMENTO --}}
-                                    <div class="mb-4">
-                                        <x-input-label for="forma_pagamento_id" value="Forma de pagamento" />
+                                    {{-- FORMA DE PAGAMENTO / VALOR RESTANTE --}}
+                                    <div class="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-3">
+                                        <div class="sm:col-span-2">
+                                            <x-input-label for="forma_pagamento_id" value="Forma de pagamento" />
 
-                                        <select name="forma_pagamento_id" id="forma_pagamento_id"
-                                            class="mt-1 block w-full rounded-lg border-gray-300 focus:border-primary focus:ring-primary"
-                                        >
-                                            <option value="">Selecione uma forma de pagamento</option>
+                                            <select name="forma_pagamento_id" id="forma_pagamento_id"
+                                                class="mt-1 block w-full rounded-lg border-gray-300 focus:border-primary focus:ring-primary"
+                                            >
+                                                <option value="">Selecione uma forma de pagamento</option>
 
-                                            @foreach ($formasPagamento as $forma)
-                                                <option
-                                                    value="{{ $forma->id }}"
-                                                    {{ old('forma_pagamento_id') == $forma->id ? 'selected' : '' }}
-                                                >
-                                                    {{ $forma->nome }}
-                                                </option>
-                                            @endforeach
-                                        </select>
+                                                @foreach ($formasPagamento as $forma)
+                                                    <option
+                                                        value="{{ $forma->id }}"
+                                                        {{ old('forma_pagamento_id') == $forma->id ? 'selected' : '' }}
+                                                    >
+                                                        {{ $forma->nome }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
 
-                                        @error('forma_pagamento_id')
-                                            <p class="mt-1 text-sm text-danger-500">
-                                                {{ $message }}
-                                            </p>
-                                        @enderror
+                                            @error('forma_pagamento_id')
+                                                <p class="mt-1 text-sm text-danger-500">
+                                                    {{ $message }}
+                                                </p>
+                                            @enderror
+                                        </div>
+
+                                        {{-- Total da venda menos os recebimentos não cancelados --}}
+                                        <div class="flex items-center justify-between gap-2 rounded-lg bg-gray-100 px-3 py-2 text-sm sm:mt-6 sm:self-start border border-gray-300">
+                                            <span class="text-text-light">Valor restante:</span>
+                                            <span id="valor-restante" class="whitespace-nowrap font-semibold text-primary">
+                                                {{ Formatador::reais($venda->valorRestante()) }}
+                                            </span>
+                                        </div>
                                     </div>
 
                                     {{-- VALOR/SITUAÇÃO/DATA DE VENCIMENTO --}}

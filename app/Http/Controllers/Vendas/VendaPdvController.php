@@ -266,6 +266,7 @@ class VendaPdvController extends Controller
                 'descontos' => Formatador::moeda($venda->descontos),
                 'outros_custos' => Formatador::moeda($venda->outros_custos),
                 'valor_total' => Formatador::moeda($venda->valor_total),
+                'valor_restante' => Formatador::moeda($venda->valorRestante()),
             ]);
         }
 

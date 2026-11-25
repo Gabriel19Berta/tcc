@@ -187,6 +187,12 @@ function iniciarValores() {
         if (totalRodape) {
             totalRodape.textContent = 'R$ ' + dados.valor_total;
         }
+
+        const valorRestante = document.getElementById('valor-restante');
+
+        if (valorRestante) {
+            valorRestante.textContent = 'R$ ' + dados.valor_restante;
+        }
     }
 
     function exibirErros(erros) {

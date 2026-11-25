@@ -121,6 +121,17 @@ class Venda extends Model
     }
 
     /**
+     * Valor que ainda falta lançar em recebimentos (total da venda menos os
+     * recebimentos comprometidos). Nunca negativo. Usado no indicador do PDV.
+     */
+    public function valorRestante(): float
+    {
+        $totalEmCentavos = (int) round((float) $this->valor_total * 100);
+
+        return max(0, $totalEmCentavos - $this->recebimentosComprometidosEmCentavos()) / 100;
+    }
+
+    /**
      * Lançamento de recebimentos fora do PDV: somente vendas finalizadas.
      * (Aberta: lançamentos pelo PDV. Quitada: já não há saldo. Cancelada: não recebe.)
      */
