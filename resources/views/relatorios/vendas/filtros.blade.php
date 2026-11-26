@@ -20,12 +20,16 @@
                 <div class="w-full sm:w-56">
                     <x-input-label for="cliente" value="Cliente" />
                     <x-select-pessoa name="cliente" tipo="cliente" />
-                    <x-input-error :messages="$errors->get('cliente')" />
+                    @error('cliente')
+                        <p class="mt-1 text-sm text-danger-500">{{ $message }}</p>
+                    @enderror
                 </div>
                 <div class="w-full sm:w-56">
                     <x-input-label for="funcionario" value="Funcionário" />
                     <x-select-pessoa name="funcionario" tipo="funcionario" />
-                    <x-input-error :messages="$errors->get('funcionario')" />
+                    @error('funcionario')
+                        <p class="mt-1 text-sm text-danger-500">{{ $message }}</p>
+                    @enderror
                 </div>
                 <div>
                     <x-input-label for="status" value="Status" />
@@ -35,7 +39,9 @@
                             <option value="{{ $status }}" @selected(old('status') === $status)>{{ ucfirst($status) }}</option>
                         @endforeach
                     </select>
-                    <x-input-error :messages="$errors->get('status')" />
+                    @error('status')
+                        <p class="mt-1 text-sm text-danger-500">{{ $message }}</p>
+                    @enderror
                 </div>
             </div>
 

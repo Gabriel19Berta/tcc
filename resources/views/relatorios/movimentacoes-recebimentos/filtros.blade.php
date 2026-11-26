@@ -22,7 +22,9 @@
                 <div class="w-full sm:w-56">
                     <x-input-label for="cliente" value="Cliente" />
                     <x-select-pessoa name="cliente" tipo="cliente" />
-                    <x-input-error :messages="$errors->get('cliente')" />
+                    @error('cliente')
+                        <p class="mt-1 text-sm text-danger-500">{{ $message }}</p>
+                    @enderror
                 </div>
                 <div class="w-full sm:w-56">
                     <x-input-label for="forma_pagamento_id" value="Forma de pagamento" />
@@ -34,7 +36,9 @@
                             </option>
                         @endforeach
                     </select>
-                    <x-input-error :messages="$errors->get('forma_pagamento_id')" />
+                    @error('forma_pagamento_id')
+                        <p class="mt-1 text-sm text-danger-500">{{ $message }}</p>
+                    @enderror
                 </div>
                 <div>
                     <x-input-label for="tipo" value="Tipo de movimentação" />
@@ -45,7 +49,9 @@
                         <option value="{{ MovimentacoesRecebimentosRelatorio::TIPO_ESTORNO }}"
                             @selected(old('tipo') === MovimentacoesRecebimentosRelatorio::TIPO_ESTORNO)>Estorno</option>
                     </select>
-                    <x-input-error :messages="$errors->get('tipo')" />
+                    @error('tipo')
+                        <p class="mt-1 text-sm text-danger-500">{{ $message }}</p>
+                    @enderror
                 </div>
             </div>
 

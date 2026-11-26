@@ -1,11 +1,13 @@
 @props([
     'disabled' => false,
     'showError' => true,
+    'errorBag' => 'default',
 ])
 
 @php
     $name = $attributes->get('name');
-    $hasError = $name && $errors->has($name);
+    $erros = $errors->getBag($errorBag);
+    $hasError = $name && $erros->has($name);
 
     // Campos de senha ganham o botão de exibir/ocultar.
     $senha = $attributes->get('type') === 'password';
@@ -43,7 +45,7 @@
 
     @if ($hasError && $showError)
         <p class="mt-1 text-sm text-danger-500 input-error">
-            {{ $errors->first($name) }}
+            {{ $erros->first($name) }}
         </p>
     @endif
 </div>

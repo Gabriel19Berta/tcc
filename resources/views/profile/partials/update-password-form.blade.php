@@ -13,28 +13,7 @@
         @csrf
         @method('put')
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-
-            {{-- Senha atual --}}
-            <div>
-                <x-input-label
-                    for="update_password_current_password"
-                    :value="__('Senha atual')"
-                />
-
-                <x-input
-                    id="update_password_current_password"
-                    name="current_password"
-                    type="password"
-                    class="mt-1 block w-full"
-                    autocomplete="current-password"
-                />
-
-                <x-input-error
-                    class="mt-2"
-                    :messages="$errors->updatePassword->get('current_password')"
-                />
-            </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
             {{-- Nova senha --}}
             <div>
@@ -49,11 +28,7 @@
                     type="password"
                     class="mt-1 block w-full"
                     autocomplete="new-password"
-                />
-
-                <x-input-error
-                    class="mt-2"
-                    :messages="$errors->updatePassword->get('password')"
+                    error-bag="updatePassword"
                 />
             </div>
 
@@ -70,11 +45,7 @@
                     type="password"
                     class="mt-1 block w-full"
                     autocomplete="new-password"
-                />
-
-                <x-input-error
-                    class="mt-2"
-                    :messages="$errors->updatePassword->get('password_confirmation')"
+                    error-bag="updatePassword"
                 />
             </div>
 
