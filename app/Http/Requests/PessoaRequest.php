@@ -3,6 +3,9 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Unique;
 
 class PessoaRequest extends FormRequest
 {
@@ -44,8 +47,8 @@ class PessoaRequest extends FormRequest
             'status' => ['nullable', 'boolean'],
             'nome' => ['required', 'string'],
             'tipo' => ['nullable', 'in:f,j'],
-            'cpf' => ['nullable', 'string', 'size: 11', 'cpf'],
-            'cnpj' => ['nullable', 'string', 'cnpj'],
+            'cpf' => ['nullable', 'string', 'size: 11', 'cpf', $this->documentoUnico('cpf')],
+            'cnpj' => ['nullable', 'string', 'cnpj', $this->documentoUnico('cnpj')],
             'rg' => ['nullable', 'string'],
             'ie' => ['nullable', 'string'],
             'data_nascimento' => ['nullable', 'date'],
@@ -74,9 +77,20 @@ class PessoaRequest extends FormRequest
         return [
             'nome.required' => 'Nome é obrigatório!',
             'cpf.size' => 'CPF deve ter 11 números!',
+            'cpf.unique' => 'Já existe um cadastro com este CPF!',
+            'cnpj.unique' => 'Já existe um cadastro com este CNPJ!',
             'celular.size' => 'Celular deve ter 11 números!',
             'cep.size' => 'CEP deve ter 8 números!'
         ];
+    }
+
+    private function documentoUnico(string $campo): Unique
+    {
+        $tabela = $this->routeIs('funcionarios.*') ? 'funcionarios' : 'clientes';
+
+        return Rule::unique('pessoas', $campo)
+            ->ignore($this->route('id'))
+            ->where(fn ($query) => $query->whereIn('id', DB::table($tabela)->select('pessoa_id')));
     }
 
     
