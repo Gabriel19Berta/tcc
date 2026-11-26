@@ -31,9 +31,9 @@
         </div>
         <div>
             <x-input-label for="nome" :value="__('Nome')" />
-            <x-input id="nome" name="nome" type="text" :value="request('nome')" class="w-96"/>
+            <x-input id="nome" name="nome" type="text" :value="request('nome')" class="w-full sm:w-56"/>
         </div>
-        <div class="w-80">
+        <div class="w-full sm:w-56">
             <x-input-label for="nome" :value="__('Marca')" />
             <select name="marca_id" id="marca_id" class="select2">
                 <option value=""></option>
@@ -45,7 +45,7 @@
                 @endforeach
             </select>
         </div>
-        <div class="w-80">
+        <div class="w-full sm:w-56">
             <x-input-label for="nome" :value="__('Tipo de produto')" />
             <select name="tipo_produto_id" id="tipo_produto_id" class="select2">
                 <option value=""></option>
