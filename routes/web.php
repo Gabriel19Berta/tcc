@@ -19,21 +19,13 @@ Route::get('/dashboard', function () {
     return redirect()->route('clientes.index');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-});
-
 require __DIR__.'/auth.php';
 
-/*
-|--------------------------------------------------------------------------
-| MÓDULOS DO SISTEMA
-|--------------------------------------------------------------------------
-| Disponíveis para qualquer usuário autenticado (administrador ou funcionário).
-*/
-
 Route::middleware('auth')->group(function () {
+
+/* PERFIL (cada usuário edita o próprio perfil) */
+Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
 
 /* ALTERAR STATUS */
 Route::patch('/status/{model}/{id}', [StatusController::class, 'toggle'])->name('status.toggle');
@@ -123,16 +115,14 @@ Route::post('/recebimentos/{recebimento}/cancelar', [RecebimentoController::clas
 Route::get('/relatorios', [RelatorioController::class, 'index'])->name('relatorios.index');
 Route::get('relatorios/gerar', [RelatorioController::class, 'gerar'])->name('relatorios.gerar');
 
+/* USUÁRIOS — EXCLUSIVO PARA ADMINISTRADORES */
+Route::middleware('admin')->group(function () {
+    Route::get('/usuarios', [UsuarioController::class, 'index'])->name('usuarios.index');
+    Route::get('/usuarios/create', [UsuarioController::class, 'create'])->name('usuarios.create');
+    Route::post('/usuarios', [UsuarioController::class, 'store'])->name('usuarios.store');
+    Route::get('/usuarios/{usuario}/edit', [UsuarioController::class, 'edit'])->name('usuarios.edit');
+    Route::match(['put', 'patch'], '/usuarios/{usuario}', [UsuarioController::class, 'update'])->name('usuarios.update');
+    Route::delete('/usuarios/{usuario}', [UsuarioController::class, 'destroy'])->name('usuarios.destroy');
 });
 
-/*
-|--------------------------------------------------------------------------
-| GERENCIAMENTO DE USUÁRIOS
-|--------------------------------------------------------------------------
-| Exclusivo para administradores.
-*/
-
-Route::middleware(['auth', 'admin'])->group(function () {
-    Route::resource('usuarios', UsuarioController::class)
-        ->except(['show']);
 });
