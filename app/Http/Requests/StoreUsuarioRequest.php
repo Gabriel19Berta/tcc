@@ -9,11 +9,12 @@ use Illuminate\Validation\Rules\Password;
 class StoreUsuarioRequest extends FormRequest
 {
     /**
-     * Somente administradores podem cadastrar contas de acesso.
+     * O acesso já é restrito a administradores pelo middleware "admin"
+     * das rotas de usuários (routes/web.php).
      */
     public function authorize(): bool
     {
-        return (bool) $this->user()?->admin;
+        return true;
     }
 
     public function rules(): array

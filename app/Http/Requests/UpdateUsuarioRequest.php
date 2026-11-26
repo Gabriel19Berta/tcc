@@ -10,11 +10,12 @@ use Illuminate\Validation\Rules\Password;
 class UpdateUsuarioRequest extends FormRequest
 {
     /**
-     * Somente administradores podem editar contas de acesso.
+     * O acesso já é restrito a administradores pelo middleware "admin"
+     * das rotas de usuários (routes/web.php).
      */
     public function authorize(): bool
     {
-        return (bool) $this->user()?->admin;
+        return true;
     }
 
     public function rules(): array
@@ -47,12 +48,11 @@ class UpdateUsuarioRequest extends FormRequest
             'funcionario_id' => [
                 'nullable',
                 'integer',
+                // Funcionário sem conta ou já vinculado a este usuário.
                 Rule::exists('funcionarios', 'id')
                     ->where(function ($query) use ($usuario) {
-                        $query->where(function ($q) use ($usuario) {
-                            $q->whereNull('user_id')
-                                ->orWhere('user_id', $usuario->id);
-                        });
+                        $query->whereNull('user_id')
+                            ->orWhere('user_id', $usuario->id);
                     }),
             ],
         ];
