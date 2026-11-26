@@ -15,9 +15,9 @@ use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\Vendas\VendaController;
 use App\Http\Controllers\Vendas\VendaPdvController;
 
-Route::get('/dashboard', function () {
+Route::get('/clientes', function () {
     return redirect()->route('clientes.index');
-})->middleware(['auth', 'verified'])->name('dashboard');
+})->middleware(['auth'])->name('clientes');
 
 require __DIR__.'/auth.php';
 
