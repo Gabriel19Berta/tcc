@@ -121,7 +121,7 @@
                         </a>
 
                         {{-- MAIS AÇÕES --}}
-                        <x-dropdown align="right" width="48" direction="up">
+                        <x-dropdown align="right" width="48" floating>
                             <x-slot name="trigger">
                                 <button type="button" class="btn bg-gray-500 hover:bg-gray-600 active:bg-gray-600" title="Mais ações">
                                     <i class="fa-solid fa-ellipsis-vertical"></i>

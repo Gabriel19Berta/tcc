@@ -34,16 +34,20 @@
                         <div class="md:col-span-1">
                             <x-input-label for="tipo" :value="__('Tipo')" />
 
+                            @php
+                                $tipoPadrao = $cliente->cnpj && ! $cliente->cpf ? 'j' : 'f';
+                            @endphp
+
                             <div class="contain-check">
                                 <label for="fisico" class="flex items-center gap-2 cursor-pointer">
                                     <x-input id="fisico" name="tipo" type="radio" value="f"
-                                        :checked="old('tipo', $cliente->tipo) === 'f'" />
+                                        :checked="old('tipo', $tipoPadrao) === 'f'" />
                                     <span>Física</span>
                                 </label>
 
                                 <label for="juridica" class="flex items-center gap-2 cursor-pointer">
                                     <x-input id="juridica" name="tipo" type="radio" value="j"
-                                        :checked="old('tipo', $cliente->tipo) === 'j'" />
+                                        :checked="old('tipo', $tipoPadrao) === 'j'" />
                                     <span>Jurídica</span>
                                 </label>
                             </div>

@@ -139,8 +139,8 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
 
-    window.addEventListener("load", hideLoader);
-
+    // O loader começa oculto (classe "hidden" nos layouts) e só aparece ao navegar.
+    // "pageshow" o esconde quando a página volta do cache do navegador (botão Voltar).
     window.addEventListener("pageshow", hideLoader);
 
 
@@ -212,6 +212,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if(!confirm(mensagem)) {
                 e.preventDefault();
+                hideLoader();
             }
         })
     })
