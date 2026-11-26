@@ -16,7 +16,7 @@ use App\Http\Controllers\Vendas\VendaController;
 use App\Http\Controllers\Vendas\VendaPdvController;
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    return redirect()->route('clientes.index');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
